@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JSB Shopping</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--pri:#e6336b;--pri2:#ff7aa2;--acc:#ffc53d;--ink:#1f1a2e;--mut:#6b6580;--bg:#fff8fb;--card:#fff;--line:#f1e3ea}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Prompt,sans-serif;background:var(--bg);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1200px;margin:auto;padding:0 16px}
+.top{background:var(--ink);color:#fff;font-size:13px;text-align:center;padding:6px}
+header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:20px;height:68px}
+.logo{font-weight:700;font-size:24px;color:var(--pri)}.logo span{color:var(--ink)}
+.search{flex:1;display:flex;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:0 16px}
+.search input{border:0;background:none;flex:1;padding:10px 0;font:inherit;outline:0}
+.cartbtn{position:relative;background:var(--pri);color:#fff;border:0;border-radius:999px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer}
+.badge{position:absolute;top:-6px;right:-6px;background:var(--acc);color:var(--ink);border-radius:999px;font-size:12px;min-width:22px;height:22px;display:grid;place-items:center}
+.hero{background:linear-gradient(120deg,var(--pri),var(--pri2));color:#fff;border-radius:24px;margin:24px 0;padding:48px;display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center;overflow:hidden}
+.hero h1{font-size:44px;line-height:1.15}.hero p{opacity:.9;margin:12px 0 24px}
+.btn{display:inline-block;background:#fff;color:var(--pri);padding:12px 26px;border-radius:999px;font-weight:600;border:0;cursor:pointer;font:inherit}
+.hero .emoji{font-size:140px;text-align:center;filter:drop-shadow(0 10px 20px #0003)}
+.perks{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+.perk{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;gap:12px;align-items:center;font-size:14px}
+.perk b{display:block}.perk i{font-style:normal;font-size:28px}
+h2{font-size:26px;margin:8px 0 16px}
+.cats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.cat{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 18px;cursor:pointer;font:inherit}
+.cat.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-bottom:48px}
+.p{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:.2s}
+.p:hover{transform:translateY(-4px);box-shadow:0 12px 30px #e6336b22}
+.pimg{aspect-ratio:1;display:grid;place-items:center;font-size:84px;position:relative}
+.tag{position:absolute;top:10px;left:10px;background:var(--acc);font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px}
+.pb{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.pb small{color:var(--mut)}
+.price{display:flex;gap:8px;align-items:baseline;margin-top:auto}
+.price b{color:var(--pri);font-size:20px}.price s{color:var(--mut);font-size:13px}
+.add{margin-top:8px;background:var(--pri);color:#fff;border:0;border-radius:12px;padding:10px;font:inherit;font-weight:600;cursor:pointer}
+.add:hover{background:#c92557}
+.promo{background:var(--ink);color:#fff;border-radius:24px;padding:36px;display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:48px;flex-wrap:wrap}
+.promo h3{font-size:28px}.promo h3 em{color:var(--acc);font-style:normal}
+footer{background:#fff;border-top:1px solid var(--line);padding:32px 0;color:var(--mut);font-size:14px}
+.fgrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px}
+footer b{color:var(--ink);display:block;margin-bottom:8px}
+.drawer{position:fixed;inset:0;background:#0006;display:none;z-index:50}
+.drawer.open{display:block}
+.panel{position:absolute;right:0;top:0;bottom:0;width:min(420px,100%);background:#fff;display:flex;flex-direction:column}
+.ph{padding:18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;font-weight:600;font-size:18px}
+.ph button{border:0;background:none;font-size:22px;cursor:pointer}
+.items{flex:1;overflow:auto;padding:12px 18px}
+.it{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}
+.it .e{font-size:36px;width:56px;height:56px;display:grid;place-items:center;border-radius:12px;background:var(--bg)}
+.it .n{flex:1;font-size:14px}
+.qty{display:flex;align-items:center;gap:6px}.qty button{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer}
+.pf{padding:18px;border-top:1px solid var(--line);display:grid;gap:8px;font-size:14px}
+.row{display:flex;justify-content:space-between}.row.t{font-size:20px;font-weight:700}
+.bar{height:8px;background:var(--line);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--pri)}
+.checkout{background:var(--pri);color:#fff;border:0;border-radius:14px;padding:14px;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;transition:.3s;z-index:60}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding:28px}.hero h1{font-size:30px}.hero .emoji{font-size:90px}.perks{grid-template-columns:1fr 1fr}.fgrid{grid-template-columns:1fr}.search{display:none}.nav{justify-content:space-between}}
+</style>
+</head>
+<body>
+<div class="top">🚚 ส่งฟรีเมื่อซื้อครบ ฿500 · สั่งวันนี้ ส่งถึงพรุ่งนี้*</div>
+<header><div class="wrap nav">
+  <a class="logo" href="#">JSB<span> Shopping</span></a>
+  <label class="search">🔍&nbsp;<input id="q" placeholder="ค้นหาขนม ลูกอม ช็อกโกแลต..."></label>
+  <button class="cartbtn" onclick="toggle(1)">🛒 ตะกร้า<span class="badge" id="cnt">0</span></button>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1>ขนมอร่อย ราคาโรงงาน<br>ส่งตรงถึงบ้านคุณ</h1>
+      <p>ซื้อตรงจาก JSB ไม่ผ่านคนกลาง ยิ่งซื้อยกแพ็คยิ่งคุ้ม ลดสูงสุด 30%</p>
+      <a class="btn" href="#shop">ช้อปเลย →</a>
+    </div>
+    <div class="emoji">🍬🍭</div>
+  </section>
+
+  <section class="perks">
+    <div class="perk"><i>🏭</i><div><b>ราคาโรงงาน</b>ถูกกว่าหน้าร้าน</div></div>
+    <div class="perk"><i>🚚</i><div><b>ส่งฟรี ฿500+</b>ทั่วประเทศ</div></div>
+    <div class="perk"><i>💳</i><div><b>จ่ายง่าย</b>พร้อมเพย์ / COD</div></div>
+    <div class="perk"><i>✅</i><div><b>ของแท้ 100%</b>มี อย. ทุกชิ้น</div></div>
+  </section>
+
+  <section id="shop">
+    <h2>สินค้าทั้งหมด</h2>
+    <div class="cats" id="cats"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="promo">
+    <div><h3>ซื้อยกลัง ลดเพิ่ม <em>10%</em></h3><p>สำหรับร้านค้า ตัวแทน และงานอีเวนต์ — สอบถามราคาส่งได้เลย</p></div>
+    <a class="btn" href="#contact">ติดต่อฝ่ายขาย</a>
+  </section>
+</main>
+
+<footer id="contact"><div class="wrap fgrid">
+  <div><b>JSB Shopping</b>ร้านขนมออนไลน์อย่างเป็นทางการของ JSB Candy<br>© 2026 JSB. All rights reserved.</div>
+  <div><b>ช่วยเหลือ</b>วิธีสั่งซื้อ<br>การจัดส่ง<br>คืนสินค้า</div>
+  <div><b>ติดต่อเรา</b>LINE: @jsbcandy<br>โทร: 0X-XXX-XXXX<br>info@jsbcandy.com</div>
+</div></footer>
+
+<div class="drawer" id="drawer" onclick="if(event.target===this)toggle(0)">
+  <div class="panel">
+    <div class="ph">ตะกร้าสินค้า<button onclick="toggle(0)">✕</button></div>
+    <div class="items" id="items"></div>
+    <div class="pf">
+      <div id="ship"></div><div class="bar"><i id="barv"></i></div>
+      <div class="row"><span>ยอดสินค้า</span><span id="sub"></span></div>
+      <div class="row"><span>ค่าส่ง</span><span id="fee"></span></div>
+      <div class="row t"><span>รวม</span><span id="tot"></span></div>
+      <button class="checkout" onclick="checkout()">ชำระเงิน</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const P=[
+ {id:1,n:"ลูกอมผลไม้รวม 500g",c:"ลูกอม",e:"🍬",bg:"#ffe3ec",p:89,o:120,t:"ขายดี"},
+ {id:2,n:"อมยิ้มสายรุ้ง แพ็ค 20",c:"ลูกอม",e:"🍭",bg:"#fff1c9",p:119,o:150},
+ {id:3,n:"ช็อกโกแลตนม 12 ชิ้น",c:"ช็อกโกแลต",e:"🍫",bg:"#f0e2d6",p:159,o:199,t:"-20%"},
+ {id:4,n:"เยลลี่ผลไม้ 1kg",c:"เยลลี่",e:"🍮",bg:"#e3f6ff",p:139,o:170},
+ {id:5,n:"มาร์ชเมลโล่ 300g",c:"เยลลี่",e:"☁️",bg:"#f3e8ff",p:79,o:95},
+ {id:6,n:"หมากฝรั่งมิ้นต์ 50 เม็ด",c:"หมากฝรั่ง",e:"🫧",bg:"#e0fbe9",p:59,o:75},
+ {id:7,n:"กัมมี่หมี 1kg",c:"เยลลี่",e:"🧸",bg:"#ffe9d6",p:189,o:250,t:"คุ้มสุด"},
+ {id:8,n:"กล่องของขวัญรวมขนม",c:"ชุดของขวัญ",e:"🎁",bg:"#ffe3ec",p:299,o:390,t:"ใหม่"},
+];
+const cats=["ทั้งหมด",...new Set(P.map(x=>x.c))];let cur="ทั้งหมด",cart={};
+const $=id=>document.getElementById(id),b=n=>"฿"+n.toLocaleString();
+try{cart=JSON.parse(localStorage.jsbcart||"{}")}catch(e){}
+function renderCats(){$("cats").innerHTML=cats.map(c=>`<button class="cat ${c==cur?'on':''}" onclick="cur='${c}';renderCats();render()">${c}</button>`).join("")}
+function render(){const q=$("q").value.trim();$("grid").innerHTML=P.filter(x=>(cur=="ทั้งหมด"||x.c==cur)&&x.n.includes(q)).map(x=>`
+ <div class="p"><div class="pimg" style="background:${x.bg}">${x.t?`<span class="tag">${x.t}</span>`:""}${x.e}</div>
+ <div class="pb"><small>${x.c}</small><div>${x.n}</div>
+ <div class="price"><b>${b(x.p)}</b><s>${b(x.o)}</s></div>
+ <button class="add" onclick="add(${x.id})">+ ใส่ตะกร้า</button></div></div>`).join("")||"<p>ไม่พบสินค้า</p>"}
+function add(id,d=1){cart[id]=(cart[id]||0)+d;if(cart[id]<=0)delete cart[id];save();if(d>0)toast("เพิ่มลงตะกร้าแล้ว ✓")}
+function save(){try{localStorage.jsbcart=JSON.stringify(cart)}catch(e){}draw()}
+function draw(){const ks=Object.keys(cart);let sub=0,cnt=0;
+ $("items").innerHTML=ks.map(k=>{const x=P.find(p=>p.id==k);sub+=x.p*cart[k];cnt+=cart[k];
+ return `<div class="it"><div class="e">${x.e}</div><div class="n">${x.n}<br><b>${b(x.p*cart[k])}</b></div>
+ <div class="qty"><button onclick="add(${k},-1)">−</button>${cart[k]}<button onclick="add(${k})">+</button></div></div>`}).join("")||"<p style='padding:20px;color:#888'>ตะกร้ายังว่างอยู่</p>";
+ const fee=sub>=500||!sub?0:40;$("cnt").textContent=cnt;$("sub").textContent=b(sub);$("fee").textContent=fee?b(fee):"ฟรี";$("tot").textContent=b(sub+fee);
+ $("ship").textContent=sub>=500?"🎉 คุณได้รับส่งฟรีแล้ว!":`ซื้อเพิ่มอีก ${b(500-sub)} รับส่งฟรี`;$("barv").style.width=Math.min(100,sub/5)+"%"}
+function toggle(o){$("drawer").classList.toggle("open",!!o)}
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1500)}
+function checkout(){if(!Object.keys(cart).length)return toast("กรุณาเลือกสินค้าก่อน");toast("ขอบคุณ! ไปหน้าชำระเงิน (ตัวอย่าง)")}
+$("q").oninput=render;renderCats();render();draw();
+</script>
+</body>
+</html>
