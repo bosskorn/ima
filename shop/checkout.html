@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ชำระเงิน | JSB Shop</title>
+<meta name="description" content="ชำระเงิน">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="checkout">
+<div class="ph"><div class="wrap"><div class="crumb"><a href="index.html">หน้าแรก</a> / <a href="cart.html">ตะกร้า</a> / ชำระเงิน</div><h1>ชำระ<span class="hl">เงิน</span></h1><p>กรอกที่อยู่จัดส่งและเลือกวิธีชำระเงิน</p></div></div>
+<section style="padding-top:20px"><div class="wrap" id="coWrap"><div class="stepper"><div class="on"><b>✓</b>ตะกร้า</div><div class="on"><b>2</b>ที่อยู่ &amp; ชำระเงิน</div><div><b>3</b>เสร็จสิ้น</div></div>
+<form id="coForm" class="two-r"><div style="display:grid;gap:22px">
+<div class="panel form"><h3>1. ข้อมูลผู้รับ</h3><div class="fg"><label>ชื่อ-นามสกุล<input name="name" id="coName" required></label><label>เบอร์โทรศัพท์<input name="phone" id="coPhone" type="tel" required pattern="[0-9\-\s]{9,}"></label></div><label>อีเมล (สำหรับรับใบเสร็จ)<input name="email" id="coEmail" type="email"></label>
+<label>ที่อยู่<textarea name="addr" rows="2" required placeholder="บ้านเลขที่ หมู่บ้าน ถนน"></textarea></label><div class="fg"><label>แขวง/ตำบล, เขต/อำเภอ<input name="district" required></label><label>จังหวัด<input name="province" required></label></div><div class="fg"><label>รหัสไปรษณีย์<input name="zip" required pattern="[0-9]{5}" maxlength="5"></label><label>หมายเหตุ<input name="note" placeholder="เช่น ฝากไว้ที่ป้อมยาม"></label></div></div>
+<div class="panel"><h3>2. วิธีจัดส่ง</h3><div class="choice"><label><input type="radio" name="ship" value="std" checked><div><b>จัดส่งมาตรฐาน</b><br><span class="hint">Kerry / Flash · 2–3 วันทำการ</span></div><span class="r">ฟรีเมื่อครบ ฿499</span></label><label><input type="radio" name="ship" value="exp"><div><b>จัดส่งด่วน</b><br><span class="hint">ได้รับภายใน 1 วันทำการ</span></div><span class="r">+฿40</span></label></div></div>
+<div class="panel"><h3>3. วิธีชำระเงิน</h3><div class="choice"><label><input type="radio" name="pay" value="pp" checked><div><b>📱 พร้อมเพย์ QR</b><br><span class="hint">สแกนจ่ายผ่านแอปธนาคาร</span></div></label><label><input type="radio" name="pay" value="cc"><div><b>💳 บัตรเครดิต / เดบิต</b><br><span class="hint">VISA · Mastercard · JCB</span></div></label><label><input type="radio" name="pay" value="cod"><div><b>💵 เก็บเงินปลายทาง</b><br><span class="hint">ชำระเมื่อได้รับสินค้า</span></div></label></div>
+<div class="ppqr" id="ppqr" style="display:block"><b>สแกนเพื่อชำระ <span class="hl" id="ppAmt"></span></b><p class="hint">ตัวอย่าง QR (ยังไม่เชื่อมระบบชำระเงินจริง)</p></div>
+<div class="form" id="ccf" style="display:none;margin-top:12px"><label>หมายเลขบัตร<input placeholder="0000 0000 0000 0000" inputmode="numeric"></label><div class="fg"><label>วันหมดอายุ<input placeholder="MM/YY"></label><label>CVV<input placeholder="123" inputmode="numeric"></label></div></div></div>
+</div><div class="panel sticky"><h3>สรุปคำสั่งซื้อ</h3><div id="coSum"></div><button class="btn btn-p" style="width:100%;margin-top:16px">ยืนยันคำสั่งซื้อ</button><p class="hint" style="text-align:center;margin-top:10px">🔒 ข้อมูลของคุณปลอดภัย</p></div></form></div></section>
+<script src="assets/app.js"></script>
+<script src="assets/pages.js"></script>
+</body>
+</html>
