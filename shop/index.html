@@ -254,19 +254,95 @@ footer a:hover{color:var(--pink)}
   .timer div{width:60px}.cats{grid-template-columns:repeat(2,1fr)}.fgrid{grid-template-columns:1fr}
   .stats{gap:20px}
 }
+/* ===== Clean red theme (v2) ===== */
+:root{--pink:#e5172f;--pink-d:#c40c22;--pink-l:#fff1f2;--pink-m:#ffd9dd;--ink:#1f1f24;--muted:#6b6b76;--line:#f0e4e6;--soft:#fff7f8;--shadow:0 8px 28px rgba(229,23,47,.10);--r:20px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#f6f1f2;--muted:#b9adb0;--line:#3a2a2d;--bg:#161214;--card:#221b1d;--soft:#1d1719;--pink-l:#2b1a1d;--pink-m:#4a2329}}
+:root[data-theme="dark"]{--ink:#f6f1f2;--muted:#b9adb0;--line:#3a2a2d;--bg:#161214;--card:#221b1d;--soft:#1d1719;--pink-l:#2b1a1d;--pink-m:#4a2329}
+body,h1,h2,h3,h4{font-family:Kanit,system-ui,sans-serif}
+body{font-weight:400}
+.hl{color:var(--pink)}
+header{background:color-mix(in srgb,var(--bg) 92%,transparent);border-bottom:0;box-shadow:0 2px 16px rgba(0,0,0,.04)}
+.logo-mark{border-radius:12px;background:var(--pink);box-shadow:none;width:40px;height:40px}
+.logo-mark span{background:none;color:#fff;font-size:13px}
+.logo{color:var(--pink)}
+nav a{color:var(--ink)}
+.hero{background:linear-gradient(180deg,var(--bg) 0%,var(--pink-l) 55%,var(--pink-m) 100%);padding-bottom:70px}
+.hero h1{font-weight:600}
+.hero p.lead{font-weight:300}
+.btn{font-weight:500;padding:13px 32px}
+.btn-p{box-shadow:0 8px 20px rgba(229,23,47,.28)}
+.btn-dark{background:#1f1f24;color:#fff}
+.btn-dark:hover{background:#000;transform:translateY(-2px)}
+.blob{background:linear-gradient(135deg,#ff6b7d,var(--pink));opacity:.9}
+.partners{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:20px 24px;margin:-60px auto 0;position:relative;z-index:3;max-width:900px;text-align:center}
+.partners h4{font-weight:500;margin-bottom:12px}
+.partners .row2{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.partners .row2 span{min-width:110px;padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;color:#fff}
+.sec-c{text-align:center;margin-bottom:36px}
+.sec-c h2{font-size:clamp(26px,3.4vw,38px);font-weight:600;line-height:1.25}
+.sec-c p{color:var(--muted);margin-top:6px;font-weight:300}
+.feats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.feat{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:28px 20px;text-align:center;transition:.25s}
+.feat:hover{transform:translateY(-6px)}
+.feat .fi{font-size:52px;line-height:1;margin-bottom:14px}
+.feat b{display:block;color:var(--pink);font-weight:600;font-size:18px;margin-bottom:6px}
+.feat span{color:var(--muted);font-size:14px;font-weight:300}
+.steps-bg{background:var(--soft)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;text-align:center}
+.step .sa{height:180px;display:grid;place-items:center;font-size:96px;position:relative}
+.step .sa::before{content:"";position:absolute;width:170px;height:170px;border-radius:50%;background:var(--pink-l);z-index:0}
+.step .sa i{position:relative;font-style:normal}
+.step .pill{display:inline-block;border:2px solid var(--pink);color:var(--pink);border-radius:99px;padding:6px 22px;font-weight:500;margin:14px 0 10px}
+.step p{color:var(--muted);font-weight:300}
+.promos{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.promo{border-radius:22px;overflow:hidden;aspect-ratio:1/1;position:relative;padding:26px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--shadow);transition:.25s}
+.promo:hover{transform:translateY(-6px)}
+.promo small{font-size:14px;opacity:.9}
+.promo h3{font-size:30px;line-height:1.15;font-weight:700}
+.promo big{font-size:72px;font-weight:700;line-height:1}
+.promo .pe{position:absolute;right:-10px;bottom:-10px;font-size:130px;opacity:.9;transform:rotate(-12deg)}
+.promo .btn{align-self:flex-start;background:#fff;color:var(--pink);padding:9px 20px;font-size:14px;position:relative;z-index:1}
+.faq{max-width:760px;margin:0 auto;display:grid;gap:12px}
+.faq details{background:var(--card);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.05);overflow:hidden}
+.faq summary{list-style:none;cursor:pointer;padding:18px 22px;font-size:17px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:32px;height:32px;border-radius:50%;background:var(--pink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center no-repeat;transition:.25s}
+.faq details[open] summary::after{transform:rotate(180deg)}
+.faq details p{background:var(--pink);color:#fff;padding:16px 22px;text-align:center;font-weight:300}
+.cta-band{background:var(--pink);color:#fff;margin-top:72px;padding:56px 0 110px;overflow:hidden}
+.cta-in{display:grid;grid-template-columns:1.4fr auto 1fr;gap:30px;align-items:center}
+.cta-band h2{font-size:clamp(28px,3.6vw,42px);font-weight:500}
+.cta-band h3{font-size:22px;margin-top:10px}
+.cta-band p{opacity:.85;font-weight:300}
+.qr{background:#fff;border-radius:14px;padding:10px;display:grid;gap:8px;width:150px}
+.qr .code{display:grid;grid-template-columns:repeat(9,1fr);aspect-ratio:1}
+.qr .code i{background:#1f1f24}.qr .code i.w{background:#fff}
+.store{background:#000;color:#fff;border-radius:8px;padding:6px 10px;font-size:12px;text-align:center}
+.phone{width:220px;height:400px;border-radius:36px;background:#1f1f24;padding:10px;margin:0 auto -150px;transform:rotate(8deg);box-shadow:0 30px 60px rgba(0,0,0,.3)}
+.phone div{background:#fff;border-radius:28px;height:100%;padding:18px 14px;color:#1f1f24;display:grid;align-content:start;gap:10px}
+.phone .pb{height:44px;border-radius:12px;background:var(--pink-l);display:flex;align-items:center;gap:8px;padding:0 10px;font-size:13px}
+footer{background:var(--bg);border-top:0;margin-top:-60px;border-radius:60px 60px 0 0;position:relative;z-index:2;padding-top:50px}
+.social{display:flex;gap:10px;margin-top:14px}
+.social a{width:40px;height:40px;border-radius:50%;background:var(--pink);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:600}
+footer ul li{display:flex;gap:10px;align-items:center}
+.ci{width:28px;height:28px;border-radius:50%;background:var(--pink);color:#fff;display:grid;place-items:center;font-size:13px;flex:none}
+footer h4{color:var(--pink);font-weight:500}
+.cat .ic{background:var(--pink-l)!important}
+.add{border-radius:99px}
+.flash{background:linear-gradient(120deg,#ff4d61,var(--pink))}
+.bundles-bg{background:var(--soft)}
+@media (max-width:1000px){.feats{grid-template-columns:repeat(2,1fr)}.cta-in{grid-template-columns:1fr auto}.phone{display:none}}
+@media (max-width:760px){.steps,.promos{grid-template-columns:1fr}.feats{grid-template-columns:1fr 1fr;gap:12px}.feat{padding:20px 12px}.cta-in{grid-template-columns:1fr}.cta-band{padding-bottom:100px}.partners{margin:-50px 16px 0}.promo{aspect-ratio:4/3}}
 </style>
 </head>
 <body>
 
-<div class="topbar">🚚 ส่งฟรีทั่วไทยเมื่อซื้อครบ <b>499.-</b> &nbsp;|&nbsp; ใช้โค้ด <b>JSBNEW</b> ลดเพิ่ม 10% สำหรับลูกค้าใหม่</div>
-
 <header>
   <div class="wrap hdr">
     <a href="#" class="logo"><div class="logo-mark"><span>JSB</span></div><div>JSB Shop<small>CANDY FACTORY</small></div></a>
-    <nav><a href="#shop">สินค้าทั้งหมด</a><a href="#bundles">แพ็กคุ้ม</a><a href="#tiers">ซื้อยิ่งเยอะยิ่งถูก</a><a href="#b2b">ขายส่ง</a></nav>
-    <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="ค้นหาอมยิ้ม ลูกอม เยลลี่..."></label>
+    <nav><a href="#shop">สินค้า</a><a href="#promo">โปรโมชัน</a><a href="#bundles">แพ็กสุดคุ้ม</a><a href="#faq">คำถามที่พบบ่อย</a><a href="#b2b">ขายส่ง</a></nav>
+    <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="ค้นหาอมยิ้ม ลูกอม..."></label>
     <div class="icons">
-      <button class="ibtn mob-only" onclick="document.getElementById('shop').scrollIntoView()" aria-label="ค้นหา"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
       <button class="ibtn" id="themeBtn" aria-label="สลับธีม"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
       <button class="ibtn" aria-label="รายการโปรด"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg><span class="badge" id="favN">0</span></button>
       <button class="ibtn" id="cartBtn" aria-label="ตะกร้า"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 2H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg><span class="badge" id="cartN">0</span></button>
@@ -277,26 +353,32 @@ footer a:hover{color:var(--pink)}
 <div class="hero">
   <div class="hero-in wrap">
     <div>
-      <span class="chip">🏭 ส่งตรงจากโรงงาน ไม่ผ่านคนกลาง</span>
-      <h1>ความหวานที่ <em>คุ้มที่สุด</em><br>ส่งตรงถึงบ้านคุณ</h1>
-      <p class="lead">อมยิ้ม ลูกอม และลูกอมเปรี้ยวจาก JSB ผลิตเองทุกเม็ด ได้มาตรฐาน อย. และ GMP ซื้อออนไลน์ถูกกว่าหน้าร้านสูงสุด 35%</p>
-      <div class="cta"><a href="#shop" class="btn btn-p">ช้อปเลย →</a><a href="#bundles" class="btn btn-o">ดูแพ็กสุดคุ้ม</a></div>
-      <div class="stats"><div><b>30+</b><span>ปีประสบการณ์</span></div><div><b>120K+</b><span>ออเดอร์ส่งแล้ว</span></div><div><b>4.9★</b><span>คะแนนรีวิว</span></div></div>
+      <h1>ช้อปขนมง่าย ราคา<span class="hl">โรงงาน</span><br><span class="hl">ส่งตรงถึงบ้านคุณ</span></h1>
+      <p class="lead">อมยิ้ม ลูกอม และลูกอมเปรี้ยวจาก JSB ผลิตเองทุกเม็ด มาตรฐาน อย. / GMP ซื้อออนไลน์ถูกกว่าหน้าร้าน ส่งฟรีเมื่อซื้อครบ 499 บาท</p>
+      <div class="cta"><a href="#shop" class="btn btn-p">ช้อปเลย</a><a href="#bundles" class="btn btn-dark">ดูแพ็กสุดคุ้ม</a></div>
     </div>
     <div class="hero-art" id="heroArt"><div class="blob"></div><div class="deal-tag"><div>ลดสูงสุด<big>35%</big></div></div></div>
   </div>
 </div>
-
 <div class="wrap">
-  <div class="usp">
-    <div><i>🏭</i><p><b>ราคาโรงงาน</b><span>ไม่บวกค่าคนกลาง</span></p></div>
-    <div><i>🚚</i><p><b>ส่งฟรี 499.-</b><span>จัดส่ง 1–3 วัน</span></p></div>
-    <div><i>✅</i><p><b>อย. / GMP / ฮาลาล</b><span>ปลอดภัยทุกเม็ด</span></p></div>
-    <div><i>💳</i><p><b>จ่ายง่าย</b><span>พร้อมเพย์ บัตร ปลายทาง</span></p></div>
+  <div class="partners"><h4>ชำระเงินและจัดส่ง<span class="hl">ได้หลายช่องทาง</span></h4>
+    <div class="row2"><span style="background:#1a3d7c">PromptPay</span><span style="background:#1a1f71">VISA</span><span style="background:#eb5c1e">Mastercard</span><span style="background:#2bb39a">เก็บเงินปลายทาง</span><span style="background:#e5172f">Kerry / Flash</span><span style="background:#7b4fd6">ไปรษณีย์ไทย</span></div>
   </div>
 </div>
 
-<section style="padding-bottom:0">
+<section>
+  <div class="wrap">
+    <div class="sec-c"><h2>ทำไมต้องช้อปกับ <span class="hl">JSB Shop</span></h2></div>
+    <div class="feats">
+      <div class="feat"><div class="fi">🏭</div><b>ราคาโรงงาน</b><span>ซื้อตรงจากผู้ผลิต ไม่ผ่านคนกลาง ถูกกว่าหน้าร้านสูงสุด 35%</span></div>
+      <div class="feat"><div class="fi">🚚</div><b>ส่งฟรี ส่งไว</b><span>ซื้อครบ 499.- ส่งฟรีทั่วไทย จัดส่งภายใน 1–3 วัน</span></div>
+      <div class="feat"><div class="fi">✅</div><b>ปลอดภัยทุกเม็ด</b><span>ได้มาตรฐาน อย. / GMP / ฮาลาล สดใหม่จากโรงงาน</span></div>
+      <div class="feat"><div class="fi">📦</div><b>ซื้อเยอะยิ่งถูก</b><span>ส่วนลดขั้นบันไดสูงสุด 12% คำนวณอัตโนมัติในตะกร้า</span></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
   <div class="wrap">
     <div class="flash">
       <div><span class="eyebrow" style="color:#fff;opacity:.85">⚡ Flash Sale วันนี้เท่านั้น</span><h2>Big Bomb ลด 30% + ซื้อ 2 แถม 1</h2><p style="opacity:.9">หมดเวลาแล้วกลับราคาปกติ รีบเลย!</p></div>
@@ -305,36 +387,56 @@ footer a:hover{color:var(--pink)}
   </div>
 </section>
 
-<section>
+<section style="padding-top:0">
   <div class="wrap">
-    <div class="sec-h"><div><span class="eyebrow">หมวดหมู่</span><h2>เลือกความหวานแบบที่ชอบ</h2></div></div>
+    <div class="sec-c"><h2>เลือก<span class="hl">ความหวาน</span>แบบที่ชอบ</h2></div>
     <div class="cats" id="cats"></div>
   </div>
 </section>
 
 <section id="shop" style="padding-top:0">
   <div class="wrap">
-    <div class="sec-h">
-      <div><span class="eyebrow">สินค้าทั้งหมด</span><h2>ขายดีประจำร้าน</h2></div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-        <div class="filters" id="filters"></div>
-        <select class="sort" id="sort"><option value="pop">ยอดนิยม</option><option value="low">ราคา ต่ำ → สูง</option><option value="high">ราคา สูง → ต่ำ</option><option value="save">ส่วนลดมากสุด</option></select>
-      </div>
+    <div class="sec-c"><h2>สินค้า<span class="hl">ขายดี</span>ประจำร้าน</h2><p>คัดมาแล้ว ยอดนิยมที่ลูกค้าสั่งซ้ำมากที่สุด</p></div>
+    <div class="sec-h" style="justify-content:center">
+      <div class="filters" id="filters"></div>
+      <select class="sort" id="sort"><option value="pop">ยอดนิยม</option><option value="low">ราคา ต่ำ → สูง</option><option value="high">ราคา สูง → ต่ำ</option><option value="save">ส่วนลดมากสุด</option></select>
     </div>
     <div class="grid" id="grid"></div>
   </div>
 </section>
 
-<section id="bundles" style="background:var(--pink-l)">
+<section class="steps-bg">
   <div class="wrap">
-    <div class="sec-h"><div><span class="eyebrow">แพ็กสุดคุ้ม</span><h2>จัดเซ็ตให้แล้ว ประหยัดกว่าซื้อแยก</h2></div><p>เหมาะสำหรับปาร์ตี้ ของฝาก และร้านค้า</p></div>
+    <div class="sec-c"><h2>สั่งขนมกับ <span class="hl">JSB Shop</span> ง่ายๆ ใน 3 ขั้นตอน</h2></div>
+    <div class="steps">
+      <div class="step"><div class="sa"><i>🛒</i></div><span class="pill">เลือกสินค้า</span><p>เลือกขนมที่ชอบ หรือแพ็กสุดคุ้ม<br>ใส่ตะกร้าได้ทันที</p></div>
+      <div class="step"><div class="sa"><i>💳</i></div><span class="pill">ชำระเงิน</span><p>พร้อมเพย์ บัตรเครดิต<br>หรือเก็บเงินปลายทาง</p></div>
+      <div class="step"><div class="sa"><i>🏠</i></div><span class="pill">รับของถึงบ้าน</span><p>จัดส่งภายใน 1–3 วัน<br>ติดตามพัสดุได้ตลอด</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="promo">
+  <div class="wrap">
+    <div class="sec-c"><h2>โปรโมชัน<span class="hl">และสิทธิพิเศษ</span></h2></div>
+    <div class="promos">
+      <div class="promo" style="background:linear-gradient(150deg,#ff4d61,#c40c22)"><div><small>ลูกค้าใหม่</small><h3>ลดเพิ่ม<br>10%</h3><small>ใช้โค้ด JSBNEW</small></div><a href="#shop" class="btn">ช้อปเลย</a><div class="pe">🍭</div></div>
+      <div class="promo" style="background:linear-gradient(150deg,#ffb020,#ff6a00)"><div><small>ค่าส่ง</small><h3>ส่งฟรี</h3><small>เมื่อซื้อครบ</small><br><big>499</big></div><a href="#shop" class="btn">ดูสินค้า</a><div class="pe">🚚</div></div>
+      <div class="promo" style="background:linear-gradient(150deg,#9b6bff,#5a2fd0)"><div><small>แพ็กปาร์ตี้</small><h3>ประหยัด<br>สูงสุด 31%</h3><small>เริ่มต้น ฿199</small></div><a href="#bundles" class="btn">ดูแพ็ก</a><div class="pe">🎉</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="bundles" class="bundles-bg">
+  <div class="wrap">
+    <div class="sec-c"><h2>แพ็ก<span class="hl">สุดคุ้ม</span> จัดเซ็ตให้แล้ว</h2><p>เหมาะสำหรับปาร์ตี้ ของฝาก และร้านค้า</p></div>
     <div class="bundles" id="bundleList"></div>
   </div>
 </section>
 
-<section id="tiers" class="tiers">
+<section id="tiers">
   <div class="wrap">
-    <div class="sec-h"><div><span class="eyebrow">ซื้อยิ่งเยอะ ยิ่งถูก</span><h2>ส่วนลดขั้นบันได คำนวณอัตโนมัติในตะกร้า</h2></div></div>
+    <div class="sec-c"><h2>ซื้อยิ่งเยอะ <span class="hl">ยิ่งถูก</span></h2><p>ส่วนลดขั้นบันได คำนวณอัตโนมัติในตะกร้า</p></div>
     <div class="tier-row">
       <div class="tier"><b>ส่งฟรี</b><span>ยอดซื้อ 499.- ขึ้นไป</span><div class="bar"><i style="width:25%"></i></div></div>
       <div class="tier"><b>-5%</b><span>ยอดซื้อ 1,000.- ขึ้นไป</span><div class="bar"><i style="width:50%"></i></div></div>
@@ -344,37 +446,48 @@ footer a:hover{color:var(--pink)}
   </div>
 </section>
 
-<section>
-  <div class="wrap">
-    <div class="sec-h"><div><span class="eyebrow">รีวิวจากลูกค้า</span><h2>ลูกค้ากว่า 120,000 ออเดอร์ไว้ใจเรา</h2></div></div>
-    <div class="reviews">
-      <div class="rv"><div class="stars">★★★★★</div><p>“สั่งไปแจกงานวันเด็กที่โรงเรียน ราคาถูกกว่าห้างเยอะมาก ของสดใหม่ ส่งไวมากค่ะ”</p><div class="who"><div class="av" style="background:var(--pink)">ค</div><div><b>คุณครูแพร</b><br><span class="hint">ซื้อแพ็กปาร์ตี้ 3 ครั้ง</span></div></div></div>
-      <div class="rv"><div class="stars">★★★★★</div><p>“Big Bomb รสผลไม้รวมลูกชอบมาก ซื้อยกกล่องคุ้มกว่าเยอะ แพ็กของมาดีไม่เละเลย”</p><div class="who"><div class="av" style="background:var(--purple)">ต</div><div><b>คุณต้น</b><br><span class="hint">ลูกค้าประจำ</span></div></div></div>
-      <div class="rv"><div class="stars">★★★★★</div><p>“เปิดร้านโชห่วย สั่งราคาส่งผ่านเว็บสะดวกมาก ได้ส่วนลดขั้นบันไดอัตโนมัติ กำไรดีขึ้น”</p><div class="who"><div class="av" style="background:var(--mint)">ส</div><div><b>ร้านสมใจ</b><br><span class="hint">ตัวแทนจำหน่าย</span></div></div></div>
-    </div>
-  </div>
-</section>
-
 <section id="b2b" style="padding-top:0">
   <div class="wrap">
     <div class="b2b">
-      <div><span class="eyebrow" style="color:var(--yellow)">สำหรับร้านค้า & องค์กร</span><h2>สั่งราคาส่ง / OEM / ของชำร่วย</h2><p>สั่งตั้งแต่ 10 ลังขึ้นไป รับราคาพิเศษจากโรงงานโดยตรง พร้อมเครดิตเทอมสำหรับตัวแทนจำหน่าย และบริการสกรีนโลโก้บนแพ็กเกจ</p></div>
+      <div><span class="eyebrow" style="color:#ffc93c">สำหรับร้านค้า & องค์กร</span><h2>สั่งราคาส่ง / OEM / ของชำร่วย</h2><p>สั่งตั้งแต่ 10 ลังขึ้นไป รับราคาพิเศษจากโรงงานโดยตรง พร้อมเครดิตเทอมสำหรับตัวแทนจำหน่าย</p></div>
       <form id="b2bForm"><input required placeholder="ชื่อร้าน / บริษัท"><input required type="tel" placeholder="เบอร์โทรศัพท์"><input placeholder="สินค้าที่สนใจ / จำนวนโดยประมาณ"><button class="btn btn-p">ขอใบเสนอราคา</button></form>
     </div>
   </div>
 </section>
 
-<footer>
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-c"><h2>คำถามที่พบบ่อย</h2></div>
+    <div class="faq">
+      <details open><summary>JSB Shop คืออะไร?</summary><p>ร้านค้าออนไลน์อย่างเป็นทางการของ JSB Candy ซื้อขนมตรงจากโรงงานในราคาคุ้มที่สุด</p></details>
+      <details><summary>ค่าจัดส่งเท่าไหร่?</summary><p>ค่าส่ง 45 บาททั่วประเทศ และส่งฟรีเมื่อซื้อครบ 499 บาท</p></details>
+      <details><summary>ชำระเงินได้ช่องทางใดบ้าง?</summary><p>พร้อมเพย์ บัตรเครดิต/เดบิต และเก็บเงินปลายทาง</p></details>
+      <details><summary>ใช้เวลาจัดส่งกี่วัน?</summary><p>จัดส่งภายใน 1–3 วันทำการ พร้อมเลขติดตามพัสดุ</p></details>
+      <details><summary>ต้องการซื้อราคาส่งต้องทำอย่างไร?</summary><p>กรอกฟอร์มขอใบเสนอราคาด้านบน ทีมขายจะติดต่อกลับภายใน 24 ชั่วโมง</p></details>
+    </div>
+  </div>
+</section>
+
+<div class="cta-band">
+  <div class="wrap cta-in">
+    <div><h2>ช้อปขนมได้ง่าย ทุกที่ ทุกเวลา</h2><h3>แอด LINE @jsbcandy รับโค้ดลดเพิ่ม!</h3><p>เช็กโปรโมชัน สั่งซื้อ และติดตามพัสดุได้จากมือถือ</p></div>
+    <div class="qr"><div class="code" id="qr"></div><div class="store">LINE @jsbcandy</div></div>
+    <div class="phone"><div><b style="color:var(--pink)">JSB Shop</b><div class="pb">🍭 Big Bomb · ฿89</div><div class="pb">🍬 Imoji Candy · ฿69</div><div class="pb">🍋 Sour Candy · ฿55</div><div class="pb" style="background:var(--pink);color:#fff;justify-content:center">ชำระเงิน</div></div></div>
+  </div>
+</div>
+
+<footer style="margin-top:-60px">
   <div class="wrap">
     <div class="fgrid">
-      <div><a href="#" class="logo"><div class="logo-mark"><span>JSB</span></div><div>JSB Shop<small>CANDY FACTORY</small></div></a><p style="color:var(--muted);margin-top:12px;font-size:15px">ร้านค้าออนไลน์อย่างเป็นทางการของ JSB Candy ผู้ผลิตอมยิ้มและลูกอมคุณภาพ ส่งตรงจากโรงงานถึงมือคุณ</p></div>
+      <div><a href="#" class="logo"><div class="logo-mark"><span>JSB</span></div><div>JSB Shop<small>CANDY FACTORY</small></div></a><p style="color:var(--muted);margin-top:12px;font-size:15px;font-weight:300">ร้านค้าออนไลน์อย่างเป็นทางการของ JSB Candy ผู้ผลิตอมยิ้มและลูกอมคุณภาพ ส่งตรงจากโรงงานถึงมือคุณ</p><div class="social"><a>LINE</a><a>f</a><a>♪</a><a>▶</a></div></div>
       <div><h4>ช้อปปิ้ง</h4><ul><li><a href="#shop">อมยิ้ม</a></li><li><a href="#shop">ลูกอม</a></li><li><a href="#shop">ลูกอมเปรี้ยว</a></li><li><a href="#bundles">แพ็กสุดคุ้ม</a></li></ul></div>
-      <div><h4>ช่วยเหลือ</h4><ul><li>วิธีสั่งซื้อ</li><li>การจัดส่ง</li><li>คืนสินค้า/เปลี่ยนสินค้า</li><li>ติดตามพัสดุ</li></ul></div>
-      <div><h4>ติดต่อเรา</h4><ul><li>📞 02-XXX-XXXX</li><li>💬 LINE: @jsbcandy</li><li>✉️ shop@jsbcandy.com</li></ul><div class="pay"><span>PromptPay</span><span>VISA</span><span>Mastercard</span><span>COD</span></div></div>
+      <div><h4>ติดต่อเรา</h4><ul><li><span class="ci">☎</span>02-XXX-XXXX</li><li><span class="ci">L</span>@jsbcandy</li><li><span class="ci">@</span>shop@jsbcandy.com</li></ul></div>
+      <div><h4>JSB Candy</h4><ul><li>เวลาทำการ จันทร์–ศุกร์ 09.00–18.00 น.</li><li>นโยบายความเป็นส่วนตัว</li><li>เงื่อนไขการใช้งาน</li></ul></div>
     </div>
-    <div class="copy"><span>© 2026 JSB Candy. All rights reserved.</span><span>นโยบายความเป็นส่วนตัว · เงื่อนไขการใช้งาน</span></div>
+    <div class="copy"><span>© 2026 JSB Candy. All rights reserved.</span><span>Made with 💖 in Thailand</span></div>
   </div>
 </footer>
+
 
 <div class="ov" id="ov"></div>
 <aside class="drawer" id="drawer" aria-label="ตะกร้าสินค้า">
@@ -540,6 +653,7 @@ $('#heroArt').insertAdjacentHTML('beforeend',[['bomb',['#ffc93c','#fff','#ff7a3d
 /* timer to midnight */
 function tick(){const n=new Date(),e=new Date(n);e.setHours(24,0,0,0);let s=Math.floor((e-n)/1000);const pad=x=>String(x).padStart(2,'0');$('#th').textContent=pad(Math.floor(s/3600));$('#tm').textContent=pad(Math.floor(s%3600/60));$('#ts').textContent=pad(s%60)}
 tick();setInterval(tick,1000);
+document.getElementById('qr').innerHTML=Array.from({length:81},(_,i)=>{const x=i%9,y=i/9|0,f=(x<3&&y<3)||(x>5&&y<3)||(x<3&&y>5);return `<i class="${f?((x%2|y%2)&&!(x==1&&y==1)&&!(x==7&&y==1)&&!(x==1&&y==7)&&!((x==1||x==7)&&(y==1||y==7))?'w':''):((x*7+y*13)%3?'':'w')}"></i>`}).join('');
 renderCats();renderFilters();renderGrid();renderBundles();renderCart();
 </script>
 </body>
