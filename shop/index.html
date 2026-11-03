@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JSB Shop</title>
+<meta name="description" content="JSB Shop – ร้านลูกอมและอมยิ้มออนไลน์ ซื้อตรงจากโรงงาน ราคาคุ้มที่สุด ส่งไว ส่งฟรีเมื่อครบ 499 บาท">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#e8317a;--pink-d:#c21d62;--pink-l:#fdeff6;--pink-m:#f9d3e5;
+  --yellow:#ffc93c;--mint:#2bb39a;--purple:#7b4fd6;--orange:#ff7a3d;
+  --ink:#2a1730;--muted:#76627c;--line:#efdbe7;--bg:#fff;--card:#fff;--soft:#fff8fb;
+  --shadow:0 10px 30px rgba(194,29,98,.10);--r:18px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ink:#fbeaf3;--muted:#c5a9bb;--line:#3d2537;--bg:#1a0f18;--card:#251621;--soft:#21131d;--pink-l:#2a1724;--pink-m:#4a2340;--shadow:0 10px 30px rgba(0,0,0,.35)}}
+:root[data-theme="dark"]{--ink:#fbeaf3;--muted:#c5a9bb;--line:#3d2537;--bg:#1a0f18;--card:#251621;--soft:#21131d;--pink-l:#2a1724;--pink-m:#4a2340;--shadow:0 10px 30px rgba(0,0,0,.35)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Sarabun,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;overflow-x:hidden}
+h1,h2,h3,h4,.btn,.price,.logo,nav a{font-family:Kanit,sans-serif}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+
+/* top bar */
+.topbar{background:var(--ink);color:#fff;font-size:14px;text-align:center;padding:7px 16px}
+:root[data-theme="dark"] .topbar{background:var(--pink-d)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .topbar{background:var(--pink-d)}}
+.topbar b{color:var(--yellow)}
+
+header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hdr{display:flex;align-items:center;gap:20px;height:70px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:24px;letter-spacing:.5px}
+.logo-mark{width:42px;height:42px;border-radius:50%;background:conic-gradient(var(--pink) 0 25%,var(--yellow) 0 50%,var(--mint) 0 75%,var(--purple) 0);display:grid;place-items:center;box-shadow:0 4px 12px rgba(232,49,122,.35)}
+.logo-mark span{width:26px;height:26px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-size:12px;color:var(--pink);font-weight:700}
+.logo small{display:block;font-size:11px;font-weight:400;color:var(--muted);letter-spacing:2px;margin-top:-6px}
+nav{display:flex;gap:22px;margin-left:12px}
+nav a{font-size:15px;color:var(--muted);transition:.2s}
+nav a:hover{color:var(--pink)}
+.search{flex:1;max-width:340px;margin-left:auto;position:relative}
+.search input{width:100%;padding:10px 14px 10px 40px;border-radius:99px;border:1.5px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;outline:none}
+.search input:focus{border-color:var(--pink)}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.5}
+.icons{display:flex;gap:6px}
+.ibtn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;position:relative;transition:.2s}
+.ibtn:hover{background:var(--pink-l)}
+.badge{position:absolute;top:2px;right:0;background:var(--pink);color:#fff;font-size:11px;font-weight:700;min-width:19px;height:19px;border-radius:99px;display:grid;place-items:center;padding:0 5px;font-family:Kanit}
+.badge.bump{animation:bump .4s}
+@keyframes bump{50%{transform:scale(1.4)}}
+
+/* hero */
+.hero{background:radial-gradient(circle at 85% 20%,var(--pink-m),transparent 45%),radial-gradient(circle at 10% 90%,rgba(255,201,60,.25),transparent 40%),var(--pink-l);overflow:hidden}
+.hero-in{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;padding:64px 16px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);padding:6px 14px;border-radius:99px;font-size:14px;font-weight:600;color:var(--pink)}
+.hero h1{font-size:clamp(34px,5vw,58px);line-height:1.12;margin:18px 0 16px}
+.hero h1 em{font-style:normal;color:var(--pink);position:relative}
+.hero p.lead{font-size:18px;color:var(--muted);max-width:520px}
+.cta{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 26px;border-radius:99px;font-weight:600;font-size:16px;transition:.2s}
+.btn-p{background:var(--pink);color:#fff;box-shadow:0 8px 20px rgba(232,49,122,.35)}
+.btn-p:hover{background:var(--pink-d);transform:translateY(-2px)}
+.btn-o{background:var(--card);border:1.5px solid var(--line)}
+.btn-o:hover{border-color:var(--pink);color:var(--pink)}
+.stats{display:flex;gap:32px;margin-top:36px;flex-wrap:wrap}
+.stats b{font-family:Kanit;font-size:26px;display:block;color:var(--ink)}
+.stats span{font-size:14px;color:var(--muted)}
+.hero-art{position:relative;height:420px}
+.blob{position:absolute;inset:20px;border-radius:42% 58% 55% 45%/50% 45% 55% 50%;background:linear-gradient(135deg,var(--pink),var(--purple));animation:morph 10s ease-in-out infinite}
+@keyframes morph{50%{border-radius:58% 42% 40% 60%/45% 60% 40% 55%}}
+.pop{position:absolute;display:grid;place-items:center;filter:drop-shadow(0 12px 18px rgba(0,0,0,.18));animation:float 5s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-14px)}}
+.pop svg{display:block}
+.deal-tag{position:absolute;right:6%;bottom:8%;background:var(--yellow);color:#2a1730;font-family:Kanit;font-weight:700;border-radius:50%;width:116px;height:116px;display:grid;place-items:center;text-align:center;line-height:1.1;transform:rotate(-12deg);box-shadow:0 10px 24px rgba(0,0,0,.18)}
+.deal-tag big{font-size:32px;display:block}
+
+/* usp */
+.usp{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:-34px;position:relative;z-index:2}
+.usp div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;gap:14px;align-items:center;box-shadow:var(--shadow)}
+.usp i{font-style:normal;font-size:26px;width:50px;height:50px;border-radius:14px;background:var(--pink-l);display:grid;place-items:center;flex:none}
+.usp b{font-family:Kanit;display:block;font-size:16px}
+.usp span{font-size:13px;color:var(--muted)}
+
+section{padding:72px 0}
+.sec-h{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+.sec-h h2{font-size:clamp(26px,3.4vw,36px);line-height:1.2}
+.sec-h p{color:var(--muted)}
+.eyebrow{font-family:Kanit;color:var(--pink);font-weight:600;font-size:14px;letter-spacing:1px;text-transform:uppercase}
+
+/* flash */
+.flash{background:linear-gradient(120deg,var(--pink),var(--orange));color:#fff;border-radius:28px;padding:32px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+.flash h2{font-size:clamp(24px,3vw,34px)}
+.timer{display:flex;gap:10px}
+.timer div{background:rgba(255,255,255,.18);border-radius:14px;padding:10px 0;width:68px;text-align:center}
+.timer b{font-family:Kanit;font-size:28px;display:block;line-height:1.1}
+.timer span{font-size:12px;opacity:.85}
+
+/* categories */
+.cats{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.cat{border-radius:var(--r);padding:22px 16px;text-align:center;border:1.5px solid var(--line);background:var(--card);transition:.25s}
+.cat:hover,.cat.on{border-color:var(--pink);transform:translateY(-4px);box-shadow:var(--shadow)}
+.cat .ic{width:72px;height:72px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;font-size:34px}
+.cat b{font-family:Kanit;display:block}
+.cat span{font-size:13px;color:var(--muted)}
+
+/* filters */
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.fbtn{padding:8px 18px;border-radius:99px;border:1.5px solid var(--line);font-family:Kanit;font-size:14px;background:var(--card);transition:.2s}
+.fbtn.on,.fbtn:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+select.sort{padding:9px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+
+/* product grid */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column;transition:.25s;position:relative}
+.card:hover{box-shadow:var(--shadow);transform:translateY(-4px)}
+.thumb{aspect-ratio:1/1;display:grid;place-items:center;position:relative;cursor:pointer}
+.thumb svg{width:62%;height:62%;transition:.4s}
+.card:hover .thumb svg{transform:rotate(-8deg) scale(1.06)}
+.tags{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px}
+.tag{font-family:Kanit;font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;color:#fff;width:fit-content}
+.t-sale{background:var(--pink)}.t-new{background:var(--mint)}.t-best{background:var(--purple)}
+.fav{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;background:var(--card);display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.fav.on svg{fill:var(--pink);stroke:var(--pink)}
+.body{padding:16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.body .meta{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+.body h3{font-size:17px;line-height:1.3;font-weight:500}
+.stars{color:#f5a623;font-size:13px}
+.stars span{color:var(--muted)}
+.price{display:flex;align-items:baseline;gap:8px;margin-top:auto;padding-top:6px}
+.price b{font-size:22px;color:var(--pink)}
+.price s{color:var(--muted);font-size:14px}
+.unit{font-size:12px;color:var(--mint);font-weight:600}
+.add{margin-top:10px;width:100%;padding:11px;border-radius:12px;background:var(--pink-l);color:var(--pink);font-family:Kanit;font-weight:600;transition:.2s;display:flex;justify-content:center;gap:6px;align-items:center}
+.add:hover{background:var(--pink);color:#fff}
+.empty{grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)}
+
+/* bundles */
+.bundles{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.bundle{border-radius:24px;padding:28px;border:1.5px solid var(--line);background:var(--card);position:relative;display:flex;flex-direction:column}
+.bundle.hot{border:2px solid var(--pink);box-shadow:var(--shadow)}
+.bundle .ribbon{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--pink);color:#fff;font-family:Kanit;font-size:13px;padding:4px 16px;border-radius:99px;white-space:nowrap}
+.bundle h3{font-size:22px}
+.bundle .bp{font-family:Kanit;font-size:40px;font-weight:700;margin:10px 0 0}
+.bundle .bp small{font-size:16px;color:var(--muted);font-weight:400}
+.bundle .save{color:var(--mint);font-weight:600;font-size:14px}
+.bundle ul{list-style:none;margin:18px 0 22px;display:grid;gap:8px;font-size:15px}
+.bundle li::before{content:"✓";color:var(--mint);font-weight:700;margin-right:8px}
+.bundle .btn{margin-top:auto}
+
+/* tiers */
+.tiers{background:var(--soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tier-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.tier{background:var(--card);border-radius:var(--r);padding:22px;border:1px solid var(--line);text-align:center}
+.tier b{font-family:Kanit;font-size:30px;color:var(--pink);display:block}
+.tier span{color:var(--muted);font-size:14px}
+.bar{height:10px;border-radius:99px;background:var(--pink-m);margin-top:12px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pink),var(--orange))}
+
+/* reviews */
+.reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.rv{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.rv p{margin:10px 0 16px}
+.who{display:flex;align-items:center;gap:12px;font-size:14px}
+.av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font-family:Kanit;font-weight:600}
+
+/* b2b */
+.b2b{background:var(--ink);color:#fff;border-radius:28px;padding:44px;display:grid;grid-template-columns:1.3fr 1fr;gap:30px;align-items:center}
+:root[data-theme="dark"] .b2b{background:var(--pink-m)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .b2b{background:var(--pink-m)}}
+.b2b h2{font-size:clamp(24px,3vw,34px)}
+.b2b p{opacity:.8;margin-top:8px}
+.b2b form{display:grid;gap:10px}
+.b2b input{padding:13px 16px;border-radius:12px;border:0;font:inherit;background:rgba(255,255,255,.12);color:#fff}
+.b2b input::placeholder{color:rgba(255,255,255,.6)}
+
+footer{background:var(--soft);border-top:1px solid var(--line);padding:56px 0 24px;margin-top:72px}
+.fgrid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr;gap:30px}
+footer h4{margin-bottom:12px}
+footer ul{list-style:none;display:grid;gap:6px;color:var(--muted);font-size:15px}
+footer a:hover{color:var(--pink)}
+.pay{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pay span{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:600;font-family:Kanit}
+.copy{border-top:1px solid var(--line);margin-top:36px;padding-top:20px;font-size:14px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+/* drawer */
+.ov{position:fixed;inset:0;background:rgba(20,8,18,.5);opacity:0;pointer-events:none;transition:.3s;z-index:60}
+.ov.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(440px,100%);background:var(--bg);z-index:70;transform:translateX(100%);transition:.35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:20px;border-bottom:1px solid var(--line)}
+.ship{padding:14px 20px;background:var(--pink-l);font-size:14px}
+.ship .bar{margin-top:8px;background:var(--card)}
+.items{flex:1;overflow:auto;padding:8px 20px}
+.it{display:grid;grid-template-columns:70px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px dashed var(--line);align-items:center}
+.it .th{width:70px;height:70px;border-radius:14px;display:grid;place-items:center}
+.it .th svg{width:70%;height:70%}
+.it h4{font-size:15px;font-weight:500;line-height:1.3}
+.qty{display:inline-flex;align-items:center;border:1.5px solid var(--line);border-radius:99px;margin-top:6px}
+.qty button{width:30px;height:30px;font-size:16px}
+.qty span{min-width:24px;text-align:center;font-family:Kanit}
+.rm{font-size:12px;color:var(--muted);text-decoration:underline;display:block;margin-top:6px;margin-left:auto}
+.df{padding:20px;border-top:1px solid var(--line);display:grid;gap:8px}
+.row{display:flex;justify-content:space-between;font-size:15px}
+.row.tot{font-family:Kanit;font-size:20px;font-weight:600;border-top:1px solid var(--line);padding-top:10px;margin-top:4px}
+.row.tot b{color:var(--pink)}
+.code{display:flex;gap:8px}
+.code input{flex:1;padding:10px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;text-transform:uppercase}
+.code button{padding:0 16px;border-radius:12px;background:var(--ink);color:var(--bg);font-family:Kanit}
+.hint{font-size:12px;color:var(--muted)}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:16px;pointer-events:none;opacity:0;transition:.25s}
+.modal.on{opacity:1;pointer-events:auto}
+.mbox{background:var(--bg);border-radius:24px;width:min(860px,100%);max-height:92vh;overflow:auto;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.3)}
+.mx{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;background:var(--soft);z-index:2;font-size:20px}
+.pd{display:grid;grid-template-columns:1fr 1fr}
+.pd .thumb{border-radius:24px 0 0 24px;aspect-ratio:auto;min-height:380px}
+.pd .info{padding:32px;display:flex;flex-direction:column;gap:12px}
+.pd h3{font-size:26px;line-height:1.25}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{padding:8px 14px;border-radius:12px;border:1.5px solid var(--line);font-size:14px;text-align:left}
+.opt.on{border-color:var(--pink);background:var(--pink-l)}
+.opt small{display:block;color:var(--mint);font-weight:600}
+.co{padding:32px;display:grid;gap:14px}
+.co h3{font-size:24px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.co label{font-size:14px;color:var(--muted);display:grid;gap:4px}
+.co input,.co textarea{padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;outline:none}
+.co input:focus,.co textarea:focus{border-color:var(--pink)}
+.paym{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.paym label{border:1.5px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;color:var(--ink);text-align:center;font-family:Kanit}
+.paym input{display:none}
+.paym label:has(input:checked){border-color:var(--pink);background:var(--pink-l)}
+.ok{text-align:center;padding:48px 32px}
+.ok .big{font-size:64px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);background:var(--ink);color:var(--bg);padding:12px 22px;border-radius:99px;font-family:Kanit;z-index:90;transition:.35s;box-shadow:0 10px 30px rgba(0,0,0,.25);white-space:nowrap}
+.toast.on{transform:translate(-50%,0)}
+.mob-only{display:none}
+
+@media (max-width:1000px){
+  nav{display:none}.grid{grid-template-columns:repeat(3,1fr)}.cats{grid-template-columns:repeat(3,1fr)}
+  .usp,.tier-row{grid-template-columns:repeat(2,1fr)}.fgrid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px){
+  .hero-in{grid-template-columns:1fr;padding:40px 16px 60px}.hero-art{height:300px}
+  .grid{grid-template-columns:repeat(2,1fr);gap:12px}.bundles,.reviews{grid-template-columns:1fr}
+  .flash,.b2b{grid-template-columns:1fr;padding:24px}.pd{grid-template-columns:1fr}.pd .thumb{border-radius:24px 24px 0 0;min-height:260px}
+  .search{display:none}.mob-only{display:grid}.fg,.paym{grid-template-columns:1fr}
+  .body{padding:12px}.body h3{font-size:15px}.price b{font-size:19px}
+  section{padding:52px 0}.usp{grid-template-columns:1fr 1fr;gap:10px}.usp div{flex-direction:column;text-align:center;padding:14px}
+  .timer div{width:60px}.cats{grid-template-columns:repeat(2,1fr)}.fgrid{grid-template-columns:1fr}
+  .stats{gap:20px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">🚚 ส่งฟรีทั่วไทยเมื่อซื้อครบ <b>499.-</b> &nbsp;|&nbsp; ใช้โค้ด <b>JSBNEW</b> ลดเพิ่ม 10% สำหรับลูกค้าใหม่</div>
+
+<header>
+  <div class="wrap hdr">
+    <a href="#" class="logo"><div class="logo-mark"><span>JSB</span></div><div>JSB Shop<small>CANDY FACTORY</small></div></a>
+    <nav><a href="#shop">สินค้าทั้งหมด</a><a href="#bundles">แพ็กคุ้ม</a><a href="#tiers">ซื้อยิ่งเยอะยิ่งถูก</a><a href="#b2b">ขายส่ง</a></nav>
+    <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="ค้นหาอมยิ้ม ลูกอม เยลลี่..."></label>
+    <div class="icons">
+      <button class="ibtn mob-only" onclick="document.getElementById('shop').scrollIntoView()" aria-label="ค้นหา"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+      <button class="ibtn" id="themeBtn" aria-label="สลับธีม"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+      <button class="ibtn" aria-label="รายการโปรด"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg><span class="badge" id="favN">0</span></button>
+      <button class="ibtn" id="cartBtn" aria-label="ตะกร้า"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 2H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg><span class="badge" id="cartN">0</span></button>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-in wrap">
+    <div>
+      <span class="chip">🏭 ส่งตรงจากโรงงาน ไม่ผ่านคนกลาง</span>
+      <h1>ความหวานที่ <em>คุ้มที่สุด</em><br>ส่งตรงถึงบ้านคุณ</h1>
+      <p class="lead">อมยิ้ม ลูกอม และลูกอมเปรี้ยวจาก JSB ผลิตเองทุกเม็ด ได้มาตรฐาน อย. และ GMP ซื้อออนไลน์ถูกกว่าหน้าร้านสูงสุด 35%</p>
+      <div class="cta"><a href="#shop" class="btn btn-p">ช้อปเลย →</a><a href="#bundles" class="btn btn-o">ดูแพ็กสุดคุ้ม</a></div>
+      <div class="stats"><div><b>30+</b><span>ปีประสบการณ์</span></div><div><b>120K+</b><span>ออเดอร์ส่งแล้ว</span></div><div><b>4.9★</b><span>คะแนนรีวิว</span></div></div>
+    </div>
+    <div class="hero-art" id="heroArt"><div class="blob"></div><div class="deal-tag"><div>ลดสูงสุด<big>35%</big></div></div></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="usp">
+    <div><i>🏭</i><p><b>ราคาโรงงาน</b><span>ไม่บวกค่าคนกลาง</span></p></div>
+    <div><i>🚚</i><p><b>ส่งฟรี 499.-</b><span>จัดส่ง 1–3 วัน</span></p></div>
+    <div><i>✅</i><p><b>อย. / GMP / ฮาลาล</b><span>ปลอดภัยทุกเม็ด</span></p></div>
+    <div><i>💳</i><p><b>จ่ายง่าย</b><span>พร้อมเพย์ บัตร ปลายทาง</span></p></div>
+  </div>
+</div>
+
+<section style="padding-bottom:0">
+  <div class="wrap">
+    <div class="flash">
+      <div><span class="eyebrow" style="color:#fff;opacity:.85">⚡ Flash Sale วันนี้เท่านั้น</span><h2>Big Bomb ลด 30% + ซื้อ 2 แถม 1</h2><p style="opacity:.9">หมดเวลาแล้วกลับราคาปกติ รีบเลย!</p></div>
+      <div class="timer" id="timer"><div><b id="th">00</b><span>ชั่วโมง</span></div><div><b id="tm">00</b><span>นาที</span></div><div><b id="ts">00</b><span>วินาที</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-h"><div><span class="eyebrow">หมวดหมู่</span><h2>เลือกความหวานแบบที่ชอบ</h2></div></div>
+    <div class="cats" id="cats"></div>
+  </div>
+</section>
+
+<section id="shop" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-h">
+      <div><span class="eyebrow">สินค้าทั้งหมด</span><h2>ขายดีประจำร้าน</h2></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <div class="filters" id="filters"></div>
+        <select class="sort" id="sort"><option value="pop">ยอดนิยม</option><option value="low">ราคา ต่ำ → สูง</option><option value="high">ราคา สูง → ต่ำ</option><option value="save">ส่วนลดมากสุด</option></select>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<section id="bundles" style="background:var(--pink-l)">
+  <div class="wrap">
+    <div class="sec-h"><div><span class="eyebrow">แพ็กสุดคุ้ม</span><h2>จัดเซ็ตให้แล้ว ประหยัดกว่าซื้อแยก</h2></div><p>เหมาะสำหรับปาร์ตี้ ของฝาก และร้านค้า</p></div>
+    <div class="bundles" id="bundleList"></div>
+  </div>
+</section>
+
+<section id="tiers" class="tiers">
+  <div class="wrap">
+    <div class="sec-h"><div><span class="eyebrow">ซื้อยิ่งเยอะ ยิ่งถูก</span><h2>ส่วนลดขั้นบันได คำนวณอัตโนมัติในตะกร้า</h2></div></div>
+    <div class="tier-row">
+      <div class="tier"><b>ส่งฟรี</b><span>ยอดซื้อ 499.- ขึ้นไป</span><div class="bar"><i style="width:25%"></i></div></div>
+      <div class="tier"><b>-5%</b><span>ยอดซื้อ 1,000.- ขึ้นไป</span><div class="bar"><i style="width:50%"></i></div></div>
+      <div class="tier"><b>-8%</b><span>ยอดซื้อ 2,000.- ขึ้นไป</span><div class="bar"><i style="width:75%"></i></div></div>
+      <div class="tier"><b>-12%</b><span>ยอดซื้อ 3,000.- ขึ้นไป</span><div class="bar"><i style="width:100%"></i></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-h"><div><span class="eyebrow">รีวิวจากลูกค้า</span><h2>ลูกค้ากว่า 120,000 ออเดอร์ไว้ใจเรา</h2></div></div>
+    <div class="reviews">
+      <div class="rv"><div class="stars">★★★★★</div><p>“สั่งไปแจกงานวันเด็กที่โรงเรียน ราคาถูกกว่าห้างเยอะมาก ของสดใหม่ ส่งไวมากค่ะ”</p><div class="who"><div class="av" style="background:var(--pink)">ค</div><div><b>คุณครูแพร</b><br><span class="hint">ซื้อแพ็กปาร์ตี้ 3 ครั้ง</span></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>“Big Bomb รสผลไม้รวมลูกชอบมาก ซื้อยกกล่องคุ้มกว่าเยอะ แพ็กของมาดีไม่เละเลย”</p><div class="who"><div class="av" style="background:var(--purple)">ต</div><div><b>คุณต้น</b><br><span class="hint">ลูกค้าประจำ</span></div></div></div>
+      <div class="rv"><div class="stars">★★★★★</div><p>“เปิดร้านโชห่วย สั่งราคาส่งผ่านเว็บสะดวกมาก ได้ส่วนลดขั้นบันไดอัตโนมัติ กำไรดีขึ้น”</p><div class="who"><div class="av" style="background:var(--mint)">ส</div><div><b>ร้านสมใจ</b><br><span class="hint">ตัวแทนจำหน่าย</span></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="b2b" style="padding-top:0">
+  <div class="wrap">
+    <div class="b2b">
+      <div><span class="eyebrow" style="color:var(--yellow)">สำหรับร้านค้า & องค์กร</span><h2>สั่งราคาส่ง / OEM / ของชำร่วย</h2><p>สั่งตั้งแต่ 10 ลังขึ้นไป รับราคาพิเศษจากโรงงานโดยตรง พร้อมเครดิตเทอมสำหรับตัวแทนจำหน่าย และบริการสกรีนโลโก้บนแพ็กเกจ</p></div>
+      <form id="b2bForm"><input required placeholder="ชื่อร้าน / บริษัท"><input required type="tel" placeholder="เบอร์โทรศัพท์"><input placeholder="สินค้าที่สนใจ / จำนวนโดยประมาณ"><button class="btn btn-p">ขอใบเสนอราคา</button></form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div><a href="#" class="logo"><div class="logo-mark"><span>JSB</span></div><div>JSB Shop<small>CANDY FACTORY</small></div></a><p style="color:var(--muted);margin-top:12px;font-size:15px">ร้านค้าออนไลน์อย่างเป็นทางการของ JSB Candy ผู้ผลิตอมยิ้มและลูกอมคุณภาพ ส่งตรงจากโรงงานถึงมือคุณ</p></div>
+      <div><h4>ช้อปปิ้ง</h4><ul><li><a href="#shop">อมยิ้ม</a></li><li><a href="#shop">ลูกอม</a></li><li><a href="#shop">ลูกอมเปรี้ยว</a></li><li><a href="#bundles">แพ็กสุดคุ้ม</a></li></ul></div>
+      <div><h4>ช่วยเหลือ</h4><ul><li>วิธีสั่งซื้อ</li><li>การจัดส่ง</li><li>คืนสินค้า/เปลี่ยนสินค้า</li><li>ติดตามพัสดุ</li></ul></div>
+      <div><h4>ติดต่อเรา</h4><ul><li>📞 02-XXX-XXXX</li><li>💬 LINE: @jsbcandy</li><li>✉️ shop@jsbcandy.com</li></ul><div class="pay"><span>PromptPay</span><span>VISA</span><span>Mastercard</span><span>COD</span></div></div>
+    </div>
+    <div class="copy"><span>© 2026 JSB Candy. All rights reserved.</span><span>นโยบายความเป็นส่วนตัว · เงื่อนไขการใช้งาน</span></div>
+  </div>
+</footer>
+
+<div class="ov" id="ov"></div>
+<aside class="drawer" id="drawer" aria-label="ตะกร้าสินค้า">
+  <div class="dh"><h3>ตะกร้าของคุณ</h3><button class="ibtn" data-close>✕</button></div>
+  <div class="ship" id="shipMsg"></div>
+  <div class="items" id="items"></div>
+  <div class="df" id="sum"></div>
+</aside>
+
+<div class="modal" id="modal"><div class="mbox"><button class="mx" data-close>✕</button><div id="mc"></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const baht=n=>'฿'+Math.round(n).toLocaleString('th-TH');
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* candy illustrations */
+function art(type,c1,c2,c3){
+  if(type==='lolli')return `<svg viewBox="0 0 120 160"><rect x="56" y="70" width="8" height="86" rx="4" fill="#f3e6d8" stroke="#d8c3ad"/><circle cx="60" cy="58" r="50" fill="${c1}"/><path d="M60 58m-38 0a38 38 0 0 1 38-38a26 26 0 0 1 26 26a16 16 0 0 1-16 16a8 8 0 0 1-8-8" fill="none" stroke="${c2}" stroke-width="10" stroke-linecap="round"/><circle cx="60" cy="58" r="50" fill="none" stroke="${c3}" stroke-width="4" opacity=".5"/><ellipse cx="40" cy="34" rx="10" ry="6" fill="#fff" opacity=".45" transform="rotate(-30 40 34)"/></svg>`;
+  if(type==='candy')return `<svg viewBox="0 0 160 100"><path d="M40 50 8 26v48z" fill="${c2}"/><path d="M120 50l32-24v48z" fill="${c2}"/><ellipse cx="80" cy="50" rx="44" ry="34" fill="${c1}"/><path d="M50 30q30 40 60 0M50 70q30-40 60 0" stroke="${c3}" stroke-width="7" fill="none" opacity=".7"/><ellipse cx="64" cy="34" rx="10" ry="5" fill="#fff" opacity=".5"/></svg>`;
+  if(type==='sour')return `<svg viewBox="0 0 140 140"><g>${[[45,50,c1],[90,45,c2],[68,88,c3],[30,95,c2],[105,92,c1]].map(([x,y,c])=>`<rect x="${x-20}" y="${y-20}" width="40" height="40" rx="10" fill="${c}" transform="rotate(${x%30} ${x} ${y})"/><circle cx="${x-6}" cy="${y-8}" r="2" fill="#fff"/><circle cx="${x+6}" cy="${y+2}" r="2" fill="#fff"/><circle cx="${x-2}" cy="${y+8}" r="1.6" fill="#fff"/>`).join('')}</g></svg>`;
+  if(type==='bomb')return `<svg viewBox="0 0 140 160"><rect x="66" y="96" width="8" height="62" rx="4" fill="#f3e6d8" stroke="#d8c3ad"/><circle cx="70" cy="66" r="52" fill="${c1}"/><circle cx="70" cy="66" r="52" fill="url(#g${c1.slice(1)})"/><defs><radialGradient id="g${c1.slice(1)}" cx=".35" cy=".3"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset=".5" stop-color="${c2}" stop-opacity=".3"/><stop offset="1" stop-color="${c3}" stop-opacity=".6"/></radialGradient></defs><text x="70" y="76" text-anchor="middle" font-family="Kanit" font-weight="700" font-size="26" fill="#fff">BIG</text></svg>`;
+  if(type==='emoji')return `<svg viewBox="0 0 140 160"><rect x="66" y="100" width="8" height="58" rx="4" fill="#f3e6d8" stroke="#d8c3ad"/><circle cx="70" cy="62" r="50" fill="${c1}"/><circle cx="52" cy="52" r="7" fill="${c3}"/><circle cx="88" cy="52" r="7" fill="${c3}"/><path d="M46 74q24 26 48 0" stroke="${c3}" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="40" cy="70" r="7" fill="${c2}" opacity=".6"/><circle cx="100" cy="70" r="7" fill="${c2}" opacity=".6"/></svg>`;
+  return `<svg viewBox="0 0 140 140"><rect x="20" y="30" width="100" height="90" rx="16" fill="${c1}"/><rect x="20" y="30" width="100" height="26" rx="12" fill="${c2}"/><text x="70" y="96" text-anchor="middle" font-family="Kanit" font-weight="700" font-size="24" fill="#fff">JSB</text><circle cx="40" cy="74" r="5" fill="${c3}"/><circle cx="100" cy="106" r="5" fill="${c3}"/></svg>`;
+}
+
+const CATS=[
+  {id:'all',name:'ทั้งหมด',sub:'สินค้าทุกชนิด',ic:'🍬',bg:'#fde2ee'},
+  {id:'lolli',name:'อมยิ้ม',sub:'Lollipop',ic:'🍭',bg:'#e9e0fb'},
+  {id:'candy',name:'ลูกอม',sub:'Candy',ic:'🍬',bg:'#fff1cc'},
+  {id:'sour',name:'ลูกอมเปรี้ยว',sub:'Sour Candy',ic:'🍋',bg:'#d6f3ec'},
+  {id:'box',name:'ยกลัง / ขายส่ง',sub:'Wholesale',ic:'📦',bg:'#ffe2d4'},
+];
+const P=[
+  {id:1,cat:'lolli',art:'bomb',c:['#e8317a','#ff9ac1','#7b4fd6'],name:'Big Bomb อมยิ้มลูกใหญ่ รสผลไม้รวม',price:89,was:129,rating:4.9,rev:2310,sold:15400,tags:['sale','best'],opts:[['ถุง 10 ไม้',89,1],['ถุง 30 ไม้',239,3],['กล่อง 50 ไม้',369,5]]},
+  {id:2,cat:'lolli',art:'emoji',c:['#ffc93c','#ff7a3d','#5a2b1a'],name:'Imoji Candy อมยิ้มหน้ายิ้ม',price:69,was:89,rating:4.8,rev:1280,sold:9800,tags:['best'],opts:[['ถุง 10 ไม้',69,1],['ถุง 30 ไม้',189,3]]},
+  {id:3,cat:'lolli',art:'lolli',c:['#2bb39a','#fff','#147a68'],name:'อมยิ้มเกลียว รสแอปเปิ้ลเขียว',price:59,was:75,rating:4.7,rev:640,sold:4200,tags:['new'],opts:[['ถุง 20 ไม้',59,1],['ถุง 50 ไม้',139,2.5]]},
+  {id:4,cat:'lolli',art:'lolli',c:['#7b4fd6','#ffc93c','#4a2aa0'],name:'อมยิ้มเกลียว รสองุ่นเคียวโฮ',price:59,was:75,rating:4.8,rev:530,sold:3900,tags:[],opts:[['ถุง 20 ไม้',59,1],['ถุง 50 ไม้',139,2.5]]},
+  {id:5,cat:'candy',art:'candy',c:['#e8317a','#ffc93c','#fff'],name:'ลูกอมรสสตรอว์เบอร์รี่ครีม',price:45,was:59,rating:4.7,rev:880,sold:6100,tags:['sale'],opts:[['ถุง 100 กรัม',45,1],['ถุง 500 กรัม',189,5]]},
+  {id:6,cat:'candy',art:'candy',c:['#ff7a3d','#2bb39a','#fff'],name:'ลูกอมรสส้มมิกซ์ฟรุต',price:45,was:null,rating:4.6,rev:410,sold:2800,tags:[],opts:[['ถุง 100 กรัม',45,1],['ถุง 500 กรัม',189,5]]},
+  {id:7,cat:'sour',art:'sour',c:['#ffc93c','#2bb39a','#e8317a'],name:'Sour Candy ลูกอมเปรี้ยวจี๊ด รวมรส',price:55,was:79,rating:4.9,rev:1720,sold:11200,tags:['sale','best'],opts:[['ถุง 120 กรัม',55,1],['ถุง 500 กรัม',199,4]]},
+  {id:8,cat:'sour',art:'sour',c:['#a5e05a','#ffe14d','#6dc23b'],name:'Sour Lemon มะนาวเปรี้ยวซ่า',price:49,was:null,rating:4.6,rev:290,sold:1900,tags:['new'],opts:[['ถุง 120 กรัม',49,1],['ถุง 500 กรัม',179,4]]},
+  {id:9,cat:'box',art:'box',c:['#e8317a','#c21d62','#ffc93c'],name:'Big Bomb ยกลัง 12 กล่อง (600 ไม้)',price:3590,was:4428,rating:5.0,rev:186,sold:820,tags:['sale'],opts:[['1 ลัง',3590,1],['3 ลัง',10290,3]]},
+  {id:10,cat:'box',art:'box',c:['#7b4fd6','#4a2aa0','#2bb39a'],name:'อมยิ้มเกลียว ยกลัง คละรส 1,000 ไม้',price:2390,was:2990,rating:4.9,rev:124,sold:560,tags:[],opts:[['1 ลัง',2390,1],['3 ลัง',6890,3]]},
+  {id:11,cat:'candy',art:'candy',c:['#ffffff','#e8317a','#e8317a'],name:'ลูกอมมิ้นต์เย็นซ่า ไร้น้ำตาล',price:65,was:null,rating:4.5,rev:150,sold:900,tags:['new'],opts:[['ถุง 100 กรัม',65,1]]},
+  {id:12,cat:'sour',art:'sour',c:['#ff5c8a','#7b4fd6','#ffc93c'],name:'Sour Berry เบอร์รี่เปรี้ยวหวาน',price:55,was:69,rating:4.7,rev:340,sold:2300,tags:[],opts:[['ถุง 120 กรัม',55,1],['ถุง 500 กรัม',199,4]]},
+];
+const BUNDLES=[
+  {name:'แพ็กลองชิม',price:199,was:276,items:['Big Bomb 10 ไม้','Imoji Candy 10 ไม้','Sour Candy 1 ถุง','ลูกอมสตรอว์เบอร์รี่ 1 ถุง'],ids:[1,2,7,5]},
+  {name:'แพ็กปาร์ตี้',price:590,was:860,hot:true,items:['Big Bomb 30 ไม้','Imoji Candy 30 ไม้','อมยิ้มเกลียว 50 ไม้','Sour Candy 500 กรัม','ส่งฟรีทันที'],ids:[1,2,3,7]},
+  {name:'แพ็กร้านค้า',price:1990,was:2780,items:['คละสินค้าขายดี 8 รายการ','จำนวนรวม ~800 ชิ้น','ฟรีชั้นวางโชว์สินค้า','กำไรต่อชิ้นสูงสุด 40%'],ids:[1,2,3,4,5,6,7,8]},
+];
+const COUPONS={JSBNEW:{t:'pct',v:10,d:'ลด 10% ลูกค้าใหม่'},SWEET50:{t:'amt',v:50,d:'ลด ฿50 เมื่อซื้อครบ 300',min:300}};
+
+let cart=store.get('jsb-cart',[]),favs=store.get('jsb-favs',[]),coupon=store.get('jsb-coupon',null),cat='all',tag='all',sortBy='pop',query='';
+const tint=c=>`linear-gradient(145deg,${c}22,${c}44)`;
+
+function renderCats(){$('#cats').innerHTML=CATS.map(c=>`<button class="cat ${cat===c.id?'on':''}" data-cat="${c.id}"><div class="ic" style="background:${c.bg}">${c.ic}</div><b>${c.name}</b><span>${c.sub} · ${c.id==='all'?P.length:P.filter(p=>p.cat===c.id).length} รายการ</span></button>`).join('')}
+function renderFilters(){$('#filters').innerHTML=[['all','ทั้งหมด'],['sale','ลดราคา'],['best','ขายดี'],['new','มาใหม่']].map(([k,l])=>`<button class="fbtn ${tag===k?'on':''}" data-tag="${k}">${l}</button>`).join('')}
+const TAGL={sale:['t-sale',p=>'-'+Math.round((1-p.price/p.was)*100)+'%'],new:['t-new',()=>'ใหม่'],best:['t-best',()=>'ขายดี']};
+function cardHTML(p){
+  const pu=p.opts.at(-1),per=pu[1]/pu[2];
+  return `<article class="card"><div class="thumb" style="background:${tint(p.c[0])}" data-view="${p.id}">${art(p.art,...p.c)}<div class="tags">${p.tags.map(t=>`<span class="tag ${TAGL[t][0]}">${TAGL[t][1](p)}</span>`).join('')}</div></div>
+  <button class="fav ${favs.includes(p.id)?'on':''}" data-fav="${p.id}" aria-label="ถูกใจ"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+  <div class="body"><div class="meta"><span>${CATS.find(c=>c.id===p.cat).name}</span><span>ขายแล้ว ${p.sold>=1000?(p.sold/1000).toFixed(1)+'k':p.sold}</span></div>
+  <h3>${p.name}</h3><div class="stars">★ ${p.rating.toFixed(1)} <span>(${p.rev.toLocaleString()})</span></div>
+  <div class="price"><b>${baht(p.price)}</b>${p.was?`<s>${baht(p.was)}</s>`:''}</div>
+  ${p.opts.length>1?`<div class="unit">💡 ซื้อแพ็กใหญ่ เหลือ ${baht(per)}/หน่วย</div>`:'<div class="unit">&nbsp;</div>'}
+  <button class="add" data-add="${p.id}">+ ใส่ตะกร้า</button></div></article>`;
+}
+function renderGrid(){
+  let l=P.filter(p=>(cat==='all'||p.cat===cat)&&(tag==='all'||p.tags.includes(tag))&&(!query||p.name.toLowerCase().includes(query)));
+  const s={pop:(a,b)=>b.sold-a.sold,low:(a,b)=>a.price-b.price,high:(a,b)=>b.price-a.price,save:(a,b)=>((b.was||b.price)-b.price)/(b.was||1)-((a.was||a.price)-a.price)/(a.was||1)};
+  l.sort(s[sortBy]);
+  $('#grid').innerHTML=l.length?l.map(cardHTML).join(''):'<div class="empty">ไม่พบสินค้าที่ค้นหา ลองคำอื่นดูนะ 🍭</div>';
+}
+function renderBundles(){$('#bundleList').innerHTML=BUNDLES.map((b,i)=>`<div class="bundle ${b.hot?'hot':''}">${b.hot?'<span class="ribbon">🔥 คุ้มที่สุด · ขายดีอันดับ 1</span>':''}<h3>${b.name}</h3><div class="bp">${baht(b.price)} <small><s>${baht(b.was)}</s></small></div><div class="save">ประหยัด ${baht(b.was-b.price)} (${Math.round((1-b.price/b.was)*100)}%)</div><ul>${b.items.map(x=>`<li>${x}</li>`).join('')}</ul><button class="btn ${b.hot?'btn-p':'btn-o'}" data-bundle="${i}">ใส่ตะกร้า</button></div>`).join('')}
+
+/* cart */
+function calc(){
+  const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const tierPct=sub>=3000?12:sub>=2000?8:sub>=1000?5:0;
+  const tierDisc=sub*tierPct/100;
+  let cp=0,cpMsg='';
+  if(coupon&&COUPONS[coupon]){const c=COUPONS[coupon];if(c.min&&sub<c.min)cpMsg=`ต้องซื้อครบ ${baht(c.min)}`;else cp=c.t==='pct'?(sub-tierDisc)*c.v/100:c.v}
+  const freeShip=sub>=499||cart.some(i=>i.free);
+  const ship=sub===0?0:freeShip?0:45;
+  return {sub,tierPct,tierDisc,cp,cpMsg,ship,total:Math.max(0,sub-tierDisc-cp+ship),count:cart.reduce((s,i)=>s+i.qty,0)};
+}
+function save(){store.set('jsb-cart',cart);store.set('jsb-favs',favs);store.set('jsb-coupon',coupon)}
+function renderCart(){
+  const c=calc();const n=$('#cartN');n.textContent=c.count;n.classList.remove('bump');void n.offsetWidth;n.classList.add('bump');
+  $('#favN').textContent=favs.length;
+  const left=499-c.sub;
+  const nextTier=[[1000,5],[2000,8],[3000,12]].find(([v])=>c.sub<v);
+  $('#shipMsg').innerHTML=c.sub===0?'🛒 ซื้อครบ ฿499 ส่งฟรี!':(left>0&&!cart.some(i=>i.free)?`ซื้ออีก <b>${baht(left)}</b> รับ <b>ส่งฟรี</b> 🚚`:nextTier?`🎉 ส่งฟรีแล้ว! ซื้ออีก <b>${baht(nextTier[0]-c.sub)}</b> รับส่วนลด <b>${nextTier[1]}%</b>`:'🎉 คุณได้รับส่วนลดสูงสุด 12% + ส่งฟรี')+`<div class="bar"><i style="width:${Math.min(100,c.sub/(nextTier&&left<=0?nextTier[0]:499)*100)}%"></i></div>`;
+  $('#items').innerHTML=cart.length?cart.map((i,k)=>{const p=P.find(x=>x.id===i.pid)||P[0];return `<div class="it"><div class="th" style="background:${tint(p.c[0])}">${art(p.art,...p.c)}</div><div><h4>${i.name}</h4><span class="hint">${i.opt||''}</span><br><div class="qty"><button data-q="${k}" data-d="-1">−</button><span>${i.qty}</span><button data-q="${k}" data-d="1">+</button></div></div><div style="text-align:right"><b class="price" style="padding:0;font-size:16px">${baht(i.price*i.qty)}</b><button class="rm" data-rm="${k}">ลบ</button></div></div>`}).join(''):'<div class="empty">ตะกร้ายังว่างอยู่ 🍬<br><br><button class="btn btn-p" data-close>เลือกซื้อสินค้า</button></div>';
+  $('#sum').innerHTML=cart.length?`<div class="code"><input id="cpIn" placeholder="โค้ดส่วนลด" value="${coupon||''}"><button id="cpBtn">ใช้โค้ด</button></div><span class="hint">ลองใช้ JSBNEW หรือ SWEET50 ${c.cpMsg?'· <b style="color:var(--pink)">'+c.cpMsg+'</b>':''}</span>
+  <div class="row"><span>ยอดสินค้า</span><span>${baht(c.sub)}</span></div>
+  ${c.tierDisc?`<div class="row" style="color:var(--mint)"><span>ส่วนลดขั้นบันได ${c.tierPct}%</span><span>−${baht(c.tierDisc)}</span></div>`:''}
+  ${c.cp?`<div class="row" style="color:var(--mint)"><span>โค้ด ${coupon}</span><span>−${baht(c.cp)}</span></div>`:''}
+  <div class="row"><span>ค่าจัดส่ง</span><span>${c.ship?baht(c.ship):'<b style="color:var(--mint)">ฟรี</b>'}</span></div>
+  <div class="row tot"><span>ยอดชำระ</span><b>${baht(c.total)}</b></div><button class="btn btn-p" id="checkout">ดำเนินการชำระเงิน →</button>`:'';
+  save();
+}
+function add(p,opt,qty=1){
+  const o=opt||p.opts[0];const key=p.id+'|'+o[0];
+  const ex=cart.find(i=>i.key===key);ex?ex.qty+=qty:cart.push({key,pid:p.id,name:p.name,opt:o[0],price:o[1],qty});
+  renderCart();toast('✓ เพิ่ม '+p.name.split(' ')[0]+' ลงตะกร้าแล้ว');
+}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2000)}
+function openDrawer(){$('#drawer').classList.add('on');$('#ov').classList.add('on')}
+function closeAll(){['#drawer','#ov','#modal'].forEach(s=>$(s).classList.remove('on'))}
+function modal(html){$('#mc').innerHTML=html;$('#modal').classList.add('on');$('#ov').classList.add('on');$('#drawer').classList.remove('on')}
+
+function view(id){
+  const p=P.find(x=>x.id===id);let sel=0,qty=1;
+  const draw=()=>{const o=p.opts[sel];modal(`<div class="pd"><div class="thumb" style="background:${tint(p.c[0])}">${art(p.art,...p.c)}</div><div class="info">
+    <span class="eyebrow">${CATS.find(c=>c.id===p.cat).name}</span><h3>${p.name}</h3><div class="stars">★★★★★ ${p.rating} <span>· ${p.rev.toLocaleString()} รีวิว · ขายแล้ว ${p.sold.toLocaleString()}</span></div>
+    <div class="price" style="padding:0"><b style="font-size:32px">${baht(o[1])}</b>${sel===0&&p.was?`<s>${baht(p.was)}</s>`:''}</div>
+    <div><b style="font-family:Kanit">ขนาด</b><div class="opts" style="margin-top:6px">${p.opts.map((x,i)=>`<button class="opt ${i===sel?'on':''}" data-opt="${i}">${x[0]}<small>${baht(x[1]/x[2])}/หน่วย${i>0?' · ประหยัด '+Math.round((1-(x[1]/x[2])/p.opts[0][1])*100)+'%':''}</small></button>`).join('')}</div></div>
+    <div style="display:flex;gap:10px;align-items:center"><div class="qty" style="margin:0"><button data-mq="-1">−</button><span>${qty}</span><button data-mq="1">+</button></div><button class="btn btn-p" style="flex:1" data-madd>ใส่ตะกร้า · ${baht(o[1]*qty)}</button></div>
+    <p class="hint">✅ อย. / GMP / ฮาลาล · 🚚 ส่งภายใน 1–3 วัน · 🔄 เปลี่ยนคืนได้ใน 7 วัน</p></div></div>`);
+    $('#mc').onclick=e=>{const t=e.target.closest('button');if(!t)return;if(t.dataset.opt){sel=+t.dataset.opt;draw()}if(t.dataset.mq){qty=Math.max(1,qty+ +t.dataset.mq);draw()}if('madd' in t.dataset){add(p,p.opts[sel],qty);closeAll()}}};
+  draw();
+}
+function checkout(){
+  const c=calc();
+  modal(`<form class="co" id="coForm"><h3>ข้อมูลการจัดส่ง</h3><div class="fg"><label>ชื่อ-นามสกุล<input required></label><label>เบอร์โทรศัพท์<input required type="tel" pattern="[0-9\\-\\s]{9,}"></label></div>
+  <label>ที่อยู่จัดส่ง<textarea required rows="3" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์"></textarea></label>
+  <b style="font-family:Kanit">วิธีชำระเงิน</b><div class="paym"><label><input type="radio" name="pay" checked>📱 พร้อมเพย์</label><label><input type="radio" name="pay">💳 บัตรเครดิต</label><label><input type="radio" name="pay">💵 เก็บเงินปลายทาง</label></div>
+  <div class="row tot"><span>ยอดชำระ (${c.count} ชิ้น)</span><b>${baht(c.total)}</b></div><button class="btn btn-p">ยืนยันคำสั่งซื้อ</button></form>`);
+  $('#coForm').onsubmit=e=>{e.preventDefault();const no='JSB'+Date.now().toString().slice(-8);cart=[];coupon=null;renderCart();
+    modal(`<div class="ok"><div class="big">🎉</div><h3 style="font-size:26px;margin:10px 0">สั่งซื้อสำเร็จ!</h3><p>หมายเลขคำสั่งซื้อ <b>${no}</b><br>เราจะจัดส่งภายใน 1–3 วันทำการ ขอบคุณที่อุดหนุน JSB 💖</p><br><button class="btn btn-p" data-close>ช้อปต่อ</button></div>`)};
+}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-cat],[data-tag],[data-add],[data-fav],[data-view],[data-bundle],[data-q],[data-rm],[data-close],#cartBtn,#cpBtn,#checkout,#ov');if(!t)return;
+  const d=t.dataset;
+  if(d.cat){cat=d.cat;renderCats();renderGrid();$('#shop').scrollIntoView()}
+  else if(d.tag){tag=d.tag;renderFilters();renderGrid()}
+  else if(d.add)add(P.find(p=>p.id==d.add));
+  else if(d.fav){const id=+d.fav;favs=favs.includes(id)?favs.filter(x=>x!==id):[...favs,id];renderGrid();renderCart()}
+  else if(d.view)view(+d.view);
+  else if(d.bundle){const b=BUNDLES[d.bundle];cart.push({key:'b'+d.bundle+Date.now(),pid:b.ids[0],name:b.name+' (เซ็ต)',opt:b.items.length+' รายการ',price:b.price,qty:1,free:b.hot});renderCart();toast('✓ เพิ่ม'+b.name+'แล้ว');openDrawer()}
+  else if(d.q!==undefined){const i=cart[d.q];i.qty+= +d.d;if(i.qty<1)cart.splice(d.q,1);renderCart()}
+  else if(d.rm!==undefined){cart.splice(d.rm,1);renderCart()}
+  else if(t.id==='cartBtn')openDrawer();
+  else if(t.id==='cpBtn'){const v=$('#cpIn').value.trim().toUpperCase();if(COUPONS[v]){coupon=v;toast('✓ ใช้โค้ด '+v+' แล้ว: '+COUPONS[v].d)}else{coupon=null;toast('โค้ดไม่ถูกต้อง')}renderCart()}
+  else if(t.id==='checkout')checkout();
+  else closeAll();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
+$('#q').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();renderGrid()});
+$('#sort').addEventListener('change',e=>{sortBy=e.target.value;renderGrid()});
+$('#b2bForm').addEventListener('submit',e=>{e.preventDefault();e.target.reset();toast('✓ ส่งคำขอแล้ว ทีมขายจะติดต่อกลับภายใน 24 ชม.')});
+$('#themeBtn').addEventListener('click',()=>{const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=dark?'light':'dark'});
+
+/* hero */
+$('#heroArt').insertAdjacentHTML('beforeend',[['bomb',['#ffc93c','#fff','#ff7a3d'],'8%','10%',150,0],['emoji',['#ffc93c','#ff7a3d','#5a2b1a'],'52%','4%',130,1.2],['lolli',['#2bb39a','#fff','#147a68'],'30%','44%',140,.6],['sour',['#fff','#ffc93c','#a5e05a'],'2%','58%',110,1.8]].map(([a,c,l,t,w,dl])=>`<div class="pop" style="left:${l};top:${t};width:${w}px;animation-delay:${dl}s">${art(a,...c)}</div>`).join(''));
+
+/* timer to midnight */
+function tick(){const n=new Date(),e=new Date(n);e.setHours(24,0,0,0);let s=Math.floor((e-n)/1000);const pad=x=>String(x).padStart(2,'0');$('#th').textContent=pad(Math.floor(s/3600));$('#tm').textContent=pad(Math.floor(s%3600/60));$('#ts').textContent=pad(s%60)}
+tick();setInterval(tick,1000);
+renderCats();renderFilters();renderGrid();renderBundles();renderCart();
+</script>
+</body>
+</html>
