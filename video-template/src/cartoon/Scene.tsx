@@ -32,7 +32,7 @@ const Tuft = ({x, y, s = 1, c = '#3e8a2c'}: {x: number; y: number; s?: number; c
     fill={c} stroke={L} strokeWidth={5} strokeLinejoin="round" />
 );
 
-const Backyard = ({cam}: {cam: number}) => (
+export const Backyard = ({cam}: {cam: number}) => (
   <svg viewBox="0 0 1080 1920" style={{position: 'absolute', inset: 0}}>
     <defs>
       <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#3fb1ec" /><stop offset="0.7" stopColor="#a9defa" /><stop offset="1" stopColor="#d5f0fd" /></linearGradient>

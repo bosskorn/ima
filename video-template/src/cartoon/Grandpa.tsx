@@ -3,12 +3,16 @@ import React from 'react';
 // ตัวละครเวกเตอร์วาดด้วยโค้ด สไตล์การ์ตูนลายเส้นหนา + แรเงา 2 ชั้น
 // สัดส่วน: หัวโต ตัวเล็ก แขนขาเรียวยาว (แบบการ์ตูนเล่าเรื่องใน Reels)
 // phase = จังหวะก้าว, walking, wave 0..1, eyes: 'happy' (ยิ้มหลับตา) | 'open' | 'blink', mouth
-export type Pose = {phase: number; walking: boolean; wave?: number; eyes?: 'happy' | 'open' | 'blink'; mouth?: 'smile' | 'open' | 'flat'};
+export type Pose = {kid?: boolean; hold?: boolean; phase: number; walking: boolean; wave?: number; eyes?: 'happy' | 'open' | 'blink'; mouth?: 'smile' | 'open' | 'flat'};
 
-export const PAL = {
+const GRANDPA = {
   line: '#151515', skin: '#fde3cc', skinSh: '#efc3a2', hair: '#ffffff', hairSh: '#d9dde3',
   shirt: '#7cc576', shirtSh: '#55a253', pants: '#8a5a2b', pantsSh: '#6b431d', shoe: '#1d1d1d',
 };
+const KID = {...GRANDPA, skin: '#f6d2b0', skinSh: '#e2b08a', hair: '#2b2118', hairSh: '#4a3a2c', shirt: '#f2c230', shirtSh: '#d39d12', pants: '#3a64b0', pantsSh: '#284a88', shoe: '#c0392b'};
+// สีทั้งหมดอ่านจาก CSS variable -> ตัวละครเดียวกันเปลี่ยนชุดสีได้
+export const PAL = Object.fromEntries(Object.keys(GRANDPA).map((k) => [k, `var(--${k})`])) as Record<keyof typeof GRANDPA, string>;
+const vars = (pal: typeof GRANDPA) => Object.fromEntries(Object.entries(pal).map(([k, v]) => [`--${k}`, v])) as React.CSSProperties;
 const LW = 7;
 
 // แขน/ขาเรียว: สองท่อน หมุนที่ข้อต่อ (เส้นขอบ + ไส้ + เงาด้านหลัง)
@@ -48,7 +52,7 @@ const Hand = ({pointing}: {pointing?: boolean}) => (
   </g>
 );
 
-export const Grandpa = ({phase, walking, wave = 0, eyes = 'happy', mouth = 'smile'}: Pose) => {
+export const Grandpa = ({kid, hold, phase, walking, wave = 0, eyes = 'happy', mouth = 'smile'}: Pose) => {
   const s = walking ? Math.sin(phase) : 0;
   const bob = walking ? -Math.abs(Math.cos(phase)) * 10 : Math.sin(phase * 0.35) * 2.5;
   const tilt = walking ? Math.sin(phase * 2) * 1.5 : Math.sin(phase * 0.35) * 1; // หัวเอียงนิดๆ
@@ -57,12 +61,11 @@ export const Grandpa = ({phase, walking, wave = 0, eyes = 'happy', mouth = 'smil
   const legA = s * 24 - standSpread, legB = -s * 24 + standSpread;
   const armFar = s * 22 + 8;
   const armNear = -s * 22 - 8;
-  const waveA = -130 * wave + armNear * (1 - wave);
-  const waveB = -20 - 25 * wave;
+  const waveA = hold ? -40 : -130 * wave + armNear * (1 - wave);
+  const waveB = hold ? -50 : -20 - 25 * wave;
 
   return (
-    <g transform={`translate(0 ${bob})`}>
-      {/* เงาพื้น */}
+    <g transform={`translate(0 ${bob})`} style={vars(kid ? KID : GRANDPA)}>
       {/* ขาไกล */}
       <Limb x={-14} y={250} a1={legB} a2={knee(-s)} l1={118} l2={118} fill={PAL.pantsSh} shade={PAL.pantsSh} width={30} end={<Shoe />} />
       {/* แขนไกล */}
@@ -90,11 +93,17 @@ export const Grandpa = ({phase, walking, wave = 0, eyes = 'happy', mouth = 'smil
         {/* หน้า */}
         <path d="M -114 -20 C -118 70 -70 128 0 128 C 70 128 118 70 114 -20 C 110 -100 -110 -100 -114 -20 Z" fill={PAL.skin} stroke={PAL.line} strokeWidth={LW} />
         <path d="M 70 100 C 100 80 116 40 114 -10 C 104 40 90 76 60 104 Z" fill={PAL.skinSh} />
-        {/* ผมขาวฟูเป็นแฉก */}
+        {kid ? (
+          <path d="M -120 10 C -130 -80 -60 -120 0 -118 C 70 -122 132 -80 120 10 C 110 -20 96 -40 70 -46 C 74 -30 60 -24 50 -40 C 30 -24 -6 -26 -14 -48 C -30 -30 -70 -30 -80 -50 C -96 -40 -110 -20 -120 10 Z"
+            fill={PAL.hair} stroke={PAL.line} strokeWidth={LW} strokeLinejoin="round" />
+        ) : (
+          <>
         <path d="M -126 30 C -146 -10 -136 -60 -112 -78 C -124 -110 -86 -140 -60 -126 C -56 -168 -6 -170 6 -140 C 22 -176 74 -166 74 -128 C 110 -144 140 -110 124 -76 C 150 -54 146 -6 126 26
                  C 118 0 112 -20 104 -36 C 96 -18 80 -14 70 -22 C 74 -44 64 -60 50 -66 C 40 -46 14 -40 -2 -56 C -14 -36 -46 -34 -60 -52 C -70 -36 -90 -30 -100 -40 C -108 -20 -116 0 -126 30 Z"
           fill={PAL.hair} stroke={PAL.line} strokeWidth={LW} strokeLinejoin="round" />
         <path d="M 60 -120 C 90 -126 116 -104 112 -80 M -40 -126 C -20 -140 0 -136 4 -128" fill="none" stroke={PAL.hairSh} strokeWidth={6} strokeLinecap="round" />
+          </>
+        )}
         {/* แว่นกลม + ตา */}
         {[-46, 46].map((x) => (
           <g key={x}>
@@ -105,12 +114,12 @@ export const Grandpa = ({phase, walking, wave = 0, eyes = 'happy', mouth = 'smil
             ) : (
               <path d={`M ${x - 18} 28 Q ${x} 8 ${x + 18} 28`} fill="none" stroke={PAL.line} strokeWidth={LW * 0.8} strokeLinecap="round" />
             )}
-            <circle cx={x} cy={22} r={38} fill="rgba(255,255,255,.08)" stroke={PAL.line} strokeWidth={LW * 0.75} />
-            <path d={`M ${x - 22} 2 Q ${x - 10} -8 ${x + 4} -6`} stroke="#fff" strokeWidth={4} fill="none" strokeLinecap="round" opacity={0.8} />
+            {!kid && <circle cx={x} cy={22} r={38} fill="rgba(255,255,255,.08)" stroke={PAL.line} strokeWidth={LW * 0.75} />}
+            {!kid && <path d={`M ${x - 22} 2 Q ${x - 10} -8 ${x + 4} -6`} stroke="#fff" strokeWidth={4} fill="none" strokeLinecap="round" opacity={0.8} />}
           </g>
         ))}
-        <path d="M -8 18 Q 0 10 8 18" fill="none" stroke={PAL.line} strokeWidth={LW * 0.75} />
-        <path d="M -84 20 L -112 10 M 84 20 L 112 10" stroke={PAL.line} strokeWidth={LW * 0.75} strokeLinecap="round" />
+        {!kid && <path d="M -8 18 Q 0 10 8 18" fill="none" stroke={PAL.line} strokeWidth={LW * 0.75} />}
+        {!kid && <path d="M -84 20 L -112 10 M 84 20 L 112 10" stroke={PAL.line} strokeWidth={LW * 0.75} strokeLinecap="round" />}
         {/* จมูก + ปาก */}
         <path d="M 4 50 Q 14 62 2 66" fill="none" stroke={PAL.line} strokeWidth={LW * 0.6} strokeLinecap="round" />
         {mouth === 'open' ? (

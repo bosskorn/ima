@@ -1,0 +1,86 @@
+{
+ "audio": "story_vo.m4a",
+ "scenes": [
+  {
+   "beat": "ballIn",
+   "text": [
+    {
+     "text": "ลูกบอลลอยมาอีกแล้ว!",
+     "color": "yellow"
+    }
+   ],
+   "start": 0.0,
+   "end": 4.31
+  },
+  {
+   "beat": "grumble",
+   "text": [
+    {
+     "text": "บ่นทุกครั้ง..."
+    },
+    {
+     "text": "แต่ก็โยนคืนทุกครั้ง",
+     "color": "yellow"
+    }
+   ],
+   "start": 4.31,
+   "end": 8.15
+  },
+  {
+   "beat": "waiting",
+   "text": [
+    {
+     "text": "แต่วันหนึ่ง..."
+    },
+    {
+     "text": "บอลไม่มาอีกเลย",
+     "color": "red"
+    }
+   ],
+   "start": 8.15,
+   "end": 11.62
+  },
+  {
+   "beat": "worried",
+   "text": [
+    {
+     "text": "3 วันผ่านไป"
+    },
+    {
+     "text": "คุณตาเริ่มเป็นห่วง",
+     "color": "red"
+    }
+   ],
+   "start": 11.62,
+   "end": 15.79
+  },
+  {
+   "beat": "kidArrives",
+   "text": [
+    {
+     "text": "ผมหายป่วยแล้วครับ"
+    },
+    {
+     "text": "เล่นด้วยกันไหม?",
+     "color": "yellow"
+    }
+   ],
+   "start": 15.79,
+   "end": 22.12
+  },
+  {
+   "beat": "together",
+   "text": [
+    {
+     "text": "คนที่บ่นเรา"
+    },
+    {
+     "text": "อาจแคร์เรามากที่สุด",
+     "color": "yellow"
+    }
+   ],
+   "start": 22.12,
+   "end": 26.08
+  }
+ ]
+}
