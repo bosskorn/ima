@@ -20,7 +20,7 @@ const strokeStyle = (size: number, color: string): React.CSSProperties => ({
 });
 
 export type Line = {text: string; color?: 'white' | 'red' | 'yellow'};
-export type Caption = {start: number; end: number; lines: Line[]}; // หน่วยวินาที
+export type Caption = {start: number; end: number; lines: Line[]; image?: string}; // หน่วยวินาที; image = ไฟล์ใน public/
 export type HookProps = {
   video?: string; // ไฟล์ใน public/ เช่น "clip.mp4" (ไม่ใส่ = พื้นหลังตัวอย่าง)
   sourceIsLandscape?: boolean; // คลิปแนวนอน -> เติมขอบด้วยภาพเบลอ
@@ -28,6 +28,21 @@ export type HookProps = {
   hookEnd: number; // วินาทีที่ hook หายไป
   captions: Caption[]; // ข้อความ/ซับตามเวลา
   audio?: string; // เสียงพากย์ใน public/ (สร้างโดย scripts/make_video.py)
+  hookImage?: string; // ภาพพื้นหลังช่วง hook
+  credit?: string; // เครดิตภาพ (แสดงตัวเล็กมุมล่าง)
+};
+
+// ภาพนิ่ง + Ken Burns (ซูม/แพนช้าๆ) + เฟดเข้า
+const KenBurns = ({src, dur, dir}: {src: string; dur: number; dir: number}) => {
+  const f = useCurrentFrame();
+  const p = interpolate(f, [0, dur], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.inOut(Easing.sin)});
+  const fade = interpolate(f, [0, 6], [0, 1], {extrapolateRight: 'clamp'});
+  return (
+    <AbsoluteFill style={{opacity: fade, overflow: 'hidden', background: '#000'}}>
+      <img src={staticFile(src)} style={{width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(.8) saturate(1.1)',
+        transform: `scale(${1.05 + 0.1 * p}) translateX(${dir * (p - 0.5) * 40}px)`}} />
+    </AbsoluteFill>
+  );
 };
 
 const PopLines = ({lines, size, exitAt}: {lines: Line[]; size: number; exitAt: number}) => {
@@ -68,15 +83,34 @@ const Footage = ({video, landscape}: {video?: string; landscape?: boolean}) => {
   );
 };
 
-export const HookStyle = ({video, sourceIsLandscape, hook, hookEnd, captions, audio}: HookProps) => {
-  const {fps} = useVideoConfig();
+export const HookStyle = ({video, sourceIsLandscape, hook, hookEnd, captions, audio, hookImage, credit}: HookProps) => {
+  const {fps, durationInFrames} = useVideoConfig();
   const hookFrames = Math.round(hookEnd * fps);
+  // ภาพประกอบค้างจนถึงฉากถัดไปที่มีภาพ (ไม่มีช่วงดำ)
+  const imgs = [{start: 0, image: hookImage}, ...captions.map((c) => ({start: c.start, image: c.image}))]
+    .map((x, i, arr) => ({...x, end: arr[i + 1]?.start}))
+    .filter((x) => x.image);
   return (
     <AbsoluteFill>
       <style>{fontCss}</style>
       {audio && <Audio src={staticFile(audio)} />}
       <Footage video={video} landscape={sourceIsLandscape} />
-      <AbsoluteFill style={{background: 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.45))'}} />
+      {imgs.map((x, i) => {
+        const from = Math.round(x.start * fps);
+        const nextImg = imgs[i + 1];
+        const to = nextImg ? Math.round(nextImg.start * fps) + 6 : durationInFrames;
+        return (
+          <Sequence key={i} from={from} durationInFrames={Math.max(1, to - from)}>
+            <KenBurns src={x.image!} dur={to - from} dir={i % 2 ? -1 : 1} />
+          </Sequence>
+        );
+      })}
+      <AbsoluteFill style={{background: 'radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.55))'}} />
+      {credit && (
+        <div style={{position: 'absolute', left: 30, right: 30, bottom: 30, fontFamily: 'sans-serif', fontSize: 18, color: 'rgba(255,255,255,.6)', textShadow: '0 1px 2px #000'}}>
+          {credit}
+        </div>
+      )}
       <Sequence durationInFrames={hookFrames}>
         <AbsoluteFill style={{justifyContent: 'center', alignItems: 'center', padding: 60}}>
           <PopLines lines={hook} size={118} exitAt={hookFrames} />

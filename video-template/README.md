@@ -24,6 +24,13 @@ python3 scripts/make_video.py scripts/example_script.json out/video.mp4
 - `"tts": "edge"` เสียง Microsoft Neural ฟรี ไม่ต้องมี key (ต้องต่อเน็ต) · `"tts": "mms"` รันในเครื่อง 100%
 - เสียง: `th-TH-NiwatNeural` (ชาย) / `th-TH-PremwadeeNeural` (หญิง)
 - ใส่ `"video": "clip.mp4"` เพื่อใช้คลิปจริงเป็นพื้นหลัง
+- ภาพประกอบต่อฉาก: `"image": "img_x.jpg"` (ไฟล์ใน public/) หรือคำค้นภาษาอังกฤษ (หาอัตโนมัติ แต่อาจไม่ตรงเรื่อง)
+- เลือกภาพเองให้ตรงเรื่อง (แนะนำ):
+  ```bash
+  python3 scripts/find_images.py "used car lot"          # -> out/candidates/.../sheet.jpg ภาพตัวเลือกมีเลข
+  python3 scripts/find_images.py --pick "used car lot" 5 img_lot.jpg
+  ```
+  ภาพมาจาก Openverse (CC ใช้เชิงพาณิชย์ได้) — ต้องใส่เครดิตใน `"credit"`; หลีกเลี่ยง BY-ND (ห้ามดัดแปลง)
 
 ## ใช้งานกับคลิปที่ถ่ายเอง
 ```bash
