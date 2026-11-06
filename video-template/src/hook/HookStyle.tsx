@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, OffthreadVideo, Sequence, spring, interpolate, Easing, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Audio, OffthreadVideo, Sequence, spring, interpolate, Easing, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 
 // ---- theme: แก้สี/ฟอนต์ที่นี่ที่เดียว ----
 export const T = {
@@ -27,6 +27,7 @@ export type HookProps = {
   hook: Line[]; // ข้อความเปิดคลิปกลางจอ
   hookEnd: number; // วินาทีที่ hook หายไป
   captions: Caption[]; // ข้อความ/ซับตามเวลา
+  audio?: string; // เสียงพากย์ใน public/ (สร้างโดย scripts/make_video.py)
 };
 
 const PopLines = ({lines, size, exitAt}: {lines: Line[]; size: number; exitAt: number}) => {
@@ -38,8 +39,11 @@ const PopLines = ({lines, size, exitAt}: {lines: Line[]; size: number; exitAt: n
       {lines.map((l, i) => {
         const s = spring({frame: f - i * 4, fps, config: T.pop});
         const wob = Math.sin((f - i * 4) / 9) * 0.012 * s; // ขยับเบาๆ ตอนค้างจอ
+        // ย่อฟอนต์อัตโนมัติให้อยู่บรรทัดเดียว (ไม่นับสระบน/ล่างและวรรณยุกต์ที่ไม่กินที่)
+        const visible = l.text.replace(/[ัิ-ฺ็-๎]/g, '').length;
+        const fit = Math.min(size, Math.floor(900 / (visible * 0.56)));
         return (
-          <div key={i} style={{...strokeStyle(size, T[l.color ?? 'white']), textAlign: 'center', opacity: Math.min(1, s * 1.5) * (1 - out),
+          <div key={i} style={{...strokeStyle(fit, T[l.color ?? 'white']), whiteSpace: 'nowrap', textAlign: 'center', opacity: Math.min(1, s * 1.5) * (1 - out),
             transform: `translateY(${(1 - s) * 60}px) scale(${(0.4 + 0.6 * s) * (1 + wob) * (1 - 0.3 * out)}) rotate(${(1 - s) * -6}deg)`}}>
             {l.text}
           </div>
@@ -64,12 +68,13 @@ const Footage = ({video, landscape}: {video?: string; landscape?: boolean}) => {
   );
 };
 
-export const HookStyle = ({video, sourceIsLandscape, hook, hookEnd, captions}: HookProps) => {
+export const HookStyle = ({video, sourceIsLandscape, hook, hookEnd, captions, audio}: HookProps) => {
   const {fps} = useVideoConfig();
   const hookFrames = Math.round(hookEnd * fps);
   return (
     <AbsoluteFill>
       <style>{fontCss}</style>
+      {audio && <Audio src={staticFile(audio)} />}
       <Footage video={video} landscape={sourceIsLandscape} />
       <AbsoluteFill style={{background: 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.45))'}} />
       <Sequence durationInFrames={hookFrames}>

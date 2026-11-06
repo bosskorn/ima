@@ -2,3 +2,4 @@ node_modules/
 out/
 public/*.mp4
 public/*.mov
+public/voice.m4a

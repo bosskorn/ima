@@ -14,7 +14,18 @@
 | `scripts/transcribe.py` | ถอดเสียงไทยพร้อมเวลาด้วย Whisper |
 | `.claude/skills/remotion-motion-graphics/` | สกิลโมชันกราฟิก จาก [haidrrrry/claude-remotion-skill](https://github.com/haidrrrry/claude-remotion-skill) (MIT) |
 
-## ใช้งาน
+## สร้างวิดีโออัตโนมัติจากบท (ไม่ต้องมีคลิป, ฟรี)
+เขียนบทตาม `scripts/example_script.json` (ประโยคพากย์ `say` + ข้อความบนจอ `lines`) แล้ว:
+```bash
+pip install edge-tts transformers torch scipy
+python3 scripts/make_video.py scripts/example_script.json out/video.mp4
+```
+ระบบจะสร้างเสียงพากย์ไทย จับเวลาข้อความให้ตรงเสียงพูด แล้วเรนเดอร์ให้เอง
+- `"tts": "edge"` เสียง Microsoft Neural ฟรี ไม่ต้องมี key (ต้องต่อเน็ต) · `"tts": "mms"` รันในเครื่อง 100%
+- เสียง: `th-TH-NiwatNeural` (ชาย) / `th-TH-PremwadeeNeural` (หญิง)
+- ใส่ `"video": "clip.mp4"` เพื่อใช้คลิปจริงเป็นพื้นหลัง
+
+## ใช้งานกับคลิปที่ถ่ายเอง
 ```bash
 cd video-template
 npm install
