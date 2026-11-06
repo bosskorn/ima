@@ -1,0 +1,9 @@
+{
+  "hook": [{"text": "โดนเต็นท์ชื่อดัง", "color": "white"}, {"text": "เอาเปรียบ !!", "color": "red"}],
+  "hookEnd": 2.5,
+  "captions": [
+    {"start": 2.6, "end": 4.2, "lines": [{"text": "ซื้อรถมือสองมา"}, {"text": "เกือบ 10 คัน", "color": "yellow"}]},
+    {"start": 4.2, "end": 6.0, "lines": [{"text": "โดนกรอไมล์"}, {"text": "8 คัน !!", "color": "red"}]},
+    {"start": 6.0, "end": 8.0, "lines": [{"text": "เลยมาหา"}, {"text": "เต็นท์ที่เชื่อถือได้", "color": "yellow"}]}
+  ]
+}
