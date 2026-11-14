@@ -1,11 +1,14 @@
 <script setup>
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import StatusBadge from './StatusBadge.vue'
 import { SERVICES } from '../data/constants'
 import { baht, fmtDT, hoursSince } from '../utils/format'
 
 const props = defineProps({ order: Object, selectable: Boolean, selected: Boolean })
 const emit = defineEmits(['toggle'])
+const route = useRoute()
+const to = computed(() => ({ path: `/orders/${props.order.id}`, query: route.query.label ? { label: 1 } : {} }))
 const svc = computed(() => SERVICES.find((s) => s.id === props.order.service)?.name)
 const late = computed(() => props.order.status === 'received' && hoursSince(props.order.createdAt) > 24)
 </script>
@@ -13,7 +16,7 @@ const late = computed(() => props.order.status === 'received' && hoursSince(prop
 <template>
   <div class="oc card" :class="{ sel: selected, late }" @click="selectable && emit('toggle')">
     <input v-if="selectable" type="checkbox" class="chk" :checked="selected" @click.stop="emit('toggle')" />
-    <component :is="selectable ? 'div' : 'RouterLink'" :to="`/orders/${order.id}`" class="main">
+    <component :is="selectable ? 'div' : 'RouterLink'" :to="to" class="main">
       <div class="row between">
         <b class="no">{{ order.trackingNo }}</b>
         <StatusBadge v-if="!selectable" :status="order.status" />
@@ -29,7 +32,7 @@ const late = computed(() => props.order.status === 'received' && hoursSince(prop
         </span>
       </div>
     </component>
-    <RouterLink v-if="selectable" :to="`/orders/${order.id}`" class="detail" @click.stop>ดู ›</RouterLink>
+    <RouterLink v-if="selectable" :to="to" class="detail" @click.stop>ดู ›</RouterLink>
   </div>
 </template>
 

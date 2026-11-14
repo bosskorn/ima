@@ -1,0 +1,35 @@
+<script setup>
+import { ref, computed } from 'vue'
+import AppHeader from '../components/AppHeader.vue'
+import { calcFee } from '../api'
+import { SERVICES } from '../data/constants'
+import { baht } from '../utils/format'
+
+const w = ref(''); const cod = ref('')
+const valid = computed(() => Number(w.value) > 0)
+const rows = computed(() => SERVICES.map((s) => ({ ...s, ...calcFee({ weight: w.value, service: s.id, cod: Number(cod.value) || 0 }) })))
+</script>
+
+<template>
+  <div class="page">
+    <AppHeader back title="เช็คราคา" sub="ตอบลูกค้าที่ถามราคาหน้าร้าน" />
+    <div class="card">
+      <label class="field"><span>น้ำหนัก (กก.)</span><input v-model="w" inputmode="decimal" placeholder="0.0" /></label>
+      <label class="field"><span>ยอด COD (ถ้ามี)</span><input v-model="cod" inputmode="numeric" placeholder="0" /></label>
+      <div class="chip-row"><button v-for="n in [0.5, 1, 2, 3, 5, 10, 20]" :key="n" class="chip" :class="{ on: Number(w) === n }" @click="w = String(n)">{{ n }} กก.</button></div>
+    </div>
+    <div v-if="valid" class="card">
+      <div v-for="r in rows" :key="r.id" class="rw">
+        <div><div>{{ r.name }}</div><small class="muted">ส่งถึง {{ r.eta }}<span v-if="r.codFee"> · ค่า COD {{ baht(r.codFee) }} (หักจากยอด COD)</span></small></div>
+        <div class="pr">{{ baht(r.shipping) }}</div>
+      </div>
+      <RouterLink class="btn block" style="margin-top:12px;text-decoration:none" to="/receive">ไปรับพัสดุ</RouterLink>
+    </div>
+    <p v-else class="muted" style="text-align:center;margin-top:24px">กรอกน้ำหนักเพื่อดูราคา</p>
+  </div>
+</template>
+
+<style scoped>
+.rw { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); } .rw:last-of-type { border: 0; }
+.pr { font-size: 22px; color: var(--primary); }
+</style>

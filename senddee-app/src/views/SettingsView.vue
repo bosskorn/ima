@@ -16,7 +16,7 @@ async function reset() { if (confirm('ล้างข้อมูลทดลอ
 
 <template>
   <div class="page">
-    <AppHeader back title="ตั้งค่า" :sub="`${session.name} (${session.id})`" />
+    <AppHeader title="โปรไฟล์และตั้งค่า" :sub="`${session.name} (${session.id})`" />
     <div class="card">
       <div class="bold" style="margin-bottom:10px">ข้อมูลสาขา (แสดงบนใบปะหน้า)</div>
       <label class="field"><span>ชื่อสาขา</span><input v-model="f.branch" /></label>

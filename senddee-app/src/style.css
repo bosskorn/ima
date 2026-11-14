@@ -3,10 +3,10 @@
   --primary-dark: #115e59;
   --primary-soft: #ccfbf1;
   --accent: #f97316;
-  --bg: #f3f6f6;
+  --bg: #f0f0f0;
   --card: #ffffff;
-  --text: #0f172a;
-  --muted: #64748b;
+  --text: #3b4047;
+  --muted: #8a9099;
   --line: #e2e8f0;
   --danger: #dc2626;
   --radius: 8px;
@@ -15,7 +15,7 @@
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
-  font-family: 'Noto Sans Thai', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 400; }
+  font-family: 'Sarabun', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size: 15px; font-weight: 400; }
 b, strong, h1, h2, h3, th { font-weight: 500; }
 #app { min-height: 100%; max-width: 560px; margin: 0 auto; background: var(--bg); position: relative; }
 h1, h2, h3, p { margin: 0; }

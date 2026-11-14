@@ -1,5 +1,6 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import OrderCard from '../components/OrderCard.vue'
 import BottomSheet from '../components/BottomSheet.vue'
 import { useOrders } from '../stores/orders'
@@ -7,7 +8,15 @@ import { scanBarcode, canCameraScan } from '../utils/scanner'
 import { toast } from '../utils/toast'
 
 const orders = useOrders()
-onMounted(() => orders.load())
+const route = useRoute()
+const onlyLate = ref(route.query.filter === 'overdue')
+function applyQuery() {
+  onlyLate.value = route.query.filter === 'overdue'
+  tab.value = 'waiting'
+  if (route.query.select === 'all') selected.value = new Set(waiting.value.map((o) => o.id))
+}
+onMounted(async () => { await orders.load(); applyQuery() })
+watch(() => route.fullPath, () => route.path === '/shop' && applyQuery())
 
 const tab = ref('waiting')
 const selected = ref(new Set())
@@ -16,7 +25,7 @@ const checked = ref(new Set())
 const scanInput = ref('')
 const busy = ref(false)
 
-const waiting = computed(() => orders.waiting)
+const waiting = computed(() => (onlyLate.value ? orders.overdue : orders.waiting))
 const done = computed(() => orders.list.filter((o) => o.status === 'handed_over'))
 const chosen = computed(() => waiting.value.filter((o) => selected.value.has(o.id)))
 const allSel = computed(() => waiting.value.length > 0 && chosen.value.length === waiting.value.length)
@@ -51,6 +60,7 @@ async function confirm() {
     <div class="chip-row" style="margin-bottom:6px">
       <button class="chip" :class="{ on: tab === 'waiting' }" @click="tab = 'waiting'">รอส่งมอบ ({{ waiting.length }})</button>
       <button class="chip" :class="{ on: tab === 'done' }" @click="tab = 'done'">ส่งมอบแล้ว ({{ done.length }})</button>
+      <button v-if="tab === 'waiting'" class="chip" :class="{ on: onlyLate }" @click="onlyLate = !onlyLate">ค้างเกิน 24 ชม. ({{ orders.overdue.length }})</button>
     </div>
 
     <template v-if="tab === 'waiting'">
@@ -80,7 +90,7 @@ async function confirm() {
       <div class="muted" style="margin:4px 0 8px">ตรวจแล้ว {{ checked.size }} / {{ chosen.length }}</div>
       <label v-for="o in chosen" :key="o.id" class="ck">
         <input type="checkbox" :checked="checked.has(o.id)" @change="checked = new Set(checked.has(o.id) ? [...checked].filter((x) => x !== o.id) : [...checked, o.id])" />
-        <span class="grow"><b>{{ o.trackingNo }}</b><small class="muted"> {{ o.receiver.province }} · {{ o.parcel.weight }} กก.</small></span>
+        <span class="grow"><b>{{ o.trackingNo }}</b><small class="muted" style="margin-left:8px">{{ o.receiver.province }} · {{ o.parcel.weight }} กก.</small></span>
       </label>
       <template #footer>
         <button class="btn ghost" @click="sheet = false">ยกเลิก</button>

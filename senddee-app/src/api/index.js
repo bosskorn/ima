@@ -155,4 +155,25 @@ export function summarize(list, day = isToday) {
   }
 }
 
-export async function resetDemo() { localStorage.removeItem(KEY); localStorage.removeItem('senddee.ho.seq'); return load() }
+export async function resetDemo() { ['senddee.ho.seq','senddee.staff.issues.v1','senddee.staff.closings.v1'].forEach((k) => localStorage.removeItem(k)); localStorage.removeItem(KEY); return load() }
+
+// ---- issue reports & cash closing (mock, stored on device) ----
+const IKEY = 'senddee.staff.issues.v1'
+const CKEY = 'senddee.staff.closings.v1'
+const readJson = (k) => { try { return JSON.parse(localStorage.getItem(k) || '[]') } catch { return [] } }
+export async function listIssues() { await delay(100); return readJson(IKEY) }
+export async function createIssue(issue, staff) {
+  await delay(250)
+  const list = readJson(IKEY)
+  const it = { id: 'IS' + String(list.length + 1).padStart(4, '0'), at: now(), status: 'open', by: staff.name, ...issue }
+  list.unshift(it); try { localStorage.setItem(IKEY, JSON.stringify(list)) } catch {}
+  return it
+}
+export async function listClosings() { await delay(100); return readJson(CKEY) }
+export async function closeDay({ expected, counted, note }, staff) {
+  await delay(300)
+  const list = readJson(CKEY)
+  const c = { id: 'CL' + String(list.length + 1).padStart(4, '0'), at: now(), expected, counted, diff: counted - expected, note: note || '', by: staff.name }
+  list.unshift(c); try { localStorage.setItem(CKEY, JSON.stringify(list)) } catch {}
+  return c
+}

@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import AppHeader from '../components/AppHeader.vue'
 import StatusBadge from '../components/StatusBadge.vue'
 import Timeline from '../components/Timeline.vue'
@@ -12,11 +13,12 @@ import { SERVICES, PAYMENTS } from '../data/constants'
 
 const props = defineProps({ id: String })
 const orders = useOrders()
-onMounted(() => orders.load())
+const route = useRoute()
+const labelOpen = ref(false)
+onMounted(async () => { await orders.load(); if (route.query.label) labelOpen.value = true })
 const o = computed(() => orders.byId(props.id))
 const svc = computed(() => SERVICES.find((s) => s.id === o.value?.service))
 const pay = computed(() => PAYMENTS.find((p) => p.id === o.value?.payment.method)?.label)
-const labelOpen = ref(false)
 const voidOpen = ref(false)
 const reason = ref('')
 const reasons = ['ลูกค้าเปลี่ยนใจ', 'กรอกที่อยู่ผิด', 'น้ำหนัก/บริการผิด', 'สินค้าส่งไม่ได้']

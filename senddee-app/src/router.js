@@ -10,7 +10,10 @@ const routes = [
   { path: '/search', component: () => import('./views/SearchView.vue'), meta: { tab: true } },
   { path: '/summary', component: () => import('./views/SummaryView.vue'), meta: { tab: true } },
   { path: '/orders/:id', component: () => import('./views/OrderDetailView.vue'), props: true },
-  { path: '/settings', component: () => import('./views/SettingsView.vue') },
+  { path: '/settings', component: () => import('./views/SettingsView.vue'), meta: { tab: true } },
+  { path: '/quote', component: () => import('./views/QuoteView.vue') },
+  { path: '/issues', component: () => import('./views/IssuesView.vue') },
+  { path: '/news', component: () => import('./views/NewsView.vue'), meta: { tab: true } },
 ]
 
 const router = createRouter({ history: createWebHashHistory(), routes, scrollBehavior: () => ({ top: 0 }) })

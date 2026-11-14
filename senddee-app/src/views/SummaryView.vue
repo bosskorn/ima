@@ -1,5 +1,9 @@
 <script setup>
-import { onMounted, computed } from 'vue'
+import { onMounted, ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import BottomSheet from '../components/BottomSheet.vue'
+import { listClosings, closeDay } from '../api'
+import { isToday, fmtT } from '../utils/format'
 import { useOrders } from '../stores/orders'
 import { useSession } from '../stores/session'
 import { toast } from '../utils/toast'
@@ -7,7 +11,16 @@ import { baht } from '../utils/format'
 import { PAYMENTS, SERVICES, COMMISSION_RATE } from '../data/constants'
 
 const orders = useOrders(); const session = useSession()
-onMounted(() => orders.load())
+const route = useRoute()
+const closeOpen = ref(false); const counted = ref(''); const note = ref(''); const closings = ref([])
+const todayClose = computed(() => closings.value.find((c) => isToday(c.at)))
+onMounted(async () => { orders.load(); closings.value = await listClosings(); if (route.query.close) closeOpen.value = true })
+const diff = computed(() => (counted.value === '' ? null : Number(counted.value) - (s.value.byPay.cash || 0)))
+async function doClose() {
+  if (counted.value === '') return toast('กรอกยอดเงินสดที่นับได้')
+  await closeDay({ expected: s.value.byPay.cash || 0, counted: Number(counted.value), note: note.value }, session)
+  closings.value = await listClosings(); closeOpen.value = false; toast('บันทึกปิดยอดแล้ว')
+}
 const s = computed(() => orders.summary)
 const date = new Date().toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 
@@ -48,8 +61,20 @@ async function share() {
       <p class="muted">อัตราค่าคอมเป็นค่าสมมติ ปรับตามเงื่อนไขแฟรนไชส์จริงได้</p>
     </div>
 
+    <div class="card">
+      <div v-if="todayClose" class="kv"><span>ปิดยอดแล้ว {{ fmtT(todayClose.at) }} โดย {{ todayClose.by }}</span><span :style="{ color: todayClose.diff ? 'var(--danger)' : 'var(--primary)' }">{{ todayClose.diff ? `ผลต่าง ${baht(todayClose.diff)}` : 'ยอดตรง' }}</span></div>
+      <button class="btn block" :class="todayClose ? 'ghost' : ''" @click="closeOpen = true">{{ todayClose ? 'ปิดยอดอีกครั้ง' : 'ปิดยอดเงินสด' }}</button>
+    </div>
+
     <RouterLink v-if="orders.waiting.length" to="/shop" class="alert">⚠️ ยังมีพัสดุรอส่งมอบ {{ orders.waiting.length }} ชิ้น ›</RouterLink>
     <button class="btn block" style="margin-top:12px" @click="share">ส่งสรุปเข้า LINE / แชร์</button>
+    <BottomSheet :open="closeOpen" title="ปิดยอดเงินสด" @close="closeOpen = false">
+      <div class="kv"><span class="muted">เงินสดตามระบบ</span><b>{{ baht(s.byPay.cash || 0) }}</b></div>
+      <label class="field" style="margin-top:10px"><span>นับเงินสดในลิ้นชักได้ (บาท)</span><input v-model="counted" inputmode="numeric" /></label>
+      <div v-if="diff !== null" class="kv" :style="{ color: diff ? 'var(--danger)' : 'var(--primary)' }"><span>ผลต่าง</span><b>{{ diff === 0 ? 'ยอดตรง' : baht(diff) }}</b></div>
+      <label class="field" style="margin-top:10px"><span>หมายเหตุ (ถ้ามี)</span><input v-model="note" /></label>
+      <template #footer><button class="btn ghost" @click="closeOpen = false">ยกเลิก</button><button class="btn accent" style="flex:1" @click="doClose">บันทึกปิดยอด</button></template>
+    </BottomSheet>
   </div>
 </template>
 
