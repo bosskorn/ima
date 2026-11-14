@@ -22,7 +22,7 @@ const late = computed(() => props.order.status === 'received' && hoursSince(prop
         <StatusBadge v-if="!selectable" :status="order.status" />
         <span v-else-if="late" class="badge red">ค้างเกิน 24 ชม.</span>
       </div>
-      <div class="bold name">{{ order.receiver.name }}</div>
+      <div class="bold name">{{ order.receiver.name }}<span v-if="order.pickup === 'home'" class="tag">รับที่บ้าน</span></div>
       <div class="muted">{{ order.receiver.province }} · {{ order.parcel.weight }} กก. · {{ svc }}</div>
       <div class="row between foot">
         <span class="muted">{{ fmtDT(order.createdAt) }}</span>
@@ -46,4 +46,5 @@ const late = computed(() => props.order.status === 'received' && hoursSince(prop
 .foot { margin-top: 6px; } .small { gap: 8px; }
 .cod { color: var(--accent); font-weight: 500; font-size: 12px; }
 .detail { color: var(--primary); font-size: 13px; font-weight: 500; text-decoration: none; align-self: center; }
+.tag { margin-left: 8px; font-size: 11px; color: var(--primary); background: var(--primary-soft); border-radius: 4px; padding: 1px 6px; font-weight: 400; }
 </style>

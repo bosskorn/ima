@@ -26,7 +26,8 @@ const service = ref(session.defaultService)
 const useCod = ref(false)
 const cod = ref('')
 const payment = ref(session.defaultPayment)
-const sender = reactive({ name: '', phone: '' })
+const pickup = ref('shop')
+const sender = reactive({ name: '', phone: '', address: '' })
 const trackingNo = ref('')
 const busy = ref(false)
 const tried = ref(false)
@@ -65,6 +66,11 @@ const errors = computed(() => {
   const w = Number(weight.value)
   if (!(w > 0)) e.weight = 'ชั่งน้ำหนัก'
   else if (w > MAX_WEIGHT_KG) e.weight = `สูงสุด ${MAX_WEIGHT_KG} กก.`
+  if (pickup.value === 'home') {
+    if (sender.name.trim().length < 2) e.sname = 'กรอกชื่อผู้ฝากส่ง'
+    if (!/^0\d{8,9}$/.test(sender.phone)) e.sphone = 'เบอร์ผู้ฝากส่งไม่ถูกต้อง'
+    if (sender.address.trim().length < 5) e.saddr = 'กรอกที่อยู่ที่ไปรับพัสดุ'
+  }
   if (useCod.value && !(codAmount.value > 0)) e.cod = 'กรอกยอด COD'
   else if (codAmount.value > 50000) e.cod = 'COD สูงสุด 50,000'
   return e
@@ -82,7 +88,8 @@ async function submit() {
   try {
     const o = await orders.create({
       trackingNo: trackingNo.value,
-      sender: { name: sender.name.trim() || 'ลูกค้าหน้าร้าน', phone: sender.phone },
+      pickup: pickup.value,
+      sender: { name: sender.name.trim() || 'ลูกค้าหน้าร้าน', phone: sender.phone, address: pickup.value === 'home' ? sender.address.trim() : '' },
       receiver: { ...r, name: r.name.trim(), address: r.address.trim() },
       parcel: { weight: Number(weight.value), type: type.value, note: note.value.trim() },
       service: service.value, cod: codAmount.value, payment: payment.value,
@@ -100,6 +107,11 @@ async function submit() {
         <span>สแกน</span>
       </button>
     </AppHeader>
+
+    <div class="blk">
+      <h4>สถานที่รับพัสดุ</h4>
+      <div class="seg"><button :class="{ on: pickup === 'shop' }" @click="pickup = 'shop'">หน้าร้าน</button><button :class="{ on: pickup === 'home' }" @click="pickup = 'home'">บ้านลูกค้า</button></div>
+    </div>
 
     <!-- tracking number: scan a pre-printed sticker or leave empty to auto-generate -->
     <div class="blk">
@@ -139,8 +151,9 @@ async function submit() {
     <div class="blk">
       <h4>รับเงินจากลูกค้า</h4>
       <div class="chips" style="margin-top:0"><button v-for="p in PAYMENTS" :key="p.id" class="chip" :class="{ on: payment === p.id }" @click="payment = p.id">{{ p.label }}</button></div>
-      <div class="rw"><label>ผู้ฝากส่ง</label><input v-model="sender.name" placeholder="ลูกค้าหน้าร้าน" /></div>
-      <div class="rw"><label>เบอร์ผู้ฝากส่ง</label><input v-model="sender.phone" inputmode="tel" maxlength="10" placeholder="ไม่บังคับ" /></div>
+      <div class="rw" data-f="sname" :class="{ invalid: show('sname') }"><label>ผู้ฝากส่ง</label><input v-model="sender.name" :placeholder="pickup === 'home' ? 'ชื่อลูกค้า' : 'ลูกค้าหน้าร้าน'" /></div>
+      <div class="rw" data-f="sphone" :class="{ invalid: show('sphone') }"><label>เบอร์ผู้ฝากส่ง</label><input v-model="sender.phone" inputmode="tel" maxlength="10" :placeholder="pickup === 'home' ? '08xxxxxxxx' : 'ไม่บังคับ'" /></div>
+      <div v-if="pickup === 'home'" class="rw top" data-f="saddr" :class="{ invalid: show('saddr') }"><label>ที่อยู่รับพัสดุ</label><textarea v-model="sender.address" rows="2" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด" /></div>
       <p v-if="error" class="hint" style="color:var(--danger)">{{ error }}</p>
     </div>
 
@@ -152,6 +165,7 @@ async function submit() {
 </template>
 
 <style scoped>
+.seg { display: flex; background: #eef0f2; border-radius: 10px; padding: 3px; margin: 6px 0 8px; } .seg button { flex: 1; border: 0; background: transparent; padding: 10px 0; border-radius: 8px; font-size: 15px; color: var(--muted); } .seg button.on { background: #fff; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
 .scanbtn { border: 0; background: rgba(255,255,255,.16); color: #fff; border-radius: 8px; padding: 6px 12px; display: flex; align-items: center; gap: 6px; font-size: 14px; }
 .blk { background: #fff; margin: 10px -16px 0; padding: 4px 16px 8px; }
 .blk h4 { margin: 0; padding: 12px 0 4px; font-size: 13px; color: var(--muted); font-weight: 400; }

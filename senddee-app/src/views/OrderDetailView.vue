@@ -92,11 +92,13 @@ async function copyAddr() {
       <hr />
       <div class="bold">ผู้ฝากส่ง</div>
       <p>{{ o.sender?.name || 'ลูกค้าหน้าร้าน' }} <span v-if="o.sender?.phone" class="muted">· {{ o.sender.phone }}</span></p>
+      <p v-if="o.sender?.address" class="muted">{{ o.sender.address }}</p>
     </div>
 
     <div class="card">
       <div class="kv"><span class="muted">ประเภท / น้ำหนัก</span><span>{{ o.parcel.type }} · {{ o.parcel.weight }} กก.</span></div>
       <div v-if="o.parcel.note" class="kv"><span class="muted">หมายเหตุ</span><span>{{ o.parcel.note }}</span></div>
+      <div class="kv"><span class="muted">สถานที่รับ</span><span>{{ o.pickup === 'home' ? 'บ้านลูกค้า' : 'หน้าร้าน' }}</span></div>
       <div class="kv"><span class="muted">รับฝากเมื่อ</span><span>{{ fmtDT(o.createdAt) }}</span></div>
       <div v-if="o.handoverId" class="kv"><span class="muted">ใบส่งมอบ</span><span>{{ o.handoverId }}</span></div>
       <div v-if="o.cod" class="kv"><span class="muted">COD (เก็บปลายทาง)</span><span class="cod">{{ baht(o.cod) }}</span></div>

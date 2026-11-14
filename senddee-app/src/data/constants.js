@@ -20,3 +20,11 @@ export const PAYMENTS = [
   { id: 'transfer', label: 'โอนเงิน' },
 ]
 export const MAX_WEIGHT_KG = 30
+
+export const APP_VERSION = __APP_VERSION__
+export const APP_BUILD = __APP_BUILD__
+// PLACEHOLDERS — replace with the real franchise-network values.
+export const SUPPORT_PHONE = '02-000-0000'
+export const BRANCHES = { LP001: 'สาขาลาดพร้าว', BN002: 'สาขาบางนา' }
+export const DEMO_STAFF = { S001: 'น้องฟ้า', S002: 'พี่ต้น' }
+export const DEMO_PIN = '1234'

@@ -25,7 +25,8 @@ const d = computed(() => new Date(props.order.createdAt).toLocaleString('th-TH',
       <div class="pv">{{ order.receiver.province }} {{ order.receiver.postcode }}</div>
     </div>
     <div class="meta">
-      <div><small>ผู้ส่ง</small> {{ order.sender?.name || 'ลูกค้าหน้าร้าน' }} · {{ session.branch }}</div>
+      <div><small>ผู้ส่ง</small> {{ order.sender?.name || 'ลูกค้าหน้าร้าน' }}<template v-if="order.sender?.phone"> · {{ order.sender.phone }}</template> · {{ session.branch }}</div>
+      <div v-if="order.sender?.address" class="muted">{{ order.sender.address }}</div>
       <div><small>น้ำหนัก</small> {{ order.parcel.weight }} กก. · {{ order.parcel.type }}</div>
       <div class="muted">{{ d }}</div>
     </div>

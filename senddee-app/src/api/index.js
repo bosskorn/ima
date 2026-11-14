@@ -10,6 +10,7 @@ const ago = (h) => new Date(Date.now() - h * 3600e3).toISOString()
 
 const EVT = {
   received: 'ร้านรับพัสดุจากลูกค้า รอส่งมอบให้ขนส่ง',
+  received_home: 'พนักงานรับพัสดุที่บ้านลูกค้า รอส่งมอบให้ขนส่ง',
   handed_over: 'ส่งมอบพัสดุให้ขนส่งแล้ว',
   in_transit: 'พัสดุถึงศูนย์กระจายสินค้า',
   out_for_delivery: 'พนักงานกำลังนำส่งพัสดุให้ผู้รับ',
@@ -88,11 +89,12 @@ export async function createOrder(input, staff) {
   const f = calcFee({ weight: w, service: input.service, cod: input.cod })
   const order = {
     id: no, trackingNo: no, status: 'received', createdAt: now(),
+    pickup: input.pickup === 'home' ? 'home' : 'shop',
     sender: input.sender, receiver: input.receiver, parcel: { ...input.parcel, weight: w },
     service: input.service, cod: input.cod || 0, fee: f.shipping, codFee: f.codFee,
     payment: { method: input.payment, amount: f.shipping },
     receivedBy: { id: staff.id, name: staff.name },
-    events: [{ status: 'received', text: EVT.received, at: now() }],
+    events: [{ status: 'received', text: input.pickup === 'home' ? EVT.received_home : EVT.received, at: now() }],
   }
   list.unshift(order); save(list)
   return order
