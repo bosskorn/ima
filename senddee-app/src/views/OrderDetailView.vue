@@ -61,8 +61,8 @@ async function saveEdit() {
 }
 async function share() {
   const x = o.value
-  const text = `พัสดุ Senddee เลขที่ ${x.trackingNo} ส่งถึง ${x.receiver.name} (${x.receiver.province}) · ฝากส่งที่ ${session.branch} โทร ${session.branchPhone}`
-  if (navigator.share) { try { await navigator.share({ title: 'Senddee', text }); return } catch {} }
+  const text = `พัสดุ SendDee เลขที่ ${x.trackingNo} ส่งถึง ${x.receiver.name} (${x.receiver.province}) · ฝากส่งที่ ${session.branch} โทร ${session.branchPhone}`
+  if (navigator.share) { try { await navigator.share({ title: 'SendDee', text }); return } catch {} }
   try { await navigator.clipboard.writeText(text); toast('คัดลอกข้อความแล้ว ส่งให้ลูกค้าทาง LINE/SMS ได้เลย') } catch { toast(text, 4000) }
 }
 async function copyAddr() {
