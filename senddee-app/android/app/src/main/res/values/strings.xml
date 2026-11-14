@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Senddee</string>
-    <string name="title_activity_main">Senddee</string>
+    <string name="app_name">SendDee</string>
+    <string name="title_activity_main">SendDee Staff</string>
     <string name="package_name">com.senddee.app</string>
     <string name="custom_url_scheme">com.senddee.app</string>
 </resources>

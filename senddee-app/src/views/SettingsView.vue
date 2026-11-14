@@ -93,7 +93,7 @@ async function reset() { await orders.reset(); resetOpen.value = false; toast('�
     </div>
 
     <button class="btn danger block" style="margin-top:12px" @click="logoutOpen = true">ออกจากระบบ</button>
-    <p class="muted" style="text-align:center;margin:14px 0 4px">Senddee Staff v{{ APP_VERSION }}</p>
+    <p class="muted" style="text-align:center;margin:14px 0 4px">SendDee Staff v{{ APP_VERSION }}</p>
 
     <BottomSheet :open="logoutOpen" title="ออกจากระบบ?" @close="logoutOpen = false">
       <p class="muted">ข้อมูลพัสดุที่บันทึกแล้วจะยังอยู่ในเครื่อง ต้องเข้าสู่ระบบใหม่เพื่อใช้งานต่อ</p>

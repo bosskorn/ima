@@ -41,7 +41,7 @@ const active = (t) => (t.to === '/' ? route.path === '/' : route.path.startsWith
 .badge-n { position: absolute; top: -4px; right: -1px; background: #ef4444; color: #fff; font-size: 10px; font-weight: 400; min-width: 17px; height: 17px;
   border-radius: 9px; display: grid; place-items: center; padding: 0 4px; line-height: 1; border: 1.5px solid #fff; box-sizing: content-box; }
 .primary { color: var(--accent); }
-.cta { width: 58px; height: 58px; border-radius: 18px; background: var(--accent); display: grid; place-items: center; margin-top: -26px;
-  border: 4px solid #fff; box-sizing: content-box; box-shadow: 0 4px 10px rgba(249,115,22,.35); }
+.cta { width: 58px; height: 58px; border-radius: 18px; background: linear-gradient(135deg, #0066FF, #0044CC); display: grid; place-items: center; margin-top: -26px;
+  border: 4px solid #fff; box-sizing: content-box; box-shadow: 0 4px 12px rgba(0,102,255,.35); }
 .primary small { font-weight: 500; }
 </style>

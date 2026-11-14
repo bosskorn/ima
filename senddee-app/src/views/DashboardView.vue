@@ -2,6 +2,7 @@
 import { onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import AppIcon from '../components/AppIcon.vue'
+import BrandLogo from '../components/BrandLogo.vue'
 import { useOrders } from '../stores/orders'
 import { useSession } from '../stores/session'
 import { unreadCount } from '../utils/news'
@@ -39,7 +40,7 @@ const sections = computed(() => [
 <template>
   <div class="page">
     <header class="top">
-      <div class="brand"><span class="logo">S</span><div><b>Senddee</b><small>{{ session.branch }} · {{ session.name }}</small></div></div>
+      <div class="brand"><BrandLogo variant="white" :size="38" /><div><b>Send<span>Dee</span></b><small>{{ session.branch }} · {{ session.name }}</small></div></div>
       <button class="bell" aria-label="ข่าวสาร" @click="router.push('/news')">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 9H3c0-1 3-2 3-9zM10 21h4"/></svg>
         <i v-if="unreadCount()" />
@@ -61,7 +62,7 @@ const sections = computed(() => [
 <style scoped>
 .top { background: var(--primary); color: #fff; padding: calc(10px + var(--safe-top)) 16px 10px; margin: 0 -16px 10px; display: flex; align-items: center; justify-content: space-between; }
 .brand { display: flex; align-items: center; gap: 10px; } .brand b { display: block; font-size: 17px; line-height: 1.1; font-weight: 500; } .brand small { opacity: .85; font-size: 12px; }
-.logo { width: 34px; height: 34px; border-radius: 9px; background: var(--accent); display: grid; place-items: center; font-weight: 500; font-size: 19px; }
+.brand b span { color: #7FEEFF; }
 .bell { position: relative; border: 0; background: transparent; padding: 4px; line-height: 0; }
 .bell i { position: absolute; top: 3px; right: 3px; width: 9px; height: 9px; border-radius: 50%; background: #ef4444; border: 1.5px solid var(--primary); }
 .sec { background: #fff; margin: 0 -16px 10px; padding: 4px 16px 16px; }

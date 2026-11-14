@@ -2,6 +2,7 @@
 import { ref, watch, nextTick, computed } from 'vue'
 import JsBarcode from 'jsbarcode'
 import BottomSheet from './BottomSheet.vue'
+import BrandLogo from './BrandLogo.vue'
 import { useSession } from '../stores/session'
 import { fmtDT } from '../utils/format'
 
@@ -21,7 +22,7 @@ watch(() => props.open, async (v) => {
 <template>
   <BottomSheet :open="open" title="ใบส่งมอบพัสดุ" @close="$emit('close')">
     <div v-if="manifest" class="mf printable">
-      <div class="top"><b>SENDDEE</b><span>ใบส่งมอบ {{ manifest.id }}</span></div>
+      <div class="top"><BrandLogo variant="print" :size="24" text /><span>ใบส่งมอบ {{ manifest.id }}</span></div>
       <svg ref="bc" class="bc" />
       <div class="meta">{{ session.branch }} · {{ fmtDT(manifest.at) }}<br />ผู้ส่งมอบ: {{ session.name }} · รวม {{ manifest.items.length }} ชิ้น {{ kg }} กก.</div>
       <table>

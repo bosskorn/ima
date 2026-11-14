@@ -3,6 +3,7 @@ import { onMounted, watch, ref, computed } from 'vue'
 import JsBarcode from 'jsbarcode'
 import { SERVICES } from '../data/constants'
 import { useSession } from '../stores/session'
+import BrandLogo from './BrandLogo.vue'
 
 const props = defineProps({ order: Object })
 const session = useSession()
@@ -15,7 +16,7 @@ const d = computed(() => new Date(props.order.createdAt).toLocaleString('th-TH',
 
 <template>
   <div class="label printable" :style="{ '--paper': session.paper === '80' ? '80mm' : '100mm', maxWidth: session.paper === '80' ? '280px' : '330px' }">
-    <div class="top"><b class="logo">SENDDEE</b><span class="svc">{{ svc?.name?.toUpperCase() }}</span></div>
+    <div class="top"><BrandLogo variant="print" :size="26" text /><span class="svc">{{ svc?.name?.toUpperCase() }}</span></div>
     <svg ref="bc" class="bc" />
     <div class="no">{{ order.trackingNo }}</div>
     <div class="to">

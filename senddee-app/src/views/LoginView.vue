@@ -2,6 +2,7 @@
 import { ref, computed, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSession } from '../stores/session'
+import BrandLogo from '../components/BrandLogo.vue'
 import { APP_VERSION, BRANCHES, DEMO_STAFF, DEMO_PIN, SUPPORT_PHONE } from '../data/constants'
 
 const session = useSession(); const router = useRouter()
@@ -38,8 +39,8 @@ async function go() {
 <template>
   <div class="login">
     <div class="brand">
-      <div class="logo">S</div>
-      <h1>Senddee</h1>
+      <BrandLogo variant="white" :size="76" class="lg" />
+      <h1>Send<span>Dee</span></h1>
       <p>แอปสำหรับพนักงานแฟรนไชส์</p>
     </div>
 
@@ -57,15 +58,15 @@ async function go() {
     </form>
 
     <div class="demo">โหมดทดลอง · สาขา LP001 · พนักงาน S001 · PIN 1234</div>
-    <div class="ver">Senddee Staff v{{ APP_VERSION }}</div>
+    <div class="ver">SendDee Staff v{{ APP_VERSION }}</div>
   </div>
 </template>
 
 <style scoped>
 .login { min-height: 100vh; background: var(--primary); padding: calc(56px + var(--safe-top)) 20px calc(20px + var(--safe-bottom)); display: flex; flex-direction: column; }
 .brand { text-align: center; color: #fff; margin-bottom: 26px; }
-.logo { width: 68px; height: 68px; border-radius: 20px; background: var(--accent); margin: 0 auto 12px; display: grid; place-items: center; font-size: 34px; font-weight: 500; }
-h1 { font-size: 28px; font-weight: 500; } .brand p { opacity: .85; margin-top: 2px; }
+.lg { margin-bottom: 12px; }
+h1 { font-size: 30px; font-weight: 500; } h1 span { color: #7FEEFF; } .brand p { opacity: .85; margin-top: 2px; }
 .card { border-radius: 12px; padding: 20px 16px 16px; }
 .pw { position: relative; } .pw input { padding-right: 64px; }
 .eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: var(--primary); padding: 8px; font-size: 14px; }
