@@ -1,14 +1,14 @@
 <script setup>
 import { onMounted, watch, ref, computed } from 'vue'
 import JsBarcode from 'jsbarcode'
-import { SERVICES } from '../data/constants'
+import { CARRIERS } from '../data/constants'
 import { useSession } from '../stores/session'
 import BrandLogo from './BrandLogo.vue'
 
 const props = defineProps({ order: Object })
 const session = useSession()
 const bc = ref(null)
-const svc = computed(() => SERVICES.find((s) => s.id === props.order.service))
+const svc = computed(() => CARRIERS.find((c) => c.id === props.order.carrier))
 const draw = () => bc.value && JsBarcode(bc.value, props.order.trackingNo, { format: 'CODE128', height: 56, displayValue: false, margin: 0, width: 2 })
 onMounted(draw); watch(() => props.order.trackingNo, draw)
 const d = computed(() => new Date(props.order.createdAt).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }))
@@ -16,7 +16,7 @@ const d = computed(() => new Date(props.order.createdAt).toLocaleString('th-TH',
 
 <template>
   <div class="label printable" :style="{ '--paper': session.paper === '80' ? '80mm' : '100mm', maxWidth: session.paper === '80' ? '280px' : '330px' }">
-    <div class="top"><BrandLogo variant="print" :size="26" text /><span class="svc">{{ svc?.name?.toUpperCase() }}</span></div>
+    <div class="top"><BrandLogo variant="print" :size="26" text /><span class="svc">{{ svc?.short?.toUpperCase() }}</span></div>
     <svg ref="bc" class="bc" />
     <div class="no">{{ order.trackingNo }}</div>
     <div class="to">
@@ -28,7 +28,8 @@ const d = computed(() => new Date(props.order.createdAt).toLocaleString('th-TH',
     <div class="meta">
       <div><small>ผู้ส่ง</small> {{ order.sender?.name || 'ลูกค้าหน้าร้าน' }}<template v-if="order.sender?.phone"> · {{ order.sender.phone }}</template> · {{ session.branch }}</div>
       <div v-if="order.sender?.address" class="muted">{{ order.sender.address }}</div>
-      <div><small>น้ำหนัก</small> {{ order.parcel.weight }} กก. · {{ order.parcel.type }}</div>
+      <div><small>น้ำหนัก</small> {{ order.parcel.weight }} กก.<template v-if="order.parcel.dims"> · {{ order.parcel.dims.w }}×{{ order.parcel.dims.l }}×{{ order.parcel.dims.h }} ซม.</template></div>
+      <div><small>สินค้า</small> {{ order.parcel.type }}<template v-if="order.parcel.note"> · {{ order.parcel.note }}</template></div>
       <div class="muted">{{ d }}</div>
     </div>
     <div v-if="order.cod" class="cod">COD ฿{{ order.cod.toLocaleString('th-TH') }}</div>

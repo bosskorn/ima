@@ -9,7 +9,7 @@ import BottomSheet from '../components/BottomSheet.vue'
 import { useOrders } from '../stores/orders'
 import { toast } from '../utils/toast'
 import { baht, fmtDT } from '../utils/format'
-import { SERVICES, PAYMENTS, PARCEL_TYPES } from '../data/constants'
+import { CARRIERS, PAYMENTS, PRODUCT_TYPES } from '../data/constants'
 import { PROVINCES } from '../data/provinces'
 import { calcFee } from '../api'
 import { useSession } from '../stores/session'
@@ -20,8 +20,8 @@ const route = useRoute()
 const labelOpen = ref(false)
 onMounted(async () => { await orders.load(); if (route.query.label) labelOpen.value = true })
 const o = computed(() => orders.byId(props.id))
-const svc = computed(() => SERVICES.find((s) => s.id === o.value?.service))
-const pay = computed(() => PAYMENTS.find((p) => p.id === o.value?.payment.method)?.label)
+const carrier = computed(() => CARRIERS.find((c) => c.id === o.value?.carrier))
+const pay = computed(() => PAYMENTS.find((p) => p.id === o.value?.payment.method)?.label || 'ยังไม่รับเงิน')
 const session = useSession()
 const voidOpen = ref(false)
 const editOpen = ref(false)
@@ -31,15 +31,15 @@ const reasons = ['ลูกค้าเปลี่ยนใจ', 'กรอก�
 
 async function copy() { try { await navigator.clipboard.writeText(o.value.trackingNo); toast('คัดลอกเลขพัสดุแล้ว') } catch { toast(o.value.trackingNo) } }
 async function doVoid() {
-  try { await orders.void(o.value.id, reason.value); voidOpen.value = false; toast('ยกเลิกแล้ว — คืนเงิน ' + baht(o.value.payment.amount) + ' ให้ลูกค้า', 3500) } catch (e) { toast(e.message) }
+  try { await orders.void(o.value.id, reason.value); voidOpen.value = false; toast(o.value.payment.method ? 'ยกเลิกแล้ว — คืนเงิน ' + baht(o.value.payment.amount) + ' ให้ลูกค้า' : 'ยกเลิกแล้ว', 3500) } catch (e) { toast(e.message) }
 }
 const print = () => window.print()
 function openEdit() {
   const x = o.value
-  ef.value = { name: x.receiver.name, phone: x.receiver.phone, address: x.receiver.address, province: x.receiver.province, postcode: x.receiver.postcode, weight: String(x.parcel.weight), type: x.parcel.type, note: x.parcel.note || '', service: x.service }
+  ef.value = { name: x.receiver.name, phone: x.receiver.phone, address: x.receiver.address, province: x.receiver.province, postcode: x.receiver.postcode, weight: String(x.parcel.weight), type: x.parcel.type, note: x.parcel.note || '', carrier: x.carrier }
   editOpen.value = true
 }
-const newFee = computed(() => (ef.value ? calcFee({ weight: ef.value.weight, service: ef.value.service, cod: o.value.cod }).shipping : 0))
+const newFee = computed(() => (ef.value ? calcFee({ weight: ef.value.weight, carrier: ef.value.carrier, cod: o.value.cod }).total : 0))
 const feeDiff = computed(() => newFee.value - (o.value?.payment.amount || 0))
 const efErr = computed(() => {
   const e = ef.value; if (!e) return ''
@@ -54,7 +54,7 @@ async function saveEdit() {
   if (efErr.value) return toast(efErr.value)
   const e = ef.value
   try {
-    const r = await orders.edit(o.value.id, { receiver: { name: e.name.trim(), phone: e.phone, address: e.address.trim(), province: e.province, postcode: e.postcode }, parcel: { weight: e.weight, type: e.type, note: e.note.trim() }, service: e.service })
+    const r = await orders.edit(o.value.id, { receiver: { name: e.name.trim(), phone: e.phone, address: e.address.trim(), province: e.province, postcode: e.postcode }, parcel: { weight: e.weight, type: e.type, note: e.note.trim() }, carrier: e.carrier })
     editOpen.value = false
     toast(r.diff > 0 ? `บันทึกแล้ว — เก็บเพิ่ม ${baht(r.diff)}` : r.diff < 0 ? `บันทึกแล้ว — คืนลูกค้า ${baht(-r.diff)}` : 'บันทึกแล้ว', 3500)
   } catch (err) { toast(err.message) }
@@ -73,7 +73,8 @@ async function copyAddr() {
 
 <template>
   <div v-if="o" class="page">
-    <AppHeader back :title="o.trackingNo" :sub="`${svc?.name} · รับโดย ${o.receivedBy.name}`" />
+    <AppHeader back :title="o.trackingNo" :sub="`${carrier?.name} · รับโดย ${o.receivedBy.name}`" />
+    <RouterLink v-if="!o.payment.method && o.status !== 'cancelled'" :to="`/receipt/${o.txId}`" class="unpaid">ยังไม่รับเงินจากลูกค้า — ไปหน้ารับเงิน ›</RouterLink>
 
     <div class="card">
       <div class="row between"><StatusBadge :status="o.status" />
@@ -96,14 +97,17 @@ async function copyAddr() {
     </div>
 
     <div class="card">
-      <div class="kv"><span class="muted">ประเภท / น้ำหนัก</span><span>{{ o.parcel.type }} · {{ o.parcel.weight }} กก.</span></div>
+      <div class="kv"><span class="muted">ขนส่ง</span><span class="cr"><img v-if="carrier" :src="carrier.logo" :alt="carrier.name" />{{ carrier?.name }}</span></div>
+      <div class="kv"><span class="muted">สินค้า</span><span>{{ o.parcel.type }}</span></div>
+      <div class="kv"><span class="muted">น้ำหนัก / ขนาด</span><span>{{ o.parcel.weight }} กก.<template v-if="o.parcel.dims"> · {{ o.parcel.dims.w }}×{{ o.parcel.dims.l }}×{{ o.parcel.dims.h }} ซม.</template></span></div>
       <div v-if="o.parcel.note" class="kv"><span class="muted">หมายเหตุ</span><span>{{ o.parcel.note }}</span></div>
       <div class="kv"><span class="muted">สถานที่รับ</span><span>{{ o.pickup === 'home' ? 'บ้านลูกค้า' : 'หน้าร้าน' }}</span></div>
       <div class="kv"><span class="muted">รับฝากเมื่อ</span><span>{{ fmtDT(o.createdAt) }}</span></div>
       <div v-if="o.handoverId" class="kv"><span class="muted">ใบส่งมอบ</span><span>{{ o.handoverId }}</span></div>
       <div v-if="o.cod" class="kv"><span class="muted">COD (เก็บปลายทาง)</span><span class="cod">{{ baht(o.cod) }}</span></div>
-      <div v-if="o.codFee" class="kv"><span class="muted">ค่าธรรมเนียม COD (หักจากยอด COD)</span><span>{{ baht(o.codFee) }}</span></div>
-      <div class="kv total-line"><span>รับเงินที่เคาน์เตอร์ ({{ pay }})</span><span>{{ baht(o.payment.amount) }}</span></div>
+      <div class="kv"><span class="muted">ค่าขนส่ง</span><span>{{ baht(o.fee) }}</span></div>
+      <div v-if="o.codFee" class="kv"><span class="muted">ค่าเก็บเงินปลายทาง 3%</span><span>{{ baht(o.codFee) }}</span></div>
+      <div class="kv total-line"><span>ยอดรับ ({{ pay }})</span><span>{{ baht(o.payment.amount) }}</span></div>
     </div>
 
     <div class="acts">
@@ -123,10 +127,10 @@ async function copyAddr() {
         </div>
         <div class="grid2">
           <label class="field"><span>น้ำหนัก (กก.)</span><input v-model="ef.weight" inputmode="decimal" /></label>
-          <label class="field"><span>ประเภท</span><select v-model="ef.type"><option v-for="t in PARCEL_TYPES" :key="t">{{ t }}</option></select></label>
+          <label class="field"><span>ประเภท</span><select v-model="ef.type"><option v-for="t in PRODUCT_TYPES" :key="t">{{ t }}</option></select></label>
         </div>
-        <div class="chip-row" style="margin-bottom:12px"><button v-for="s in SERVICES" :key="s.id" class="chip" :class="{ on: ef.service === s.id }" @click="ef.service = s.id">{{ s.name }}</button></div>
-        <div class="kv"><span class="muted">ค่าบริการใหม่</span><span>{{ baht(newFee) }}</span></div>
+        <div class="chip-row" style="margin-bottom:12px"><button v-for="c in CARRIERS" :key="c.id" class="chip" :class="{ on: ef.carrier === c.id }" @click="ef.carrier = c.id">{{ c.name }}</button></div>
+        <div class="kv"><span class="muted">ยอดรวมใหม่ (ขนส่ง + COD)</span><span>{{ baht(newFee) }}</span></div>
         <div v-if="feeDiff" class="kv" :style="{ color: feeDiff > 0 ? 'var(--accent)' : 'var(--primary)' }"><span>{{ feeDiff > 0 ? 'เก็บเพิ่มจากลูกค้า' : 'คืนเงินลูกค้า' }}</span><span>{{ baht(Math.abs(feeDiff)) }}</span></div>
       </template>
       <template #footer><button class="btn ghost" @click="editOpen = false">ยกเลิก</button><button class="btn accent" style="flex:1" @click="saveEdit">บันทึก</button></template>
@@ -137,7 +141,7 @@ async function copyAddr() {
       <template #footer><button class="btn block" @click="print">🖨️ พิมพ์ซ้ำ</button></template>
     </BottomSheet>
     <BottomSheet :open="voidOpen" title="ยกเลิกพัสดุ" @close="voidOpen = false">
-      <p class="muted" style="margin-bottom:10px">ต้องคืนเงิน {{ baht(o.payment.amount) }} ให้ลูกค้า เลือกเหตุผล:</p>
+      <p class="muted" style="margin-bottom:10px">{{ o.payment.method ? `ต้องคืนเงิน ${baht(o.payment.amount)} ให้ลูกค้า` : 'พัสดุนี้ยังไม่รับเงิน จะถูกตัดออกจากใบเสร็จ' }} · เลือกเหตุผล:</p>
       <div class="chip-row"><button v-for="r in reasons" :key="r" class="chip" :class="{ on: reason === r }" @click="reason = r">{{ r }}</button></div>
       <template #footer><button class="btn ghost" @click="voidOpen = false">ไม่ยกเลิก</button><button class="btn danger" style="flex:1" :disabled="!reason" @click="doVoid">ยืนยันยกเลิก</button></template>
     </BottomSheet>
@@ -147,6 +151,8 @@ async function copyAddr() {
 
 <style scoped>
 hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; } .tel { display: inline-block; color: var(--primary); font-weight: 500; text-decoration: none; margin: 4px 0; }
+.unpaid { display: block; background: #fef3c7; color: #92400e; border-radius: 8px; padding: 10px 12px; text-decoration: none; margin-bottom: 10px; font-size: 14px; }
+.cr { display: inline-flex; align-items: center; gap: 8px; } .cr img { height: 20px; width: 44px; object-fit: contain; }
 .lnk { border: 0; background: transparent; color: var(--primary); padding: 4px 0; font-size: 14px; }
 .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .acts .btn:only-child { grid-column: 1 / -1; }
 </style>

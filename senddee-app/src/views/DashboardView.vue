@@ -9,6 +9,9 @@ import { unreadCount } from '../utils/news'
 
 const orders = useOrders(); const session = useSession(); const router = useRouter()
 onMounted(() => orders.load())
+const unpaidList = computed(() => orders.list.filter((o) => !o.payment.method && o.status !== 'cancelled' && o.txId))
+const unpaidCount = computed(() => unpaidList.value.length)
+const firstUnpaid = computed(() => unpaidList.value[0])
 
 // One menu for everyone. Every tile opens a working screen; `badge` is a live work counter.
 const sections = computed(() => [
@@ -47,6 +50,8 @@ const sections = computed(() => [
       </button>
     </header>
 
+    <RouterLink v-if="firstUnpaid" :to="`/receipt/${firstUnpaid.txId}`" class="unpaid">⚠️ มีพัสดุยังไม่รับเงิน {{ unpaidCount }} ชิ้น — แตะเพื่อไปรับเงิน ›</RouterLink>
+
     <section v-for="sec in sections" :key="sec.title" class="sec">
       <h4>{{ sec.title }}</h4>
       <div class="grid">
@@ -65,6 +70,7 @@ const sections = computed(() => [
 .brand b span { color: #7FEEFF; }
 .bell { position: relative; border: 0; background: transparent; padding: 4px; line-height: 0; }
 .bell i { position: absolute; top: 3px; right: 3px; width: 9px; height: 9px; border-radius: 50%; background: #ef4444; border: 1.5px solid var(--primary); }
+.unpaid { display: block; margin: 0 -16px 10px; background: #fef3c7; color: #92400e; padding: 11px 16px; font-size: 14px; text-decoration: none; }
 .sec { background: #fff; margin: 0 -16px 10px; padding: 4px 16px 16px; }
 .sec h4 { margin: 0; padding: 12px 0 10px; font-size: 13px; font-weight: 400; color: var(--muted); }
 .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px 4px; }

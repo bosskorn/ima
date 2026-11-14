@@ -10,14 +10,14 @@ import { useOrders } from '../stores/orders'
 import { toast } from '../utils/toast'
 import { fmtDT } from '../utils/format'
 import { PROVINCES } from '../data/provinces'
-import { PAYMENTS, SERVICES, APP_VERSION, APP_BUILD, SUPPORT_PHONE } from '../data/constants'
+import { PAYMENTS, CARRIERS, APP_VERSION, APP_BUILD, SUPPORT_PHONE } from '../data/constants'
 
 const session = useSession(); const orders = useOrders(); const router = useRouter()
 const f = reactive({ branch: session.branch, branchPhone: session.branchPhone, address: session.address, province: session.province, postcode: session.postcode })
 const testOpen = ref(false); const logoutOpen = ref(false); const resetOpen = ref(false)
 const platform = computed(() => ({ android: 'Android', ios: 'iOS', web: 'เว็บเบราว์เซอร์' }[Capacitor.getPlatform()] || Capacitor.getPlatform()))
-const sample = { trackingNo: 'SD000000000TH', service: 'standard', createdAt: new Date().toISOString(), cod: 0, sender: { name: 'ทดสอบพิมพ์' },
-  receiver: { name: 'คุณทดสอบ ระบบ', phone: '0800000000', address: '1/1 ถ.ตัวอย่าง', province: 'กรุงเทพมหานคร', postcode: '10230' }, parcel: { weight: 1, type: 'ทดสอบ' } }
+const sample = { trackingNo: 'SD000000000TH', carrier: 'flash', createdAt: new Date().toISOString(), cod: 0, sender: { name: 'ทดสอบพิมพ์' },
+  receiver: { name: 'คุณทดสอบ ระบบ', phone: '0800000000', address: '1/1 ถ.ตัวอย่าง', province: 'กรุงเทพมหานคร', postcode: '10230' }, parcel: { weight: 1, dims: { w: 20, l: 20, h: 10 }, type: 'ทดสอบ' } }
 
 const pref = (patch) => { session.saveBranch(patch); toast('บันทึกแล้ว') }
 function saveBranch() {
@@ -64,13 +64,13 @@ async function reset() { await orders.reset(); resetOpen.value = false; toast('�
         <select :value="session.paper" @change="pref({ paper: $event.target.value })"><option value="100">100 × 150 มม.</option><option value="80">80 มม.</option></select></div>
       <div class="rw"><label>พิมพ์อัตโนมัติหลังรับพัสดุ</label><label class="tg"><input type="checkbox" :checked="session.autoPrint" @change="pref({ autoPrint: $event.target.checked })" /><i /></label></div>
       <button class="btn ghost block sm2" @click="testOpen = true">ทดสอบพิมพ์</button>
-      <p class="hint">พิมพ์ผ่านระบบพิมพ์ของ Android ได้ทันที (เครื่องพิมพ์ Wi-Fi / Mopria หรือบริการพิมพ์ที่ติดตั้งไว้) การเชื่อมเครื่องพิมพ์ความร้อนบลูทูธโดยตรงต้องเพิ่มปลั๊กอินตามรุ่น</p>
+      <p class="hint">ตอนนี้พิมพ์ผ่านระบบพิมพ์ของ Android (เครื่องพิมพ์ Wi-Fi / Mopria หรือบริการพิมพ์ที่ติดตั้งไว้) การพิมพ์ตรงเข้าเครื่องพิมพ์ความร้อนบลูทูธต้องเพิ่มปลั๊กอินตามรุ่นเครื่อง</p>
     </div>
 
     <!-- defaults -->
     <div class="blk">
       <h4>ค่าเริ่มต้นตอนรับพัสดุ</h4>
-      <div class="rw"><label>บริการ</label><select :value="session.defaultService" @change="pref({ defaultService: $event.target.value })"><option v-for="v in SERVICES" :key="v.id" :value="v.id">{{ v.name }}</option></select></div>
+      <div class="rw"><label>ขนส่ง</label><select :value="session.defaultCarrier" @change="pref({ defaultCarrier: $event.target.value })"><option v-for="v in CARRIERS" :key="v.id" :value="v.id">{{ v.name }}</option></select></div>
       <div class="rw"><label>วิธีรับเงิน</label><select :value="session.defaultPayment" @change="pref({ defaultPayment: $event.target.value })"><option v-for="p in PAYMENTS" :key="p.id" :value="p.id">{{ p.label }}</option></select></div>
     </div>
 

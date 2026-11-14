@@ -2,14 +2,15 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import StatusBadge from './StatusBadge.vue'
-import { SERVICES } from '../data/constants'
+import { CARRIERS } from '../data/constants'
 import { baht, fmtDT, hoursSince } from '../utils/format'
 
 const props = defineProps({ order: Object, selectable: Boolean, selected: Boolean })
 const emit = defineEmits(['toggle'])
 const route = useRoute()
 const to = computed(() => ({ path: `/orders/${props.order.id}`, query: route.query.label ? { label: 1 } : {} }))
-const svc = computed(() => SERVICES.find((s) => s.id === props.order.service)?.name)
+const svc = computed(() => CARRIERS.find((c) => c.id === props.order.carrier)?.short)
+const unpaid = computed(() => !props.order.payment.method && props.order.status !== 'cancelled')
 const late = computed(() => props.order.status === 'received' && hoursSince(props.order.createdAt) > 24)
 </script>
 
@@ -22,7 +23,7 @@ const late = computed(() => props.order.status === 'received' && hoursSince(prop
         <StatusBadge v-if="!selectable" :status="order.status" />
         <span v-else-if="late" class="badge red">ค้างเกิน 24 ชม.</span>
       </div>
-      <div class="bold name">{{ order.receiver.name }}<span v-if="order.pickup === 'home'" class="tag">รับที่บ้าน</span></div>
+      <div class="bold name">{{ order.receiver.name }}<span v-if="order.pickup === 'home'" class="tag">รับที่บ้าน</span><span v-if="unpaid" class="tag warn">ยังไม่รับเงิน</span></div>
       <div class="muted">{{ order.receiver.province }} · {{ order.parcel.weight }} กก. · {{ svc }}</div>
       <div class="row between foot">
         <span class="muted">{{ fmtDT(order.createdAt) }}</span>
@@ -46,5 +47,6 @@ const late = computed(() => props.order.status === 'received' && hoursSince(prop
 .foot { margin-top: 6px; } .small { gap: 8px; }
 .cod { color: var(--amber); font-weight: 500; font-size: 12px; }
 .detail { color: var(--primary); font-size: 13px; font-weight: 500; text-decoration: none; align-self: center; }
+.tag.warn { color: #92400e; background: #fef3c7; }
 .tag { margin-left: 8px; font-size: 11px; color: var(--primary); background: var(--primary-soft); border-radius: 4px; padding: 1px 6px; font-weight: 400; }
 </style>

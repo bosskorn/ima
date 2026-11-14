@@ -28,6 +28,7 @@ async function save() {
   <div class="page">
     <AppHeader back title="ปิดยอดเงินสด" sub="นับเงินในลิ้นชักก่อนปิดร้าน" />
     <div class="card">
+      <p v-if="orders.summary.unpaid" class="warnp">มี {{ orders.summary.unpaid }} ชิ้นที่ยังไม่รับเงิน (ไม่รวมในยอดเงินสด)</p>
       <div class="kv"><span class="muted">เงินสดตามระบบ (วันนี้)</span><span class="amt">{{ baht(expected) }}</span></div>
       <label class="field" style="margin-top:12px"><span>นับเงินสดในลิ้นชักได้ (บาท)</span><input v-model="counted" inputmode="numeric" /></label>
       <div v-if="diff !== null" class="kv" :style="{ color: diff ? 'var(--danger)' : 'var(--primary)' }"><span>ผลต่าง</span><span>{{ diff === 0 ? 'ยอดตรง' : baht(diff) }}</span></div>
@@ -44,4 +45,4 @@ async function save() {
   </div>
 </template>
 
-<style scoped>.amt { font-size: 20px; color: var(--primary); }</style>
+<style scoped>.amt { font-size: 20px; color: var(--primary); } .warnp { background: #fef3c7; color: #92400e; border-radius: 8px; padding: 8px 10px; font-size: 13px; margin-bottom: 10px; }</style>
