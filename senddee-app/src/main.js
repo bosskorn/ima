@@ -14,5 +14,5 @@ createApp(App).use(createPinia()).use(router).mount('#app')
 
 // Native niceties when running inside the Capacitor Android shell (no-ops in the browser).
 import('@capacitor/status-bar').then(({ StatusBar }) => {
-  StatusBar.setBackgroundColor({ color: '#0f766e' }).catch(() => {})
+  StatusBar.setBackgroundColor({ color: '#1e6fd9' }).catch(() => {})
 }).catch(() => {})

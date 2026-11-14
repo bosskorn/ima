@@ -38,7 +38,7 @@ const late = computed(() => props.order.status === 'received' && hoursSince(prop
 
 <style scoped>
 .oc { display: flex; gap: 12px; align-items: flex-start; margin-top: 10px; border: 2px solid transparent; }
-.oc.sel { border-color: var(--primary); background: #f0fdfa; }
+.oc.sel { border-color: var(--primary); background: #eff6ff; }
 .oc.late { border-left: 5px solid var(--danger); }
 .chk { width: 22px; height: 22px; margin-top: 2px; accent-color: var(--primary); flex: none; }
 .main { flex: 1; min-width: 0; text-decoration: none; color: inherit; display: block; }

@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 // Flat two/three-colour icons drawn for Senddee (48x48 grid).
-const O = '#f97316', OL = '#fdba74', R = '#ef4444', B = '#3b82f6', BL = '#bfdbfe', G = '#22c55e', T = '#0f766e', TL = '#99f6e4', Y = '#f59e0b', GR = '#64748b', W = '#fff'
+const O = '#f97316', OL = '#fdba74', R = '#ef4444', B = '#0ea5e9', BL = '#bae6fd', G = '#22c55e', T = '#1e6fd9', TL = '#bfdbfe', Y = '#f59e0b', GR = '#64748b', W = '#fff'
 const ICONS = {
   receive: `<rect x="7" y="17" width="30" height="24" rx="3" fill="${O}"/><path d="M7 17l15-8 15 8z" fill="${OL}"/><rect x="19" y="17" width="6" height="24" fill="${W}" opacity=".55"/><circle cx="37" cy="35" r="9" fill="${G}"/><path d="M37 30v10M32 35h10" stroke="${W}" stroke-width="3" stroke-linecap="round"/>`,
   shop: `<rect x="5" y="8" width="38" height="4" rx="2" fill="${GR}"/><rect x="5" y="26" width="38" height="4" rx="2" fill="${GR}"/><rect x="9" y="12" width="12" height="14" rx="2" fill="${O}"/><rect x="25" y="16" width="12" height="10" rx="2" fill="${OL}"/><rect x="9" y="30" width="16" height="12" rx="2" fill="${Y}"/><rect x="29" y="32" width="10" height="10" rx="2" fill="${O}"/>`,

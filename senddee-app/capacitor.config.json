@@ -2,6 +2,6 @@
   "appId": "com.senddee.app",
   "appName": "Senddee Staff",
   "webDir": "dist",
-  "backgroundColor": "#0f766e",
+  "backgroundColor": "#1e6fd9",
   "android": { "allowMixedContent": false }
 }
