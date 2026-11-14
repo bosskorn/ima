@@ -1,6 +1,6 @@
 // Mock API layer for the Senddee counter/staff app. Every function is async and returns plain objects,
 // so replacing this file with real fetch() calls to the Senddee backend won't touch the views.
-import { SERVICES, STATUS_FLOW, MAX_WEIGHT_KG, COMMISSION_RATE } from '../data/constants'
+import { SERVICES, STATUS_FLOW, MAX_WEIGHT_KG } from '../data/constants'
 import { isToday } from '../utils/format'
 
 const KEY = 'senddee.staff.orders.v2'
@@ -151,7 +151,6 @@ export function summarize(list, day = isToday) {
   }
   return {
     count: live.length, voided: mine.length - live.length, revenue, weight, codCount, byPay, bySvc,
-    commission: Math.round(revenue * COMMISSION_RATE),
   }
 }
 

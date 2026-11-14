@@ -20,5 +20,3 @@ export const PAYMENTS = [
   { id: 'transfer', label: 'โอนเงิน' },
 ]
 export const MAX_WEIGHT_KG = 30
-// ASSUMPTION: placeholder commission for the shop (share of the shipping fee). Replace with the real franchise rate.
-export const COMMISSION_RATE = 0.1

@@ -4,14 +4,12 @@ import { useRouter } from 'vue-router'
 import AppIcon from '../components/AppIcon.vue'
 import { useOrders } from '../stores/orders'
 import { useSession } from '../stores/session'
-import { baht } from '../utils/format'
 import { unreadCount } from '../utils/news'
 
 const orders = useOrders(); const session = useSession(); const router = useRouter()
 onMounted(() => orders.load())
 const role = ref(0)
 const roles = ['พนักงานหน้าร้าน', 'ผู้ดูแลสาขา']
-const sum = computed(() => orders.summary)
 
 // Every tile opens a real screen. `badge` is a live counter; `red` makes it a warning colour.
 const menus = computed(() => [
@@ -30,8 +28,7 @@ const menus = computed(() => [
     { label: 'ตั้งค่าเครื่องพิมพ์', icon: 'settings', to: '/settings' },
   ],
   [
-    { label: 'สรุปยอดวันนี้', icon: 'summary', to: '/summary' },
-    { label: 'ปิดยอดเงินสด', icon: 'closing', to: '/summary?close=1' },
+    { label: 'ปิดยอดเงินสด', icon: 'closing', to: '/closing' },
     { label: 'พัสดุค้างเกิน 24 ชม.', icon: 'overdue', to: '/shop?filter=overdue', badge: orders.overdue.length, red: true },
     { label: 'รายการยกเลิก', icon: 'void', to: '/search?filter=cancelled' },
     { label: 'แจ้งปัญหา', icon: 'issue', to: '/issues' },
@@ -54,12 +51,6 @@ const menus = computed(() => [
       <button v-for="(r, i) in roles" :key="r" :class="{ on: role === i }" @click="role = i">{{ r }}</button>
     </div>
 
-    <div class="kpi">
-      <div><b>{{ sum.count }}</b><span>รับวันนี้</span></div>
-      <div><b>{{ baht(sum.revenue) }}</b><span>ยอดเงิน</span></div>
-      <div :class="{ warn: orders.waiting.length }"><b>{{ orders.waiting.length }}</b><span>รอส่งมอบ</span></div>
-    </div>
-
     <div class="grid">
       <button v-for="m in menus" :key="m.label" class="item" @click="router.push(m.to)">
         <span class="ic"><AppIcon :name="m.icon" :size="52" /><i v-if="m.badge" class="bd" :class="{ red: m.red }">{{ m.badge }}</i></span>
@@ -79,10 +70,6 @@ const menus = computed(() => [
 .tabs button { flex: 1; border: 0; background: transparent; padding: 16px 0 12px; font-size: 16px; color: var(--muted); position: relative; }
 .tabs button.on { color: var(--text); }
 .tabs button.on::after { content: ''; position: absolute; left: 14%; right: 14%; bottom: 0; height: 3px; background: var(--accent); border-radius: 2px; }
-.kpi { display: flex; margin: 8px 0 4px; background: #fff; border-radius: 10px; padding: 10px 0; }
-.kpi > div { flex: 1; text-align: center; border-right: 1px solid var(--line); } .kpi > div:last-child { border: 0; }
-.kpi b { display: block; font-size: 19px; font-weight: 500; color: var(--primary); } .kpi span { font-size: 12px; color: var(--muted); }
-.kpi .warn b { color: var(--accent); }
 .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 4px; margin-top: 18px; }
 .item { border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 0 2px; color: var(--text); }
 .ic { position: relative; display: block; line-height: 0; }
