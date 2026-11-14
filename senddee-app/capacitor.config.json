@@ -1,0 +1,7 @@
+{
+  "appId": "com.senddee.app",
+  "appName": "Senddee",
+  "webDir": "dist",
+  "backgroundColor": "#0f766e",
+  "android": { "allowMixedContent": false }
+}
