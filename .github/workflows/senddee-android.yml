@@ -2,7 +2,9 @@ name: Senddee Android APK
 on:
   workflow_dispatch:
   push:
-    paths: ['senddee-app/**']
+    paths: ['senddee-app/**', '.github/workflows/senddee-android.yml']
+permissions:
+  contents: write
 jobs:
   apk:
     runs-on: ubuntu-latest
@@ -13,9 +15,19 @@ jobs:
         with: { node-version: 22, cache: npm, cache-dependency-path: senddee-app/package-lock.json }
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: 21 }
-      - uses: android-actions/setup-android@v3
+      # The ubuntu runner already ships the Android SDK (ANDROID_HOME), so no extra setup step is needed.
       - run: npm ci
       - run: npm run cap:sync
       - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
+      - run: cp android/app/build/outputs/apk/debug/app-debug.apk Senddee-Staff-debug.apk
       - uses: actions/upload-artifact@v4
-        with: { name: senddee-debug-apk, path: senddee-app/android/app/build/outputs/apk/debug/app-debug.apk }
+        with: { name: senddee-debug-apk, path: senddee-app/Senddee-Staff-debug.apk }
+      - name: Publish stable download (pre-release)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: senddee-staff-latest
+          name: Senddee Staff (latest debug build)
+          prerelease: true
+          target_commitish: ${{ github.sha }}
+          files: senddee-app/Senddee-Staff-debug.apk
+          body: "Debug APK for testing. Built from ${{ github.sha }}."
