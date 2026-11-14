@@ -14,7 +14,7 @@ const d = computed(() => new Date(props.order.createdAt).toLocaleString('th-TH',
 </script>
 
 <template>
-  <div class="label">
+  <div class="label printable" :style="{ '--paper': session.paper === '80' ? '80mm' : '100mm', maxWidth: session.paper === '80' ? '280px' : '330px' }">
     <div class="top"><b class="logo">SENDDEE</b><span class="svc">{{ svc?.name?.toUpperCase() }}</span></div>
     <svg ref="bc" class="bc" />
     <div class="no">{{ order.trackingNo }}</div>

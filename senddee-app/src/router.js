@@ -5,7 +5,7 @@ const routes = [
   { path: '/login', component: () => import('./views/LoginView.vue'), meta: { public: true } },
   { path: '/', component: () => import('./views/DashboardView.vue'), meta: { tab: true } },
   { path: '/shop', component: () => import('./views/ShopView.vue'), meta: { tab: true } },
-  { path: '/receive', component: () => import('./views/ReceiveView.vue'), meta: { tab: true } },
+  { path: '/receive', component: () => import('./views/ReceiveView.vue') },
   { path: '/done/:id', component: () => import('./views/DoneView.vue'), props: true },
   { path: '/search', component: () => import('./views/SearchView.vue'), meta: { tab: true } },
   { path: '/closing', component: () => import('./views/ClosingView.vue') },
@@ -13,7 +13,7 @@ const routes = [
   { path: '/settings', component: () => import('./views/SettingsView.vue'), meta: { tab: true } },
   { path: '/quote', component: () => import('./views/QuoteView.vue') },
   { path: '/issues', component: () => import('./views/IssuesView.vue') },
-  { path: '/news', component: () => import('./views/NewsView.vue'), meta: { tab: true } },
+  { path: '/news', component: () => import('./views/NewsView.vue') },
 ]
 
 const router = createRouter({ history: createWebHashHistory(), routes, scrollBehavior: () => ({ top: 0 }) })

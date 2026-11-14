@@ -3,6 +3,7 @@ import { onMounted, ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import OrderCard from '../components/OrderCard.vue'
 import BottomSheet from '../components/BottomSheet.vue'
+import ManifestSheet from '../components/ManifestSheet.vue'
 import { useOrders } from '../stores/orders'
 import { scanBarcode, canCameraScan } from '../utils/scanner'
 import { toast } from '../utils/toast'
@@ -24,6 +25,7 @@ const sheet = ref(false)
 const checked = ref(new Set())
 const scanInput = ref('')
 const busy = ref(false)
+const manifest = ref(null)
 
 const waiting = computed(() => (onlyLate.value ? orders.overdue : orders.waiting))
 const done = computed(() => orders.list.filter((o) => o.status === 'handed_over'))
@@ -48,9 +50,10 @@ async function confirm() {
   const missing = chosen.value.length - checked.value.size
   if (missing > 0 && !window.confirm(`ยังไม่ได้สแกนตรวจ ${missing} ชิ้น ยืนยันส่งมอบทั้งหมดเลยไหม?`)) return
   busy.value = true
-  const r = await orders.handOver(chosen.value.map((o) => o.id))
+  const items = chosen.value.map((o) => ({ ...o }))
+  const r = await orders.handOver(items.map((o) => o.id))
   busy.value = false; sheet.value = false; selected.value = new Set()
-  toast(`ส่งมอบ ${r.count} ชิ้น · ใบส่งมอบ ${r.handoverId}`, 3500)
+  manifest.value = { id: r.handoverId, at: new Date().toISOString(), items }
 }
 </script>
 
@@ -70,7 +73,7 @@ async function confirm() {
       </div>
       <OrderCard v-for="o in waiting" :key="o.id" :order="o" selectable :selected="selected.has(o.id)" @toggle="toggle(o.id)" />
       <p v-if="!waiting.length" class="empty">🎉 ไม่มีพัสดุค้างในร้าน</p>
-      <div v-if="chosen.length" class="stickybar">
+      <div v-if="chosen.length" class="stickybar" style="bottom: calc(66px + var(--safe-bottom))">
         <div class="total"><small class="muted">{{ totalKg }} กก.</small><b>{{ chosen.length }} ชิ้น</b></div>
         <button class="btn accent" @click="openSheet">ส่งมอบให้ขนส่ง</button>
       </div>
@@ -80,6 +83,7 @@ async function confirm() {
       <p v-if="!done.length" class="empty">ยังไม่มีรายการ</p>
     </template>
 
+    <ManifestSheet :open="!!manifest" :manifest="manifest" @close="manifest = null" />
     <BottomSheet :open="sheet" title="ตรวจนับก่อนส่งมอบ" @close="sheet = false">
       <p class="muted" style="margin-bottom:10px">สแกนบาร์โค้ดใบปะหน้าทีละชิ้น หรือแตะติ๊กเอง เพื่อให้ตรงกับที่ขนส่งรับไป</p>
       <div class="row" style="margin-bottom:10px">

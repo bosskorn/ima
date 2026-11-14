@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import AppIcon from '../components/AppIcon.vue'
 import { useOrders } from '../stores/orders'
@@ -8,33 +8,32 @@ import { unreadCount } from '../utils/news'
 
 const orders = useOrders(); const session = useSession(); const router = useRouter()
 onMounted(() => orders.load())
-const role = ref(0)
-const roles = ['พนักงานหน้าร้าน', 'ผู้ดูแลสาขา']
 
-// Every tile opens a real screen. `badge` is a live counter; `red` makes it a warning colour.
-const menus = computed(() => [
-  [
+// One menu for everyone. Every tile opens a working screen; `badge` is a live work counter.
+const sections = computed(() => [
+  { title: 'รับฝากและส่งมอบ', items: [
     { label: 'รับพัสดุ', icon: 'receive', to: '/receive' },
     { label: 'พัสดุในร้าน', icon: 'shop', to: '/shop', badge: orders.waiting.length },
     { label: 'ส่งมอบขนส่ง', icon: 'handover', to: '/shop?select=all' },
+    { label: 'ใบปะหน้าซ้ำ', icon: 'label', to: '/search?label=1' },
+  ] },
+  { title: 'ค้นหาและตรวจสอบ', items: [
     { label: 'ค้นหาพัสดุ', icon: 'search', to: '/search' },
-    { label: 'เช็คราคา', icon: 'quote', to: '/quote' },
-    { label: 'พิมพ์ใบปะหน้าซ้ำ', icon: 'label', to: '/search?label=1' },
-    { label: 'อยู่ระหว่างขนส่ง', icon: 'transit', to: '/search?filter=in_transit' },
-    { label: 'พัสดุค้างเกิน 24 ชม.', icon: 'overdue', to: '/shop?filter=overdue', badge: orders.overdue.length, red: true },
-    { label: 'ยกเลิก (Void)', icon: 'void', to: '/search?filter=received' },
-    { label: 'แจ้งปัญหา', icon: 'issue', to: '/issues' },
-    { label: 'ข่าวสารสำนักงานใหญ่', icon: 'news', to: '/news', badge: unreadCount() },
-    { label: 'ตั้งค่าเครื่องพิมพ์', icon: 'settings', to: '/settings' },
-  ],
-  [
-    { label: 'ปิดยอดเงินสด', icon: 'closing', to: '/closing' },
-    { label: 'พัสดุค้างเกิน 24 ชม.', icon: 'overdue', to: '/shop?filter=overdue', badge: orders.overdue.length, red: true },
+    { label: 'กำลังขนส่ง', icon: 'transit', to: '/search?filter=in_transit' },
+    { label: 'ค้างเกิน 24 ชม.', icon: 'overdue', to: '/shop?filter=overdue', badge: orders.overdue.length, red: true },
     { label: 'รายการยกเลิก', icon: 'void', to: '/search?filter=cancelled' },
+  ] },
+  { title: 'เครื่องมือหน้าร้าน', items: [
+    { label: 'เช็คราคา', icon: 'quote', to: '/quote' },
+    { label: 'ยกเลิก (Void)', icon: 'voidnow', to: '/search?filter=received&void=1' },
+    { label: 'ปิดยอดเงินสด', icon: 'closing', to: '/closing' },
     { label: 'แจ้งปัญหา', icon: 'issue', to: '/issues' },
-    { label: 'ข้อมูลสาขา', icon: 'settings', to: '/settings' },
-  ],
-][role.value])
+  ] },
+  { title: 'อื่น ๆ', items: [
+    { label: 'ข่าวสาร', icon: 'news', to: '/news', badge: unreadCount() },
+    { label: 'ตั้งค่า', icon: 'settings', to: '/settings' },
+  ] },
+])
 </script>
 
 <template>
@@ -47,33 +46,30 @@ const menus = computed(() => [
       </button>
     </header>
 
-    <div class="tabs">
-      <button v-for="(r, i) in roles" :key="r" :class="{ on: role === i }" @click="role = i">{{ r }}</button>
-    </div>
-
-    <div class="grid">
-      <button v-for="m in menus" :key="m.label" class="item" @click="router.push(m.to)">
-        <span class="ic"><AppIcon :name="m.icon" :size="52" /><i v-if="m.badge" class="bd" :class="{ red: m.red }">{{ m.badge }}</i></span>
-        <span class="lb">{{ m.label }}</span>
-      </button>
-    </div>
+    <section v-for="sec in sections" :key="sec.title" class="sec">
+      <h4>{{ sec.title }}</h4>
+      <div class="grid">
+        <button v-for="m in sec.items" :key="m.label" class="item" @click="router.push(m.to)">
+          <span class="ic"><AppIcon :name="m.icon" :size="46" /><i v-if="m.badge" class="bd" :class="{ red: m.red }">{{ m.badge }}</i></span>
+          <span class="lb">{{ m.label }}</span>
+        </button>
+      </div>
+    </section>
   </div>
 </template>
 
 <style scoped>
-.top { background: var(--primary); color: #fff; padding: calc(10px + var(--safe-top)) 16px 10px; margin: 0 -16px; display: flex; align-items: center; justify-content: space-between; }
+.top { background: var(--primary); color: #fff; padding: calc(10px + var(--safe-top)) 16px 10px; margin: 0 -16px 10px; display: flex; align-items: center; justify-content: space-between; }
 .brand { display: flex; align-items: center; gap: 10px; } .brand b { display: block; font-size: 17px; line-height: 1.1; font-weight: 500; } .brand small { opacity: .85; font-size: 12px; }
 .logo { width: 34px; height: 34px; border-radius: 9px; background: var(--accent); display: grid; place-items: center; font-weight: 500; font-size: 19px; }
 .bell { position: relative; border: 0; background: transparent; padding: 4px; line-height: 0; }
 .bell i { position: absolute; top: 3px; right: 3px; width: 9px; height: 9px; border-radius: 50%; background: #ef4444; border: 1.5px solid var(--primary); }
-.tabs { display: flex; margin: 0 -16px; background: var(--bg); }
-.tabs button { flex: 1; border: 0; background: transparent; padding: 16px 0 12px; font-size: 16px; color: var(--muted); position: relative; }
-.tabs button.on { color: var(--text); }
-.tabs button.on::after { content: ''; position: absolute; left: 14%; right: 14%; bottom: 0; height: 3px; background: var(--accent); border-radius: 2px; }
-.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 4px; margin-top: 18px; }
-.item { border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 0 2px; color: var(--text); }
+.sec { background: #fff; margin: 0 -16px 10px; padding: 4px 16px 16px; }
+.sec h4 { margin: 0; padding: 12px 0 10px; font-size: 13px; font-weight: 400; color: var(--muted); }
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px 4px; }
+.item { border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 0 2px; color: var(--text); }
 .ic { position: relative; display: block; line-height: 0; }
-.bd { position: absolute; top: -6px; right: -8px; background: var(--primary); color: #fff; font-style: normal; font-size: 11px; min-width: 20px; height: 20px; border-radius: 10px; display: grid; place-items: center; padding: 0 5px; line-height: 1; }
+.bd { position: absolute; top: -6px; right: -9px; background: var(--primary); color: #fff; font-style: normal; font-size: 11px; min-width: 20px; height: 20px; border-radius: 10px; display: grid; place-items: center; padding: 0 5px; line-height: 1; }
 .bd.red { background: #ef4444; }
 .lb { font-size: 13px; line-height: 1.25; text-align: center; color: #555b63; }
 </style>

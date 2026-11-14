@@ -3,12 +3,14 @@ import { onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import LabelPreview from '../components/LabelPreview.vue'
 import { useOrders } from '../stores/orders'
+import { useSession } from '../stores/session'
 import { baht } from '../utils/format'
 import { PAYMENTS } from '../data/constants'
 
 const props = defineProps({ id: String })
 const orders = useOrders(); const router = useRouter()
-onMounted(() => orders.load())
+const session = useSession()
+onMounted(async () => { await orders.load(); if (session.autoPrint) setTimeout(() => window.print(), 600) })
 const o = computed(() => orders.byId(props.id))
 const print = () => window.print()
 const pay = computed(() => PAYMENTS.find((p) => p.id === o.value?.payment.method)?.label)

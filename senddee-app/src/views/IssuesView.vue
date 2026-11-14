@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import AppHeader from '../components/AppHeader.vue'
-import { listIssues, createIssue } from '../api'
+import { listIssues, createIssue, resolveIssue } from '../api'
 import { useOrders } from '../stores/orders'
 import { useSession } from '../stores/session'
 import { toast } from '../utils/toast'
@@ -12,6 +12,7 @@ const TYPES = ['พัสดุชำรุด/เสียหาย', 'ที�
 const list = ref([]); const no = ref(''); const type = ref(''); const note = ref(''); const busy = ref(false)
 onMounted(async () => { orders.load(); list.value = await listIssues() })
 
+async function resolve(id) { list.value = await resolveIssue(id); toast('ปิดเรื่องแล้ว') }
 async function submit() {
   if (!type.value) return toast('เลือกประเภทปัญหา')
   if (no.value && !orders.list.some((o) => o.trackingNo === no.value.trim().toUpperCase())) return toast('ไม่พบเลขพัสดุนี้')
@@ -35,9 +36,10 @@ async function submit() {
     </div>
     <h2 class="section-title">ประวัติการแจ้ง</h2>
     <div v-for="i in list" :key="i.id" class="card" style="margin-top:8px">
-      <div class="row between"><span>{{ i.type }}</span><span class="badge amber">รอดำเนินการ</span></div>
+      <div class="row between"><span>{{ i.type }}</span><span class="badge" :class="i.status === 'resolved' ? 'green' : 'amber'">{{ i.status === 'resolved' ? 'แก้ไขแล้ว' : 'รอดำเนินการ' }}</span></div>
       <div class="muted">{{ i.trackingNo || 'ไม่ระบุพัสดุ' }} · {{ i.by }} · {{ fmtDT(i.at) }}</div>
       <p v-if="i.note" style="margin-top:6px">{{ i.note }}</p>
+      <button v-if="i.status !== 'resolved'" class="btn soft sm" style="margin-top:8px" @click="resolve(i.id)">ปิดเรื่อง</button>
     </div>
     <p v-if="!list.length" class="muted" style="text-align:center;margin-top:20px">ยังไม่มีการแจ้งปัญหา</p>
   </div>

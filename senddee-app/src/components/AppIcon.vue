@@ -17,6 +17,7 @@ const ICONS = {
   closing: `<rect x="4" y="12" width="40" height="26" rx="5" fill="${G}"/><rect x="4" y="12" width="40" height="8" fill="#16a34a"/><circle cx="24" cy="28" r="7" fill="#bbf7d0"/><text x="24" y="32" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">฿</text>`,
   settings: `<circle cx="24" cy="24" r="17" fill="${GR}"/><g fill="${GR}"><rect x="21" y="2" width="6" height="8" rx="2"/><rect x="21" y="38" width="6" height="8" rx="2"/><rect x="2" y="21" width="8" height="6" rx="2"/><rect x="38" y="21" width="8" height="6" rx="2"/></g><circle cx="24" cy="24" r="7" fill="${W}"/>`,
   news: `<path d="M8 18h8l18-9v30l-18-9H8z" fill="${Y}"/><rect x="8" y="18" width="8" height="12" fill="${O}"/><path d="M14 30l3 12h6l-3-12z" fill="${O}"/><path d="M39 18c3 3 3 9 0 12" stroke="${O}" stroke-width="3" stroke-linecap="round" fill="none"/>`,
+  voidnow: `<rect x="8" y="14" width="28" height="26" rx="3" fill="${OL}"/><rect x="8" y="14" width="28" height="7" rx="3" fill="${O}"/><circle cx="34" cy="32" r="11" fill="${R}"/><path d="M29 27l10 10M39 27L29 37" stroke="${W}" stroke-width="3.4" stroke-linecap="round"/>`,
   home: `<path d="M5 22L24 6l19 16v20H5z" fill="${T}"/><rect x="19" y="28" width="10" height="14" rx="2" fill="${W}"/>`,
   user: `<circle cx="24" cy="16" r="9" fill="currentColor"/><path d="M6 42c0-10 8-15 18-15s18 5 18 15z" fill="currentColor"/>`,
 }

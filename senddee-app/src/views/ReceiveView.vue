@@ -3,6 +3,7 @@ import { reactive, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '../components/AppHeader.vue'
 import { useOrders } from '../stores/orders'
+import { useSession } from '../stores/session'
 import { calcFee } from '../api'
 import { parseAddress } from '../utils/address'
 import { scanBarcode, canCameraScan } from '../utils/scanner'
@@ -13,6 +14,7 @@ import { SERVICES, PARCEL_TYPES, PAYMENTS, MAX_WEIGHT_KG } from '../data/constan
 
 const router = useRouter()
 const orders = useOrders()
+const session = useSession()
 
 const paste = ref('')
 const r = reactive({ name: '', phone: '', address: '', province: '', postcode: '' })
@@ -20,10 +22,10 @@ const parsedOnce = ref(false)
 const weight = ref('')
 const type = ref(PARCEL_TYPES[0])
 const note = ref('')
-const service = ref('standard')
+const service = ref(session.defaultService)
 const useCod = ref(false)
 const cod = ref('')
-const payment = ref('cash')
+const payment = ref(session.defaultPayment)
 const sender = reactive({ name: '', phone: '' })
 const trackingNo = ref('')
 const busy = ref(false)

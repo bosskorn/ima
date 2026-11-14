@@ -13,6 +13,7 @@ const route = useRoute()
 const q = ref('')
 const filter = ref(STATUS[route.query.filter] ? route.query.filter : 'all')
 const labelMode = !!route.query.label
+const voidMode = !!route.query.void
 const filters = [{ id: 'all', label: 'ทั้งหมด' }, ...['received', 'handed_over', 'in_transit', 'delivered', 'cancelled'].map((id) => ({ id, label: STATUS[id].short }))]
 const shown = computed(() => {
   const t = q.value.trim().toLowerCase()
@@ -32,6 +33,7 @@ async function cam() {
       <button class="icon-btn" style="height:46px" @click="cam" aria-label="สแกน">📷</button>
     </div>
     <p v-if="labelMode" class="muted" style="margin-bottom:8px">แตะพัสดุที่ต้องการ แล้วกด “ใบปะหน้า” เพื่อพิมพ์ซ้ำ</p>
+    <p v-if="voidMode" class="muted" style="margin-bottom:8px">แตะพัสดุที่ต้องการยกเลิก (ยกเลิกได้เฉพาะที่ยังไม่ส่งมอบขนส่ง)</p>
     <div class="chips"><button v-for="f in filters" :key="f.id" class="chip" :class="{ on: filter === f.id }" @click="filter = f.id">{{ f.label }}</button></div>
     <OrderCard v-for="o in shown" :key="o.id" :order="o" />
     <p v-if="!shown.length" class="muted" style="text-align:center;margin-top:40px">ไม่พบพัสดุ</p>

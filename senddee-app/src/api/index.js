@@ -176,3 +176,25 @@ export async function closeDay({ expected, counted, note }, staff) {
   list.unshift(c); try { localStorage.setItem(CKEY, JSON.stringify(list)) } catch {}
   return c
 }
+
+// Fix a parcel before it is handed to the courier. Re-prices it and reports the cash difference.
+export async function editOrder(id, patch) {
+  await delay(300)
+  const list = load(); const o = list.find((x) => x.id === id)
+  if (!o) throw new Error('ไม่พบพัสดุ')
+  if (o.status !== 'received') throw new Error('แก้ไขได้เฉพาะพัสดุที่ยังไม่ส่งมอบขนส่ง')
+  const w = Number(patch.parcel.weight)
+  if (!(w > 0) || w > MAX_WEIGHT_KG) throw new Error(`น้ำหนักต้องมากกว่า 0 และไม่เกิน ${MAX_WEIGHT_KG} กก.`)
+  const f = calcFee({ weight: w, service: patch.service, cod: o.cod })
+  const diff = f.shipping - o.payment.amount
+  o.receiver = { ...patch.receiver }; o.parcel = { ...o.parcel, ...patch.parcel, weight: w }
+  o.service = patch.service; o.fee = f.shipping; o.codFee = f.codFee; o.payment.amount = f.shipping
+  o.events.push({ status: 'received', text: `แก้ไขข้อมูลพัสดุ${diff ? ` (ค่าบริการ${diff > 0 ? 'เก็บเพิ่ม' : 'คืนลูกค้า'} ฿${Math.abs(diff)})` : ''}`, at: now() })
+  save(list); return { order: o, diff }
+}
+export async function resolveIssue(id) {
+  await delay(150)
+  const list = readJson(IKEY); const it = list.find((x) => x.id === id)
+  if (it) { it.status = 'resolved'; it.resolvedAt = now(); try { localStorage.setItem(IKEY, JSON.stringify(list)) } catch {} }
+  return list
+}

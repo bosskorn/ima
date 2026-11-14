@@ -4,6 +4,7 @@ const KEY = 'senddee.session.v1'
 const DEFAULT = {
   id: '', name: '', // staff (empty = logged out)
   branch: 'สาขาลาดพร้าว', branchPhone: '021234567',
+  printerName: '', paper: '100', autoPrint: false, defaultPayment: 'cash', defaultService: 'standard',
   address: '99/9 ถ.ลาดพร้าว แขวงจรเข้บัว เขตลาดพร้าว', province: 'กรุงเทพมหานคร', postcode: '10230',
 }
 function load() { try { return { ...DEFAULT, ...JSON.parse(localStorage.getItem(KEY) || '{}') } } catch { return { ...DEFAULT } } }

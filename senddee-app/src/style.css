@@ -76,8 +76,9 @@ input, select, textarea { font: inherit; color: inherit; }
 
 @media print {
   body * { visibility: hidden !important; }
-  .label, .label * { visibility: visible !important; }
-  .label { position: fixed; left: 0; top: 0; width: 100mm !important; max-width: none !important; border-radius: 0 !important; }
+  .printable, .printable * { visibility: visible !important; }
+  .printable { position: fixed; left: 0; top: 0; width: 100%; max-width: none !important; border-radius: 0 !important; }
+  .label.printable { width: var(--paper, 100mm) !important; }
 }
 
 .hdr, header.hdr { border-radius: 0 !important; }
