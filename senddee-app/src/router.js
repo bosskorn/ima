@@ -1,20 +1,22 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import HomeView from './views/HomeView.vue'
-import OrdersView from './views/OrdersView.vue'
-import NewOrderView from './views/NewOrderView.vue'
-import OrderDetailView from './views/OrderDetailView.vue'
-import TrackView from './views/TrackView.vue'
-import ProfileView from './views/ProfileView.vue'
+import { useSession } from './stores/session'
 
-export default createRouter({
-  history: createWebHashHistory(),
-  routes: [
-    { path: '/', component: HomeView, meta: { tab: true } },
-    { path: '/orders', component: OrdersView, meta: { tab: true } },
-    { path: '/new', component: NewOrderView, meta: { tab: false } },
-    { path: '/track', component: TrackView, meta: { tab: true } },
-    { path: '/profile', component: ProfileView, meta: { tab: true } },
-    { path: '/orders/:id', component: OrderDetailView, props: true, meta: { tab: false } },
-  ],
-  scrollBehavior: () => ({ top: 0 }),
+const routes = [
+  { path: '/login', component: () => import('./views/LoginView.vue'), meta: { public: true } },
+  { path: '/', component: () => import('./views/DashboardView.vue'), meta: { tab: true } },
+  { path: '/shop', component: () => import('./views/ShopView.vue'), meta: { tab: true } },
+  { path: '/receive', component: () => import('./views/ReceiveView.vue'), meta: { tab: true } },
+  { path: '/done/:id', component: () => import('./views/DoneView.vue'), props: true },
+  { path: '/search', component: () => import('./views/SearchView.vue'), meta: { tab: true } },
+  { path: '/summary', component: () => import('./views/SummaryView.vue'), meta: { tab: true } },
+  { path: '/orders/:id', component: () => import('./views/OrderDetailView.vue'), props: true },
+  { path: '/settings', component: () => import('./views/SettingsView.vue') },
+]
+
+const router = createRouter({ history: createWebHashHistory(), routes, scrollBehavior: () => ({ top: 0 }) })
+router.beforeEach((to) => {
+  const s = useSession()
+  if (!to.meta.public && !s.loggedIn) return '/login'
+  if (to.path === '/login' && s.loggedIn) return '/'
 })
+export default router

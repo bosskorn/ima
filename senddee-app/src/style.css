@@ -59,3 +59,22 @@ input, select, textarea { font: inherit; color: inherit; }
 
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(96px + var(--safe-bottom));
   background: #0f172a; color: #fff; padding: 10px 18px; border-radius: 99px; font-size: 14px; z-index: 50; max-width: 90%; }
+
+.chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { border: 1.5px solid var(--line); background: #fff; border-radius: 99px; padding: 8px 14px; font-size: 14px; font-weight: 500; }
+.chip.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+.stickybar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 560px; z-index: 25;
+  background: #fff; border-top: 1px solid var(--line); padding: 10px 16px calc(10px + var(--safe-bottom)); display: flex; gap: 12px; align-items: center; }
+.stickybar .total { line-height: 1.1; } .stickybar .total b { font-size: 22px; color: var(--primary); display: block; }
+.stickybar .btn { flex: 1; padding: 15px 18px; font-size: 16px; }
+.kv { display: flex; justify-content: space-between; padding: 6px 0; gap: 12px; } .kv > :last-child { text-align: right; }
+.total-line { border-top: 1px dashed var(--line); margin-top: 6px; padding-top: 10px; font-weight: 700; color: var(--primary); }
+.sm { padding: 7px 12px; font-size: 13px; border-radius: 10px; }
+.icon-btn { border: 0; background: var(--primary-soft); color: var(--primary-dark); width: 48px; border-radius: 12px; display: grid; place-items: center; flex: none; }
+.cod { color: var(--accent); font-weight: 700; }
+
+@media print {
+  body * { visibility: hidden !important; }
+  .label, .label * { visibility: visible !important; }
+  .label { position: fixed; left: 0; top: 0; width: 100mm !important; max-width: none !important; border-radius: 0 !important; }
+}

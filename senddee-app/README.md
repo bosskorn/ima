@@ -1,13 +1,25 @@
-# Senddee Android App (Vue 3 + Capacitor)
+# Senddee Staff — แอปพนักงานหน้าร้าน (Vue 3 + Capacitor, Android)
 
-แอปสร้างออเดอร์/ส่งพัสดุสำหรับสาขา Senddee — ตอนนี้ใช้ข้อมูลจำลอง (mock) ใน `src/api/index.js`
-เมื่อมี backend จริง แก้เฉพาะไฟล์นั้นให้เรียก `fetch()` แทน
+แอปสำหรับพนักงานร้านตัวแทนรับพัสดุ Senddee: รับพัสดุจากลูกค้า → ออกใบปะหน้า → ส่งมอบให้ขนส่ง → สรุปยอดปิดร้าน
+ตอนนี้ใช้ข้อมูลจำลอง (mock) ใน `src/api/index.js` — เมื่อมี backend จริงแก้เฉพาะไฟล์นั้น
+
+## หน้าจอ
+| หน้า | ใช้ทำอะไร |
+|---|---|
+| งานวันนี้ | ปุ่มรับพัสดุ, ตัวเลขวันนี้, แจ้งเตือนพัสดุค้างเกิน 24 ชม., เช็คราคาให้ลูกค้า |
+| รับพัสดุ | วางที่อยู่ → แยกชื่อ/เบอร์/จังหวัด/ไปรษณีย์อัตโนมัติ, ชั่งน้ำหนัก, บริการ, COD, รับเงิน → ใบปะหน้า |
+| พัสดุในร้าน | เลือกหลายชิ้น → สแกนตรวจนับ → ส่งมอบขนส่ง (ออกใบส่งมอบ) |
+| ค้นหา | เลขพัสดุ/ชื่อ/เบอร์, สแกนบาร์โค้ด, ดูใบปะหน้า, Void |
+| สรุปยอด | ยอดแยกวิธีชำระ, เงินสดในลิ้นชัก, ค่าคอม, ส่งสรุปเข้า LINE |
 
 ## รันบนเบราว์เซอร์
-    npm install && npm run dev
+    npm install && npm run dev      # เข้าสู่ระบบด้วย S001 + PIN 4 หลักอะไรก็ได้
 
 ## สร้าง APK
-- ในเครื่องที่มี Android Studio/SDK: `npm run android:apk` → `android/app/build/outputs/apk/debug/app-debug.apk`
-- หรือรัน GitHub Action "Senddee Android APK" (Actions → Run workflow) แล้วโหลด artifact `senddee-debug-apk`
+- เครื่องที่มี Android Studio/SDK: `npm run android:apk` → `android/app/build/outputs/apk/debug/app-debug.apk`
+- หรือ GitHub Actions "Senddee Android APK" (Run workflow) แล้วโหลด artifact
 
-สี/แบรนด์แก้ที่ตัวแปร CSS ใน `src/style.css`, ไอคอนแอปแก้ใน `android/app/src/main/res/`
+## ยังไม่ได้ทำ / ต้องทดสอบบนเครื่องจริง
+- สแกนด้วยกล้อง (ML Kit) ต่อโค้ดไว้แล้วแต่ยังไม่ได้ทดสอบบนมือถือ; เครื่องสแกนแบบ keyboard-wedge ใช้ได้เลย
+- พิมพ์ผ่านเครื่องพิมพ์ความร้อนบลูทูธ (ตอนนี้ใช้ window.print)
+- อัตราค่าส่ง ค่าคอม COD และชื่อบริการเป็นค่าสมมติ
