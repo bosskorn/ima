@@ -16,7 +16,7 @@ defineEmits(['close'])
 </template>
 <style scoped>
 .scrim { position: fixed; inset: 0; background: rgba(15,23,42,.5); z-index: 40; display: flex; align-items: flex-end; justify-content: center; }
-.sheet { background: #fff; width: 100%; max-width: 560px; max-height: 88vh; border-radius: 22px 22px 0 0; display: flex; flex-direction: column;
+.sheet { background: #fff; width: 100%; max-width: 560px; max-height: 88vh; border-radius: 8px 22px 0 0; display: flex; flex-direction: column;
   padding-bottom: var(--safe-bottom); animation: up .2s ease-out; }
 @keyframes up { from { transform: translateY(30px); opacity: 0 } }
 .grab { width: 40px; height: 4px; background: var(--line); border-radius: 4px; margin: 8px auto 0; }

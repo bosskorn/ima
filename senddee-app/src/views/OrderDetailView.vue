@@ -76,5 +76,5 @@ const print = () => window.print()
 </template>
 
 <style scoped>
-hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; } .tel { display: inline-block; color: var(--primary); font-weight: 600; text-decoration: none; margin: 4px 0; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; } .tel { display: inline-block; color: var(--primary); font-weight: 500; text-decoration: none; margin: 4px 0; }
 </style>

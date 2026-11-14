@@ -36,6 +36,6 @@ async function cam() {
 <style scoped>
 .hdr { background: var(--primary); color: #fff; padding: calc(14px + var(--safe-top)) 16px 18px; margin: 0 -16px 14px; border-radius: 0 0 22px 22px; }
 h1 { font-size: 19px; } .hdr p { font-size: 13px; opacity: .85; margin-top: 2px; }
-.in { flex: 1; min-width: 0; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; outline: none; }
+.in { flex: 1; min-width: 0; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 8px; background: #fff; outline: none; }
 .chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; } .chip { white-space: nowrap; padding: 6px 14px; font-size: 13px; }
 </style>

@@ -36,11 +36,11 @@ const d = computed(() => new Date(props.order.createdAt).toLocaleString('th-TH',
 <style scoped>
 .label { background: #fff; color: #000; border: 2px solid #000; border-radius: 6px; padding: 10px; width: 100%; max-width: 330px; margin: 0 auto; font-size: 13px; }
 .top { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 6px; }
-.logo { font-size: 20px; letter-spacing: 1px; } .svc { border: 2px solid #000; padding: 1px 8px; font-weight: 700; font-size: 12px; }
+.logo { font-size: 20px; letter-spacing: 1px; } .svc { border: 2px solid #000; padding: 1px 8px; font-weight: 500; font-size: 12px; }
 .bc { width: 100%; height: 56px; margin-top: 8px; }
-.no { text-align: center; font-weight: 700; letter-spacing: 2px; margin: 2px 0 8px; font-size: 14px; }
+.no { text-align: center; font-weight: 500; letter-spacing: 2px; margin: 2px 0 8px; font-size: 14px; }
 .to { border-top: 1px dashed #000; padding-top: 6px; } small { font-size: 10px; color: #444; margin-right: 4px; }
-.nm { font-weight: 700; font-size: 15px; } .ad { margin: 2px 0; } .pv { font-weight: 700; font-size: 17px; }
+.nm { font-weight: 500; font-size: 15px; } .ad { margin: 2px 0; } .pv { font-weight: 500; font-size: 17px; }
 .meta { border-top: 1px dashed #000; margin-top: 8px; padding-top: 6px; font-size: 12px; } .muted { color: #555; }
-.cod { margin-top: 8px; border: 3px solid #000; text-align: center; font-size: 22px; font-weight: 800; padding: 4px; }
+.cod { margin-top: 8px; border: 3px solid #000; text-align: center; font-size: 22px; font-weight: 500; padding: 4px; }
 </style>

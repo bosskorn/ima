@@ -22,7 +22,7 @@ const goBack = () => (window.history.length > 1 ? router.back() : router.push('/
 .hdr { background: var(--primary); color: #fff; padding: calc(14px + var(--safe-top)) 16px 18px; margin: 0 -16px 16px;
   display: flex; align-items: center; gap: 10px; border-radius: 0 0 22px 22px; }
 .t { flex: 1; min-width: 0; }
-h1 { font-size: 19px; font-weight: 700; }
+h1 { font-size: 19px; font-weight: 500; }
 p { font-size: 13px; opacity: .85; margin-top: 2px; }
 .back { background: rgba(255,255,255,.18); border: 0; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; }
 </style>

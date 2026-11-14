@@ -32,7 +32,7 @@ function go() {
 <style scoped>
 .login { min-height: 100vh; background: var(--primary); padding: calc(60px + var(--safe-top)) 20px 20px; }
 .brand { text-align: center; color: #fff; margin-bottom: 28px; }
-.logo { width: 68px; height: 68px; border-radius: 20px; background: var(--accent); margin: 0 auto 12px; display: grid; place-items: center; font-size: 34px; font-weight: 800; }
+.logo { width: 68px; height: 68px; border-radius: 20px; background: var(--accent); margin: 0 auto 12px; display: grid; place-items: center; font-size: 34px; font-weight: 500; }
 h1 { font-size: 28px; } .brand p { opacity: .85; margin-top: 4px; }
 .err { color: var(--danger); font-size: 13px; margin-bottom: 10px; } .hint { text-align: center; margin-top: 12px; }
 </style>

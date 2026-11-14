@@ -158,12 +158,12 @@ async function submit() {
 <style scoped>
 .hdr { background: var(--primary); color: #fff; padding: calc(14px + var(--safe-top)) 16px 18px; margin: 0 -16px 14px; border-radius: 0 0 22px 22px; }
 h1 { font-size: 19px; } .hdr p { font-size: 13px; opacity: .85; margin-top: 2px; }
-.paste { width: 100%; margin-top: 8px; padding: 12px; border: 2px dashed var(--primary); border-radius: 12px; background: #f0fdfa; outline: none; resize: none; }
-.big { font-size: 26px !important; font-weight: 700; text-align: center; }
+.paste { width: 100%; margin-top: 8px; padding: 12px; border: 2px dashed var(--primary); border-radius: 8px; background: #f0fdfa; outline: none; resize: none; }
+.big { font-size: 26px !important; font-weight: 500; text-align: center; }
 .switch { display: flex; align-items: center; gap: 10px; font-weight: 500; } .switch input { width: 22px; height: 22px; accent-color: var(--primary); }
 .svcs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.svc { border: 2px solid var(--line); background: #fff; border-radius: 14px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; font: inherit; color: inherit; }
-.svc small { color: var(--muted); font-size: 11px; } .svc .p { font-size: 17px; font-weight: 700; color: var(--primary); margin-top: 4px; }
+.svc { border: 2px solid var(--line); background: #fff; border-radius: 8px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; font: inherit; color: inherit; }
+.svc small { color: var(--muted); font-size: 11px; } .svc .p { font-size: 17px; font-weight: 500; color: var(--primary); margin-top: 4px; }
 .svc.on { border-color: var(--primary); background: #f0fdfa; }
-.more { margin-top: 14px; } .more summary { color: var(--primary); font-weight: 600; font-size: 14px; margin-bottom: 10px; }
+.more { margin-top: 14px; } .more summary { color: var(--primary); font-weight: 500; font-size: 14px; margin-bottom: 10px; }
 </style>

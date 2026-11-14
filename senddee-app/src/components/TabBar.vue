@@ -39,5 +39,5 @@ const active = (t) => (t.to === '/' ? route.path === '/' : route.path.startsWith
   border-radius: 9px; display: grid; place-items: center; padding: 0 4px; line-height: 1; }
 .fab { margin-top: -22px; color: var(--primary); }
 .fab-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--accent); display: grid; place-items: center;
-  box-shadow: 0 6px 16px rgba(249,115,22,.4); }
+   }
 </style>

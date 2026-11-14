@@ -94,7 +94,7 @@ async function confirm() {
 .hdr { background: var(--primary); color: #fff; padding: calc(14px + var(--safe-top)) 16px 18px; margin: 0 -16px 14px; border-radius: 0 0 22px 22px; }
 h1 { font-size: 19px; } .hdr p { font-size: 13px; opacity: .85; margin-top: 2px; }
 .empty { text-align: center; color: var(--muted); margin-top: 50px; } .grow { flex: 1; }
-.in { flex: 1; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; min-width: 0; }
+.in { flex: 1; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 8px; min-width: 0; }
 .bar { height: 6px; background: var(--line); border-radius: 4px; overflow: hidden; } .bar i { display: block; height: 100%; background: var(--primary); transition: width .2s; }
 .ck { display: flex; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); } .ck input { width: 22px; height: 22px; accent-color: var(--primary); }
 </style>

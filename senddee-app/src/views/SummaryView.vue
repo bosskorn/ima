@@ -57,5 +57,5 @@ async function share() {
 .hdr { background: var(--primary); color: #fff; padding: calc(14px + var(--safe-top)) 16px 18px; margin: 0 -16px 14px; border-radius: 0 0 22px 22px; }
 h1 { font-size: 19px; } .hdr p { font-size: 13px; opacity: .85; margin-top: 2px; }
 .hero { display: flex; flex-direction: column; align-items: center; padding: 20px; } .hero span { color: var(--muted); } .hero b { font-size: 36px; color: var(--primary); } .hero small { color: var(--muted); }
-.alert { display: block; margin-top: 12px; background: #fee2e2; color: #991b1b; border-radius: 12px; padding: 12px 14px; font-weight: 600; text-decoration: none; }
+.alert { display: block; margin-top: 12px; background: #fee2e2; color: #991b1b; border-radius: 8px; padding: 12px 14px; font-weight: 500; text-decoration: none; }
 </style>

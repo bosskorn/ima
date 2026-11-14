@@ -41,6 +41,6 @@ const late = computed(() => props.order.status === 'received' && hoursSince(prop
 .main { flex: 1; min-width: 0; text-decoration: none; color: inherit; display: block; }
 .no { font-size: 14px; letter-spacing: .3px; } .name { margin-top: 6px; }
 .foot { margin-top: 6px; } .small { gap: 8px; }
-.cod { color: var(--accent); font-weight: 700; font-size: 12px; }
-.detail { color: var(--primary); font-size: 13px; font-weight: 600; text-decoration: none; align-self: center; }
+.cod { color: var(--accent); font-weight: 500; font-size: 12px; }
+.detail { color: var(--primary); font-size: 13px; font-weight: 500; text-decoration: none; align-self: center; }
 </style>
