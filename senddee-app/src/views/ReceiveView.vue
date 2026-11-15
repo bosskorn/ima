@@ -10,6 +10,7 @@ import { useReceive } from '../stores/receive'
 import { calcFee, findSender } from '../api'
 import { parseAddress } from '../utils/address'
 import { toast } from '../utils/toast'
+import { printVisible } from '../utils/print'
 import { baht } from '../utils/format'
 import { PROVINCES } from '../data/provinces'
 import { CARRIERS, PRODUCT_TYPES, BANKS, MAX_WEIGHT_KG, COD_RATE } from '../data/constants'
@@ -124,7 +125,7 @@ async function submit() {
     })
     sender.confirmed = true; sender.credit = (await findSender(sender.phone))?.credit ?? 0; rc.addOrder(o)
     created.value = o; createdOpen.value = true
-    if (session.autoPrint) { await nextTick(); setTimeout(() => window.print(), 500) }
+    if (session.autoPrint) { await nextTick(); setTimeout(printVisible, 500) }
   } catch (e) { toast(e.message) } finally { busy.value = false }
 }
 function addNext() {
@@ -134,7 +135,7 @@ function addNext() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 function finish() { createdOpen.value = false; router.push(`/receipt/${rc.txId}`) }
-const print = () => window.print()
+const print = printVisible
 </script>
 
 <template>

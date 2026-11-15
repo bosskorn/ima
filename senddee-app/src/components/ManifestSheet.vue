@@ -5,12 +5,13 @@ import BottomSheet from './BottomSheet.vue'
 import BrandLogo from './BrandLogo.vue'
 import { useSession } from '../stores/session'
 import { fmtDT } from '../utils/format'
+import { printVisible } from '../utils/print'
 
 const props = defineProps({ open: Boolean, manifest: Object })
 defineEmits(['close'])
 const session = useSession()
 const bc = ref(null)
-const print = () => window.print()
+const print = printVisible
 const kg = computed(() => (props.manifest?.items || []).reduce((a, o) => a + o.parcel.weight, 0).toFixed(1))
 watch(() => props.open, async (v) => {
   if (!v) return

@@ -8,6 +8,7 @@ import LabelPreview from '../components/LabelPreview.vue'
 import { useSession } from '../stores/session'
 import { useOrders } from '../stores/orders'
 import { toast } from '../utils/toast'
+import { printVisible } from '../utils/print'
 import { fmtDT } from '../utils/format'
 import { PROVINCES } from '../data/provinces'
 import { CARRIERS, APP_VERSION, APP_BUILD, SUPPORT_PHONE, PROFIT_MARGIN } from '../data/constants'
@@ -29,7 +30,7 @@ function saveBranch() {
   if (!/^\d{5}$/.test(f.postcode)) return toast('รหัสไปรษณีย์ 5 หลัก')
   session.saveBranch({ ...f }); toast('บันทึกข้อมูลสาขาแล้ว')
 }
-const print = () => window.print()
+const print = printVisible
 function logout() { logoutOpen.value = false; session.logout(); router.replace('/login') }
 async function reset() { await orders.reset(); resetOpen.value = false; toast('ล้างข้อมูลทดลองแล้ว') }
 </script>

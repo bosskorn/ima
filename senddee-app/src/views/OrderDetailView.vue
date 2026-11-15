@@ -8,6 +8,7 @@ import LabelPreview from '../components/LabelPreview.vue'
 import BottomSheet from '../components/BottomSheet.vue'
 import { useOrders } from '../stores/orders'
 import { toast } from '../utils/toast'
+import { printVisible } from '../utils/print'
 import { baht, fmtDT } from '../utils/format'
 import { CARRIERS, PRODUCT_TYPES } from '../data/constants'
 import { PROVINCES } from '../data/provinces'
@@ -32,7 +33,7 @@ async function copy() { try { await navigator.clipboard.writeText(o.value.tracki
 async function doVoid() {
   try { await orders.void(o.value.id, reason.value); voidOpen.value = false; toast('ยกเลิกแล้ว — คืนเครดิต ' + baht(o.value.charge) + ' เข้าบัญชีผู้ส่ง', 3500) } catch (e) { toast(e.message) }
 }
-const print = () => window.print()
+const print = printVisible
 function openEdit() {
   const x = o.value
   ef.value = { name: x.receiver.name, phone: x.receiver.phone, address: x.receiver.address, province: x.receiver.province, postcode: x.receiver.postcode, weight: String(x.parcel.weight), type: x.parcel.type, note: x.parcel.note || '', carrier: x.carrier }

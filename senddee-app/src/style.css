@@ -75,13 +75,13 @@ input, select, textarea { font: inherit; color: inherit; }
 .icon-btn { border: 0; background: var(--primary-soft); color: var(--primary-dark); width: 48px; border-radius: 12px; display: grid; place-items: center; flex: none; }
 .cod { color: var(--amber); font-weight: 500; }
 
+@page label { size: 100mm 150mm; margin: 0; }
+@page label80 { size: 80mm 120mm; margin: 0; }
+@page receipt { size: 80mm 297mm; margin: 0; }
+#print-root { display: none; }
 @media print {
-  body * { visibility: hidden !important; }
-  .printable, .printable * { visibility: visible !important; }
-  .printable { position: fixed; left: 0; top: 0; width: 100%; max-width: none !important; border-radius: 0 !important; }
-  .label.printable { width: var(--paper, 100mm) !important; }
+  html, body { background: #fff !important; height: auto !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body.printing #app, body.printing .scrim, body.printing .toast { display: none !important; }
+  body.printing #print-root { display: block; }
+  #print-root .printable { position: static !important; box-shadow: none !important; border-radius: 0 !important; margin: 0 !important; max-width: none !important; }
 }
-
-.hdr, header.hdr { border-radius: 0 !important; }
-.chip { border-radius: 6px; }
-.badge { border-radius: 4px; font-weight: 400; }
