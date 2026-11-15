@@ -15,15 +15,19 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+html, body { margin: 0; height: 100%; overflow: hidden; overscroll-behavior: none; touch-action: manipulation; -webkit-text-size-adjust: 100%; background: var(--bg); color: var(--text);
   font-family: 'Sarabun', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size: 15px; font-weight: 400; }
 b, strong, h1, h2, h3, th { font-weight: 500; }
-#app { min-height: 100%; max-width: 560px; margin: 0 auto; background: var(--bg); position: relative; }
+/* App shell: the document never scrolls. Each screen's .page is its own scroll container, so headers and the bottom bar stay put. */
+#app { height: 100%; max-width: 560px; margin: 0 auto; background: var(--bg); position: relative; overflow: hidden; }
+* { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+input, textarea, select, [contenteditable] { -webkit-user-select: text; user-select: text; }
+img, svg { -webkit-user-drag: none; }
 h1, h2, h3, p { margin: 0; }
 button { font: inherit; cursor: pointer; }
 input, select, textarea { font: inherit; color: inherit; }
 
-.page { padding: 0 16px calc(88px + var(--safe-bottom)); }
+.page { height: 100%; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: 0 16px calc(96px + var(--safe-bottom)); }
 .card { background: var(--card); border-radius: var(--radius); padding: 16px; border: 1px solid var(--line); }
 .card + .card, .stack > * + * { margin-top: 12px; }
 .row { display: flex; align-items: center; gap: 10px; }
@@ -80,7 +84,7 @@ input, select, textarea { font: inherit; color: inherit; }
 @page receipt { size: 80mm 297mm; margin: 0; }
 #print-root { display: none; }
 @media print {
-  html, body { background: #fff !important; height: auto !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { background: #fff !important; height: auto !important; overflow: visible !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body.printing #app, body.printing .scrim, body.printing .toast { display: none !important; }
   body.printing #print-root { display: block; }
   #print-root .printable { position: static !important; box-shadow: none !important; border-radius: 0 !important; margin: 0 !important; max-width: none !important; }

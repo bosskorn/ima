@@ -60,7 +60,7 @@ const sections = computed(() => [
 </template>
 
 <style scoped>
-.top { background: var(--primary); color: #fff; padding: calc(10px + var(--safe-top)) 16px 10px; margin: 0 -16px 10px; display: flex; align-items: center; justify-content: space-between; }
+.top { position: sticky; top: 0; z-index: 15; background: var(--primary); color: #fff; padding: calc(10px + var(--safe-top)) 16px 10px; margin: 0 -16px 10px; display: flex; align-items: center; justify-content: space-between; }
 .brand { display: flex; align-items: center; gap: 10px; } .brand b { display: block; font-size: 17px; line-height: 1.1; font-weight: 500; } .brand small { opacity: .85; font-size: 12px; }
 .brand b span { color: #7FEEFF; }
 .bell { position: relative; border: 0; background: transparent; padding: 4px; line-height: 0; }

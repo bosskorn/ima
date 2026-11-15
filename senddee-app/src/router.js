@@ -16,7 +16,7 @@ const routes = [
   { path: '/news', component: () => import('./views/NewsView.vue') },
 ]
 
-const router = createRouter({ history: createWebHashHistory(), routes, scrollBehavior: () => ({ top: 0 }) })
+const router = createRouter({ history: createWebHashHistory(), routes })
 router.beforeEach((to) => {
   const s = useSession()
   if (!to.meta.public && !s.loggedIn) return '/login'

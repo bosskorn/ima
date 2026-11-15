@@ -138,7 +138,7 @@ async function reset() { await orders.reset(); resetOpen.value = false; toast('à
 .rw.top { align-items: flex-start; padding-top: 12px; }
 .rw > label:first-child { flex: 0 0 38%; font-size: 15px; }
 .rw input, .rw select, .rw textarea { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; text-align: right; font-size: 15px; padding: 8px 0; color: var(--text); }
-.rw select { direction: rtl; appearance: none; -webkit-appearance: none; } .rw textarea { resize: none; }
+.rw select { text-align-last: right; appearance: none; -webkit-appearance: none; } .rw textarea { resize: none; }
 .tg { margin-left: auto; position: relative; flex: none !important; width: 46px; height: 26px; } .tg input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; z-index: 1; }
 .tg i { position: absolute; inset: 0; background: #cfd4da; border-radius: 13px; transition: .15s; } .tg i::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: .15s; }
 .tg input:checked + i { background: var(--primary); } .tg input:checked + i::after { left: 23px; }

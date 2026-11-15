@@ -63,7 +63,7 @@ async function go() {
 </template>
 
 <style scoped>
-.login { min-height: 100vh; background: var(--primary); padding: calc(56px + var(--safe-top)) 20px calc(20px + var(--safe-bottom)); display: flex; flex-direction: column; }
+.login { height: 100%; overflow-y: auto; overscroll-behavior: contain; background: var(--primary); padding: calc(56px + var(--safe-top)) 20px calc(20px + var(--safe-bottom)); display: flex; flex-direction: column; }
 .brand { text-align: center; color: #fff; margin-bottom: 26px; }
 .lg { margin-bottom: 12px; }
 h1 { font-size: 30px; font-weight: 500; } h1 span { color: #7FEEFF; } .brand p { opacity: .85; margin-top: 2px; }

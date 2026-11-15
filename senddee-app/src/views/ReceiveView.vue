@@ -132,7 +132,7 @@ function addNext() {
   createdOpen.value = false
   Object.assign(r, { name: '', phone: '', address: '', province: '', postcode: '' }); paste.value = ''
   weight.value = ''; Object.assign(dims, { w: '', l: '', h: '' }); type.value = ''; note.value = ''; useCod.value = false; cod.value = ''; tried.value = false
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+  document.querySelector('.page')?.scrollTo({ top: 0, behavior: 'smooth' })
 }
 function finish() { createdOpen.value = false; router.push(`/receipt/${rc.txId}`) }
 const print = printVisible
@@ -271,7 +271,7 @@ const print = printVisible
 .rw > label:first-child { flex: 0 0 38%; font-size: 15px; }
 .rw input, .rw select, .rw textarea { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; text-align: right; font-size: 15px; padding: 8px 0; color: var(--text); }
 .rw input:disabled, .rw textarea:disabled { color: var(--muted); }
-.rw select { direction: rtl; appearance: none; -webkit-appearance: none; } .rw textarea { resize: none; }
+.rw select { text-align-last: right; appearance: none; -webkit-appearance: none; } .rw textarea { resize: none; }
 .rw input::placeholder, .rw textarea::placeholder { color: #b5bac1; }
 .rw.invalid { border-bottom-color: var(--danger); } .rw.invalid > label:first-child { color: var(--danger); }
 .rw .big { font-size: 26px; color: var(--primary); }

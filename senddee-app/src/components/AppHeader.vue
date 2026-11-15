@@ -19,7 +19,7 @@ const goBack = () => (window.history.length > 1 ? router.back() : router.push('/
 </template>
 
 <style scoped>
-.hdr { background: var(--primary); color: #fff; padding: calc(10px + var(--safe-top)) 12px 10px 16px; margin: 0 -16px 12px; display: flex; align-items: center; gap: 8px; min-height: 56px; }
+.hdr { position: sticky; top: 0; z-index: 15; background: var(--primary); color: #fff; padding: calc(10px + var(--safe-top)) 12px 10px 16px; margin: 0 -16px 12px; display: flex; align-items: center; gap: 8px; min-height: 56px; }
 .back { margin-left: -8px; background: transparent; border: 0; width: 36px; height: 36px; display: grid; place-items: center; }
 .t { flex: 1; min-width: 0; }
 h1 { font-size: 18px; line-height: 1.2; }
