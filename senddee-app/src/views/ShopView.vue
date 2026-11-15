@@ -85,7 +85,6 @@ async function confirm() {
 
     <ManifestSheet :open="!!manifest" :manifest="manifest" @close="manifest = null" />
     <BottomSheet :open="sheet" title="ตรวจนับก่อนส่งมอบ" @close="sheet = false">
-      <p v-if="chosen.some((o) => !o.payment.method)" class="warnp">มี {{ chosen.filter((o) => !o.payment.method).length }} ชิ้นที่ยังไม่รับเงินจากลูกค้า</p>
       <p class="muted" style="margin-bottom:10px">สแกนบาร์โค้ดใบปะหน้าทีละชิ้น หรือแตะติ๊กเอง เพื่อให้ตรงกับที่ขนส่งรับไป</p>
       <div class="row" style="margin-bottom:10px">
         <input v-model="scanInput" class="in" placeholder="สแกน/พิมพ์เลขพัสดุ" autocapitalize="characters" @keyup.enter="tick(scanInput)" />
@@ -108,7 +107,6 @@ async function confirm() {
 <style scoped>
 .hdr { background: var(--primary); color: #fff; padding: calc(14px + var(--safe-top)) 16px 18px; margin: 0 -16px 14px; border-radius: 0 0 22px 22px; }
 h1 { font-size: 19px; } .hdr p { font-size: 13px; opacity: .85; margin-top: 2px; }
-.warnp { background: #fef3c7; color: #92400e; border-radius: 8px; padding: 8px 10px; font-size: 13px; margin-bottom: 10px; }
 .empty { text-align: center; color: var(--muted); margin-top: 50px; } .grow { flex: 1; }
 .in { flex: 1; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 8px; min-width: 0; }
 .bar { height: 6px; background: var(--line); border-radius: 4px; overflow: hidden; } .bar i { display: block; height: 100%; background: var(--primary); transition: width .2s; }

@@ -1,13 +1,12 @@
 // Mock API layer for the SendDee counter/staff app. Every function is async and returns plain objects,
 // so replacing this file with real fetch() calls to the SendDee backend won't touch the views.
-import { CARRIERS, STATUS_FLOW, MAX_WEIGHT_KG, COD_RATE } from '../data/constants'
+import { CARRIERS, STATUS_FLOW, MAX_WEIGHT_KG, COD_RATE, PROFIT_MARGIN } from '../data/constants'
 import { isToday } from '../utils/format'
 
 const KEY = 'senddee.staff.orders.v3'
 const TXKEY = 'senddee.staff.tx.v1'
 const SKEY = 'senddee.staff.senders.v1'
 const IKEY = 'senddee.staff.issues.v1'
-const CKEY = 'senddee.staff.closings.v1'
 const delay = (ms = 200) => new Promise((r) => setTimeout(r, ms))
 const now = () => new Date().toISOString()
 const ago = (h) => new Date(Date.now() - h * 3600e3).toISOString()
@@ -40,9 +39,9 @@ export function calcFee({ weight, carrier = 'flash', cod = 0 }) {
 // ---------- seed ----------
 function seedSenders() {
   return [
-    { phone: '0812345678', name: 'คุณสมชาย ใจดี', address: '88 ซ.ลาดพร้าว 71 กรุงเทพมหานคร', lastAt: ago(30),
+    { phone: '0812345678', name: 'คุณสมชาย ใจดี', address: '88 ซ.ลาดพร้าว 71 กรุงเทพมหานคร', lastAt: ago(30), credit: 1000,
       bank: { bank: 'กสิกรไทย', number: '1234567890', name: 'สมชาย ใจดี' } },
-    { phone: '0861112233', name: 'ร้านมาลีสบู่สมุนไพร', address: '12/3 ถ.เพชรเกษม นครปฐม', lastAt: ago(60), bank: null },
+    { phone: '0861112233', name: 'ร้านมาลีสบู่สมุนไพร', address: '12/3 ถ.เพชรเกษม นครปฐม', lastAt: ago(60), credit: 40, bank: null },
   ]
 }
 function seed() {
@@ -57,15 +56,15 @@ function seed() {
       receiver: { name: 'คุณสมชาย ใจดี', phone: '0898765432', address: '12 ม.3 ต.ในเมือง อ.เมือง', province: 'ขอนแก่น', postcode: '40000' },
       parcel: { weight, dims: { w: 20, l: 25, h: 10 }, type: 'เสื้อผ้า / แฟชั่น', note: '' },
       carrier, cod, fee: f.shipping, codFee: f.codFee,
-      payment: { method: over.pay ?? 'cash', amount: f.total }, receivedBy: STAFF, ...over.rest,
+      charge: f.total, receivedBy: STAFF, ...over.rest,
     }
   }
   const R = (name, phone, prov, pc) => ({ receiver: { name, phone, address: '45/1 ถ.หลัก ต.กลาง อ.เมือง', province: prov, postcode: pc } })
   return [
     mk('SD260001008TH', 'received', 0.4, { weight: 0.8, carrier: 'spx', rest: R('คุณพิมพ์ใจ ดีเลิศ', '0861112233', 'นครราชสีมา', '30000') }),
-    mk('SD260001007TH', 'received', 1.5, { weight: 2.0, cod: 1290, pay: 'promptpay', rest: R('คุณธนา มั่งมี', '0934445566', 'ชลบุรี', '20000') }),
+    mk('SD260001007TH', 'received', 1.5, { weight: 2.0, cod: 1290, rest: R('คุณธนา มั่งมี', '0934445566', 'ชลบุรี', '20000') }),
     mk('SD260001006TH', 'received', 3, { weight: 4.5, carrier: 'spx', rest: R('คุณมาลี สุขสันต์', '0825556677', 'เชียงใหม่', '50200') }),
-    mk('SD260001005TH', 'received', 29, { weight: 1.0, pay: 'transfer', rest: R('คุณวิชัย แสงทอง', '0812223344', 'สงขลา', '90110') }),
+    mk('SD260001005TH', 'received', 29, { weight: 1.0, rest: R('คุณวิชัย แสงทอง', '0812223344', 'สงขลา', '90110') }),
     mk('SD260001004TH', 'handed_over', 5, { weight: 6, rest: { handoverId: 'HO-0001', ...R('คุณนภา รุ่งเรือง', '0899998888', 'ภูเก็ต', '83000') } }),
     mk('SD260001003TH', 'in_transit', 22, { weight: 1.2, cod: 590, carrier: 'spx', rest: R('คุณสมศรี เจริญ', '0867778899', 'อุดรธานี', '41000') }),
     mk('SD260001002TH', 'out_for_delivery', 40, { weight: 3 }),
@@ -78,6 +77,11 @@ function load() {
 }
 function save(list) { writeJson(KEY, list) }
 const loadSenders = () => { const s = readJson(SKEY, null); if (s) return s; const d = seedSenders(); writeJson(SKEY, d); return d }
+
+async function adjustCredit(phone, delta) {
+  const list = loadSenders(); const x = list.find((s) => s.phone === phone)
+  if (x) { x.credit = (x.credit || 0) + delta; writeJson(SKEY, list) }
+}
 
 export async function listOrders() { await delay(); return load() }
 
@@ -94,18 +98,9 @@ export async function upsertSender(s) {
 export async function getTx(id) { await delay(100); return readJson(TXKEY).find((t) => t.id === id) || null }
 function newTx(sender, staff) {
   const list = readJson(TXKEY)
-  const tx = { id: 'RC' + String(260001 + list.length), at: now(), sender: { name: sender.name, phone: sender.phone }, orderIds: [], payment: null, by: staff.name }
+  const tx = { id: 'RC' + String(260001 + list.length), at: now(), sender: { name: sender.name, phone: sender.phone }, orderIds: [], by: staff.name }
   list.unshift(tx); writeJson(TXKEY, list); return tx
 }
-export async function payTx(id, method) {
-  await delay(300)
-  const txs = readJson(TXKEY); const tx = txs.find((t) => t.id === id); if (!tx) throw new Error('ไม่พบใบเสร็จ')
-  const list = load(); let total = 0
-  for (const o of list) if (tx.orderIds.includes(o.id) && o.status !== 'cancelled') { o.payment.method = method; total += o.payment.amount }
-  tx.payment = { method, amount: total, paidAt: now() }
-  writeJson(TXKEY, txs); save(list); return tx
-}
-
 export async function createOrder(input, staff) {
   await delay(450)
   const w = Number(input.parcel.weight)
@@ -114,6 +109,10 @@ export async function createOrder(input, staff) {
   const max = list.reduce((m, o) => Math.max(m, parseInt(o.trackingNo.slice(2, 11), 10) || 0), 260001000)
   const no = `SD${max + 1}TH`
   const f = calcFee({ weight: w, carrier: input.carrier, cod: input.cod })
+  // The sender pays from the credit they topped up with the franchise; this app never handles money.
+  const senders = loadSenders(); const si = senders.findIndex((x) => x.phone === input.sender.phone)
+  const credit = si >= 0 ? senders[si].credit || 0 : 0
+  if (credit < f.total) throw new Error(`เครดิตผู้ส่งไม่เพียงพอ (คงเหลือ ${credit.toLocaleString('th-TH')} บาท ต้องใช้ ${f.total.toLocaleString('th-TH')} บาท) — ให้ลูกค้าเติมเครดิตกับแฟรนไชส์ก่อน`)
   let txs = readJson(TXKEY), tx = input.txId ? txs.find((t) => t.id === input.txId) : null
   if (!tx) tx = newTx(input.sender, staff)
   txs = readJson(TXKEY); tx = txs.find((t) => t.id === tx.id)
@@ -122,13 +121,13 @@ export async function createOrder(input, staff) {
     pickup: input.pickup === 'home' ? 'home' : 'shop',
     sender: input.sender, receiver: input.receiver, parcel: { ...input.parcel, weight: w },
     carrier: input.carrier, cod: input.cod || 0, fee: f.shipping, codFee: f.codFee,
-    payment: { method: null, amount: f.total }, // method is set when the customer pays on the receipt
+    charge: f.total, // deducted from the sender's credit
     receivedBy: { id: staff.id, name: staff.name },
     events: [{ status: 'received', text: input.pickup === 'home' ? EVT.received_home : EVT.received, at: now() }],
   }
   list.unshift(order); save(list)
   tx.orderIds.push(no); writeJson(TXKEY, txs)
-  await upsertSender({ phone: input.sender.phone, name: input.sender.name, address: input.sender.address || undefined, ...(input.sender.bank ? { bank: input.sender.bank } : {}) })
+  await upsertSender({ phone: input.sender.phone, name: input.sender.name, address: input.sender.address || undefined, credit: credit - f.total, ...(input.sender.bank ? { bank: input.sender.bank } : {}) })
   return order
 }
 
@@ -137,10 +136,9 @@ export async function voidOrder(id, reason) {
   const list = load(); const o = list.find((x) => x.id === id)
   if (!o) throw new Error('ไม่พบพัสดุ')
   if (o.status !== 'received') throw new Error('ยกเลิกได้เฉพาะพัสดุที่ยังไม่ส่งมอบขนส่ง')
-  const paid = !!o.payment.method
   o.status = 'cancelled'; o.voidReason = reason || ''
-  o.events.push({ status: 'cancelled', text: `ยกเลิกโดยร้าน${reason ? ': ' + reason : ''}${paid ? ' (คืนเงินค่าบริการให้ลูกค้า)' : ''}`, at: now() })
-  save(list); return o
+  o.events.push({ status: 'cancelled', text: `ยกเลิกโดยร้าน${reason ? ': ' + reason : ''} (คืนเครดิต ฿${o.charge} เข้าบัญชีผู้ส่ง)`, at: now() })
+  save(list); await adjustCredit(o.sender.phone, o.charge); return o
 }
 
 // Fix a parcel before it is handed to the courier. Re-prices it and reports the amount difference.
@@ -152,12 +150,12 @@ export async function editOrder(id, patch) {
   const w = Number(patch.parcel.weight)
   if (!(w > 0) || w > MAX_WEIGHT_KG) throw new Error(`น้ำหนักต้องมากกว่า 0 และไม่เกิน ${MAX_WEIGHT_KG} กก.`)
   const f = calcFee({ weight: w, carrier: patch.carrier, cod: o.cod })
-  const diff = f.total - o.payment.amount
+  const diff = f.total - o.charge
+  if (diff > 0) { const cur = loadSenders().find((x) => x.phone === o.sender.phone)?.credit || 0; if (cur < diff) throw new Error(`เครดิตผู้ส่งไม่พอสำหรับค่าบริการที่เพิ่ม ${diff} บาท (คงเหลือ ${cur} บาท)`) }
   o.receiver = { ...patch.receiver }; o.parcel = { ...o.parcel, ...patch.parcel, weight: w }
-  o.carrier = patch.carrier; o.fee = f.shipping; o.codFee = f.codFee; o.payment.amount = f.total
-  const paid = !!o.payment.method
-  o.events.push({ status: 'received', text: `แก้ไขข้อมูลพัสดุ${diff && paid ? ` (ค่าบริการ${diff > 0 ? 'เก็บเพิ่ม' : 'คืนลูกค้า'} ฿${Math.abs(diff)})` : ''}`, at: now() })
-  save(list); return { order: o, diff: paid ? diff : 0 }
+  o.carrier = patch.carrier; o.fee = f.shipping; o.codFee = f.codFee; o.charge = f.total
+  o.events.push({ status: 'received', text: `แก้ไขข้อมูลพัสดุ${diff ? ` (${diff > 0 ? 'หักเครดิตเพิ่ม' : 'คืนเครดิต'} ฿${Math.abs(diff)})` : ''}`, at: now() })
+  save(list); await adjustCredit(o.sender.phone, -diff); return { order: o, diff }
 }
 
 export async function handOver(ids) {
@@ -189,17 +187,14 @@ export async function advanceOrder(id) {
   save(list); return o
 }
 
+// Totals for the Settings overview. Revenue = what was charged to senders' credit; profit uses PROFIT_MARGIN (placeholder).
 export function summarize(list, day = isToday) {
-  const mine = list.filter((o) => day(o.createdAt))
-  const live = mine.filter((o) => o.status !== 'cancelled')
-  const byPay = { cash: 0, promptpay: 0, transfer: 0 }
-  let revenue = 0, weight = 0, unpaid = 0
-  for (const o of live) {
-    if (o.payment.method) { byPay[o.payment.method] = (byPay[o.payment.method] || 0) + o.payment.amount; revenue += o.payment.amount } else unpaid++
-    weight += o.parcel.weight
-  }
-  return { count: live.length, voided: mine.length - live.length, revenue, weight, unpaid, byPay }
+  const live = list.filter((o) => day(o.createdAt) && o.status !== 'cancelled')
+  const revenue = live.reduce((a, o) => a + o.charge, 0)
+  return { count: live.length, voided: list.filter((o) => day(o.createdAt) && o.status === 'cancelled').length,
+    weight: live.reduce((a, o) => a + o.parcel.weight, 0), revenue, profit: Math.round(revenue * PROFIT_MARGIN) }
 }
+export const isThisMonth = (iso) => { const d = new Date(iso), n = new Date(); return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear() }
 
 // ---- issue reports & cash closing (mock, stored on device) ----
 export async function listIssues() { await delay(100); return readJson(IKEY) }
@@ -215,15 +210,7 @@ export async function resolveIssue(id) {
   if (it) { it.status = 'resolved'; it.resolvedAt = now(); writeJson(IKEY, list) }
   return list
 }
-export async function listClosings() { await delay(100); return readJson(CKEY) }
-export async function closeDay({ expected, counted, note }, staff) {
-  await delay(300)
-  const list = readJson(CKEY)
-  const c = { id: 'CL' + String(list.length + 1).padStart(4, '0'), at: now(), expected, counted, diff: counted - expected, note: note || '', by: staff.name }
-  list.unshift(c); writeJson(CKEY, list); return c
-}
-
 export async function resetDemo() {
-  ;[KEY, TXKEY, SKEY, IKEY, CKEY, 'senddee.ho.seq', 'senddee.receive.draft'].forEach((k) => localStorage.removeItem(k))
+  ;[KEY, TXKEY, SKEY, IKEY, 'senddee.ho.seq', 'senddee.receive.draft'].forEach((k) => localStorage.removeItem(k))
   return load()
 }

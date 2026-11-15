@@ -9,7 +9,7 @@ import BottomSheet from '../components/BottomSheet.vue'
 import { useOrders } from '../stores/orders'
 import { toast } from '../utils/toast'
 import { baht, fmtDT } from '../utils/format'
-import { CARRIERS, PAYMENTS, PRODUCT_TYPES } from '../data/constants'
+import { CARRIERS, PRODUCT_TYPES } from '../data/constants'
 import { PROVINCES } from '../data/provinces'
 import { calcFee } from '../api'
 import { useSession } from '../stores/session'
@@ -21,7 +21,6 @@ const labelOpen = ref(false)
 onMounted(async () => { await orders.load(); if (route.query.label) labelOpen.value = true })
 const o = computed(() => orders.byId(props.id))
 const carrier = computed(() => CARRIERS.find((c) => c.id === o.value?.carrier))
-const pay = computed(() => PAYMENTS.find((p) => p.id === o.value?.payment.method)?.label || 'ยังไม่รับเงิน')
 const session = useSession()
 const voidOpen = ref(false)
 const editOpen = ref(false)
@@ -31,7 +30,7 @@ const reasons = ['ลูกค้าเปลี่ยนใจ', 'กรอก�
 
 async function copy() { try { await navigator.clipboard.writeText(o.value.trackingNo); toast('คัดลอกเลขพัสดุแล้ว') } catch { toast(o.value.trackingNo) } }
 async function doVoid() {
-  try { await orders.void(o.value.id, reason.value); voidOpen.value = false; toast(o.value.payment.method ? 'ยกเลิกแล้ว — คืนเงิน ' + baht(o.value.payment.amount) + ' ให้ลูกค้า' : 'ยกเลิกแล้ว', 3500) } catch (e) { toast(e.message) }
+  try { await orders.void(o.value.id, reason.value); voidOpen.value = false; toast('ยกเลิกแล้ว — คืนเครดิต ' + baht(o.value.charge) + ' เข้าบัญชีผู้ส่ง', 3500) } catch (e) { toast(e.message) }
 }
 const print = () => window.print()
 function openEdit() {
@@ -40,7 +39,7 @@ function openEdit() {
   editOpen.value = true
 }
 const newFee = computed(() => (ef.value ? calcFee({ weight: ef.value.weight, carrier: ef.value.carrier, cod: o.value.cod }).total : 0))
-const feeDiff = computed(() => newFee.value - (o.value?.payment.amount || 0))
+const feeDiff = computed(() => newFee.value - (o.value?.charge || 0))
 const efErr = computed(() => {
   const e = ef.value; if (!e) return ''
   if (e.name.trim().length < 2) return 'กรอกชื่อผู้รับ'
@@ -56,7 +55,7 @@ async function saveEdit() {
   try {
     const r = await orders.edit(o.value.id, { receiver: { name: e.name.trim(), phone: e.phone, address: e.address.trim(), province: e.province, postcode: e.postcode }, parcel: { weight: e.weight, type: e.type, note: e.note.trim() }, carrier: e.carrier })
     editOpen.value = false
-    toast(r.diff > 0 ? `บันทึกแล้ว — เก็บเพิ่ม ${baht(r.diff)}` : r.diff < 0 ? `บันทึกแล้ว — คืนลูกค้า ${baht(-r.diff)}` : 'บันทึกแล้ว', 3500)
+    toast(r.diff > 0 ? `บันทึกแล้ว — หักเครดิตเพิ่ม ${baht(r.diff)}` : r.diff < 0 ? `บันทึกแล้ว — คืนเครดิต ${baht(-r.diff)}` : 'บันทึกแล้ว', 3500)
   } catch (err) { toast(err.message) }
 }
 async function share() {
@@ -74,7 +73,7 @@ async function copyAddr() {
 <template>
   <div v-if="o" class="page">
     <AppHeader back :title="o.trackingNo" :sub="`${carrier?.name} · รับโดย ${o.receivedBy.name}`" />
-    <RouterLink v-if="!o.payment.method && o.status !== 'cancelled'" :to="`/receipt/${o.txId}`" class="unpaid">ยังไม่รับเงินจากลูกค้า — ไปหน้ารับเงิน ›</RouterLink>
+
 
     <div class="card">
       <div class="row between"><StatusBadge :status="o.status" />
@@ -107,7 +106,7 @@ async function copyAddr() {
       <div v-if="o.cod" class="kv"><span class="muted">COD (เก็บปลายทาง)</span><span class="cod">{{ baht(o.cod) }}</span></div>
       <div class="kv"><span class="muted">ค่าขนส่ง</span><span>{{ baht(o.fee) }}</span></div>
       <div v-if="o.codFee" class="kv"><span class="muted">ค่าเก็บเงินปลายทาง 3%</span><span>{{ baht(o.codFee) }}</span></div>
-      <div class="kv total-line"><span>ยอดรับ ({{ pay }})</span><span>{{ baht(o.payment.amount) }}</span></div>
+      <div class="kv total-line"><span>หักจากเครดิตผู้ส่ง</span><span>{{ baht(o.charge) }}</span></div>
     </div>
 
     <div class="acts">
@@ -131,7 +130,7 @@ async function copyAddr() {
         </div>
         <div class="chip-row" style="margin-bottom:12px"><button v-for="c in CARRIERS" :key="c.id" class="chip" :class="{ on: ef.carrier === c.id }" @click="ef.carrier = c.id">{{ c.name }}</button></div>
         <div class="kv"><span class="muted">ยอดรวมใหม่ (ขนส่ง + COD)</span><span>{{ baht(newFee) }}</span></div>
-        <div v-if="feeDiff" class="kv" :style="{ color: feeDiff > 0 ? 'var(--accent)' : 'var(--primary)' }"><span>{{ feeDiff > 0 ? 'เก็บเพิ่มจากลูกค้า' : 'คืนเงินลูกค้า' }}</span><span>{{ baht(Math.abs(feeDiff)) }}</span></div>
+        <div v-if="feeDiff" class="kv" :style="{ color: feeDiff > 0 ? 'var(--accent)' : 'var(--primary)' }"><span>{{ feeDiff > 0 ? 'หักเครดิตเพิ่ม' : 'คืนเครดิตผู้ส่ง' }}</span><span>{{ baht(Math.abs(feeDiff)) }}</span></div>
       </template>
       <template #footer><button class="btn ghost" @click="editOpen = false">ยกเลิก</button><button class="btn accent" style="flex:1" @click="saveEdit">บันทึก</button></template>
     </BottomSheet>
@@ -141,7 +140,7 @@ async function copyAddr() {
       <template #footer><button class="btn block" @click="print">🖨️ พิมพ์ซ้ำ</button></template>
     </BottomSheet>
     <BottomSheet :open="voidOpen" title="ยกเลิกพัสดุ" @close="voidOpen = false">
-      <p class="muted" style="margin-bottom:10px">{{ o.payment.method ? `ต้องคืนเงิน ${baht(o.payment.amount)} ให้ลูกค้า` : 'พัสดุนี้ยังไม่รับเงิน จะถูกตัดออกจากใบเสร็จ' }} · เลือกเหตุผล:</p>
+      <p class="muted" style="margin-bottom:10px">คืนเครดิต {{ baht(o.charge) }} เข้าบัญชีผู้ส่ง · เลือกเหตุผล:</p>
       <div class="chip-row"><button v-for="r in reasons" :key="r" class="chip" :class="{ on: reason === r }" @click="reason = r">{{ r }}</button></div>
       <template #footer><button class="btn ghost" @click="voidOpen = false">ไม่ยกเลิก</button><button class="btn danger" style="flex:1" :disabled="!reason" @click="doVoid">ยืนยันยกเลิก</button></template>
     </BottomSheet>
@@ -151,7 +150,6 @@ async function copyAddr() {
 
 <style scoped>
 hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; } .tel { display: inline-block; color: var(--primary); font-weight: 500; text-decoration: none; margin: 4px 0; }
-.unpaid { display: block; background: #fef3c7; color: #92400e; border-radius: 8px; padding: 10px 12px; text-decoration: none; margin-bottom: 10px; font-size: 14px; }
 .cr { display: inline-flex; align-items: center; gap: 8px; } .cr img { height: 20px; width: 44px; object-fit: contain; }
 .lnk { border: 0; background: transparent; color: var(--primary); padding: 4px 0; font-size: 14px; }
 .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .acts .btn:only-child { grid-column: 1 / -1; }

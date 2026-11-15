@@ -10,9 +10,13 @@ import { useOrders } from '../stores/orders'
 import { toast } from '../utils/toast'
 import { fmtDT } from '../utils/format'
 import { PROVINCES } from '../data/provinces'
-import { PAYMENTS, CARRIERS, APP_VERSION, APP_BUILD, SUPPORT_PHONE } from '../data/constants'
+import { CARRIERS, APP_VERSION, APP_BUILD, SUPPORT_PHONE, PROFIT_MARGIN } from '../data/constants'
+import { onMounted } from 'vue'
+import { baht } from '../utils/format'
 
 const session = useSession(); const orders = useOrders(); const router = useRouter()
+onMounted(() => orders.load())
+const today = computed(() => orders.summary); const month = computed(() => orders.monthSummary)
 const f = reactive({ branch: session.branch, branchPhone: session.branchPhone, address: session.address, province: session.province, postcode: session.postcode })
 const testOpen = ref(false); const logoutOpen = ref(false); const resetOpen = ref(false)
 const platform = computed(() => ({ android: 'Android', ios: 'iOS', web: 'เว็บเบราว์เซอร์' }[Capacitor.getPlatform()] || Capacitor.getPlatform()))
@@ -45,6 +49,18 @@ async function reset() { await orders.reset(); resetOpen.value = false; toast('�
       <div class="kv"><span class="muted">เข้าสู่ระบบเมื่อ</span><span>{{ session.loginAt ? fmtDT(session.loginAt) : '–' }}</span></div>
     </div>
 
+    <!-- today overview -->
+    <div class="blk ov">
+      <h4>ภาพรวมวันนี้</h4>
+      <div class="ov2">
+        <div><span class="muted">รายได้วันนี้</span><b>{{ baht(today.revenue) }}</b></div>
+        <div><span class="muted">กำไร (ประมาณ)</span><b class="pf">{{ baht(today.profit) }}</b></div>
+      </div>
+      <div class="kv"><span class="muted">พัสดุวันนี้</span><span>{{ today.count }} ชิ้น · {{ today.weight.toFixed(1) }} กก.<template v-if="today.voided"> · ยกเลิก {{ today.voided }}</template></span></div>
+      <div class="kv"><span class="muted">เดือนนี้</span><span>{{ baht(month.revenue) }} · กำไร {{ baht(month.profit) }}</span></div>
+      <p class="hint">รายได้ = ค่าขนส่งและค่า COD ที่หักจากเครดิตผู้ส่ง (ไม่รวมออเดอร์ที่ยกเลิก) · กำไรเป็นตัวเลขประมาณการ คิดจากอัตราสมมติ {{ PROFIT_MARGIN * 100 }}% ของรายได้</p>
+    </div>
+
     <!-- branch -->
     <div class="blk">
       <h4>ข้อมูลสาขา (แสดงบนใบปะหน้า)</h4>
@@ -71,7 +87,6 @@ async function reset() { await orders.reset(); resetOpen.value = false; toast('�
     <div class="blk">
       <h4>ค่าเริ่มต้นตอนรับพัสดุ</h4>
       <div class="rw"><label>ขนส่ง</label><select :value="session.defaultCarrier" @change="pref({ defaultCarrier: $event.target.value })"><option v-for="v in CARRIERS" :key="v.id" :value="v.id">{{ v.name }}</option></select></div>
-      <div class="rw"><label>วิธีรับเงิน</label><select :value="session.defaultPayment" @change="pref({ defaultPayment: $event.target.value })"><option v-for="p in PAYMENTS" :key="p.id" :value="p.id">{{ p.label }}</option></select></div>
     </div>
 
     <!-- help -->
@@ -113,6 +128,7 @@ async function reset() { await orders.reset(); resetOpen.value = false; toast('�
 <style scoped>
 .blk { background: #fff; margin: 10px -16px 0; padding: 4px 16px 10px; }
 .blk h4 { margin: 0; padding: 12px 0 4px; font-size: 13px; color: var(--muted); font-weight: 400; }
+.ov2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 6px 0 10px; } .ov2 > div { background: #f4f8ff; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 4px; } .ov2 b { font-size: 24px; font-weight: 500; color: var(--primary); } .ov2 .pf { color: #059669; }
 .prof { display: flex; align-items: center; gap: 14px; padding: 16px; margin-top: 0; }
 .av { width: 52px; height: 52px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); display: grid; place-items: center; font-size: 22px; font-weight: 500; }
 .nm { font-size: 18px; font-weight: 500; } .grow { flex: 1; }

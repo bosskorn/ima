@@ -39,16 +39,16 @@ watch(() => sender.phone, async (p) => {
   isNewSender.value = false
   if (!/^0\d{9}$/.test(p)) return
   const s = await findSender(p)
-  if (s && sender.phone === p) { found.value = s; foundOpen.value = true } else isNewSender.value = true
+  if (s && sender.phone === p) { found.value = s; foundOpen.value = true } else { isNewSender.value = true; sender.credit = 0 }
 })
 function confirmFound() {
-  Object.assign(sender, { name: found.value.name, address: found.value.address || '', bank: found.value.bank || null, confirmed: true })
+  Object.assign(sender, { name: found.value.name, address: found.value.address || '', bank: found.value.bank || null, credit: found.value.credit || 0, confirmed: true })
   rc.persist(); foundOpen.value = false; toast('ใช้ข้อมูลผู้ส่งเดิมแล้ว')
 }
 function notThisPerson() { foundOpen.value = false; found.value = null; isNewSender.value = true }
 function changeSender() {
   if (locked.value) return toast('ต้องกด "เสร็จสิ้น" รายการนี้ก่อนจึงเปลี่ยนผู้ส่งได้')
-  Object.assign(sender, { phone: '', name: '', address: '', bank: null, confirmed: false }); isNewSender.value = false; rc.persist()
+  Object.assign(sender, { phone: '', name: '', address: '', bank: null, credit: 0, confirmed: false }); isNewSender.value = false; rc.persist()
 }
 const senderReady = computed(() => /^0\d{9}$/.test(sender.phone) && sender.name.trim().length >= 2 && (rc.pickup !== 'home' || sender.address.trim().length >= 5))
 
@@ -85,7 +85,9 @@ const codAmount = computed(() => (useCod.value ? Number(cod.value) || 0 : 0))
 const fee = computed(() => calcFee({ weight: weight.value, carrier: carrier.value, cod: codAmount.value }))
 const quote = (id) => calcFee({ weight: weight.value, carrier: id }).shipping
 const prev = computed(() => orders.list.filter((o) => rc.orderIds.includes(o.id) && o.status !== 'cancelled'))
-const prevTotal = computed(() => prev.value.reduce((a, o) => a + o.payment.amount, 0))
+const prevTotal = computed(() => prev.value.reduce((a, o) => a + o.charge, 0))
+const creditAfter = computed(() => (sender.credit || 0) - fee.value.total)
+const lowCredit = computed(() => fee.value.total > 0 && creditAfter.value < 0)
 
 const errors = computed(() => {
   const e = {}
@@ -110,6 +112,7 @@ async function submit() {
   tried.value = true
   const first = Object.keys(errors.value)[0]
   if (first) { document.querySelector(`[data-f="${first}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); return toast('ข้อมูลยังไม่ครบ ตรวจช่องสีแดง') }
+  if (lowCredit.value) return toast('เครดิตผู้ส่งไม่เพียงพอ ให้ลูกค้าเติมเครดิตกับแฟรนไชส์ก่อน', 3500)
   busy.value = true
   try {
     const o = await orders.create({
@@ -119,7 +122,7 @@ async function submit() {
       parcel: { weight: Number(weight.value), dims: { w: +dims.w, l: +dims.l, h: +dims.h }, type: type.value, note: note.value.trim() },
       carrier: carrier.value, cod: codAmount.value,
     })
-    sender.confirmed = true; rc.addOrder(o)
+    sender.confirmed = true; sender.credit = (await findSender(sender.phone))?.credit ?? 0; rc.addOrder(o)
     created.value = o; createdOpen.value = true
     if (session.autoPrint) { await nextTick(); setTimeout(() => window.print(), 500) }
   } catch (e) { toast(e.message) } finally { busy.value = false }
@@ -140,7 +143,7 @@ const print = () => window.print()
 
     <!-- items already created for this customer -->
     <div v-if="locked" class="blk done">
-      <div class="row between"><b>สร้างแล้ว {{ prev.length }} ชิ้น · {{ baht(prevTotal) }}</b><button class="lnk" @click="finish">เสร็จสิ้น → ใบเสร็จ</button></div>
+      <div class="row between"><b>สร้างแล้ว {{ prev.length }} ชิ้น · หักเครดิต {{ baht(prevTotal) }}</b><button class="lnk" @click="finish">เสร็จสิ้น → ใบเสร็จ</button></div>
       <div class="muted small">{{ prev.map((o) => o.trackingNo).join(' · ') }}</div>
     </div>
 
@@ -157,7 +160,8 @@ const print = () => window.print()
       <template v-if="sender.confirmed || isNewSender || locked">
         <div class="rw" data-f="sname" :class="{ invalid: show('sname') }"><label>ชื่อผู้ส่ง</label><input v-model="sender.name" placeholder="ชื่อ-นามสกุล / ชื่อร้าน" :disabled="locked" @input="rc.persist()" /></div>
         <div v-if="rc.pickup === 'home' || sender.address" class="rw top" data-f="saddr" :class="{ invalid: show('saddr') }"><label>ที่อยู่รับพัสดุ</label><textarea v-model="sender.address" rows="2" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด" :disabled="locked" @input="rc.persist()" /></div>
-        <p v-if="isNewSender && !sender.confirmed" class="hint">ไม่พบเบอร์นี้ในระบบ — บันทึกเป็นผู้ส่งใหม่เมื่อสร้างออเดอร์</p>
+        <p v-if="isNewSender && !sender.confirmed" class="hint">ไม่พบเบอร์นี้ในระบบ — บันทึกเป็นผู้ส่งใหม่ (ยังไม่มีเครดิต)</p>
+        <div class="rw"><label>เครดิตคงเหลือ</label><span class="crd" :class="{ zero: !sender.credit }">{{ baht(sender.credit || 0) }}</span></div>
         <div v-if="sender.confirmed || locked" class="row pbtn"><button class="lnk" @click="changeSender">{{ locked ? 'เปลี่ยนผู้ส่ง (ต้องเสร็จสิ้นก่อน)' : 'ไม่ใช่คนนี้ / เปลี่ยนผู้ส่ง' }}</button></div>
       </template>
       <p v-else class="hint">กรอกเบอร์ผู้ส่งก่อน ระบบจะค้นหาข้อมูลลูกค้าเดิมให้</p>
@@ -206,14 +210,15 @@ const print = () => window.print()
       <h4>สรุปยอด</h4>
       <div class="kv"><span>ค่าขนส่ง ({{ CARRIERS.find((c) => c.id === carrier).short }})</span><span>{{ baht(fee.shipping) }}</span></div>
       <div v-if="codAmount" class="kv"><span>ค่าเก็บเงินปลายทาง {{ COD_RATE * 100 }}% (COD {{ baht(codAmount) }})</span><span>{{ baht(fee.codFee) }}</span></div>
-      <div class="kv tot"><span>ยอดชิ้นนี้</span><span>{{ baht(fee.total) }}</span></div>
-      <div v-if="locked" class="kv"><span class="muted">ชิ้นก่อนหน้า {{ prev.length }} ชิ้น</span><span class="muted">{{ baht(prevTotal) }}</span></div>
-      <div v-if="locked" class="kv tot"><span>ยอดรวมทั้งหมด</span><span>{{ baht(prevTotal + fee.total) }}</span></div>
+      <div class="kv tot"><span>หักเครดิตชิ้นนี้</span><span>{{ baht(fee.total) }}</span></div>
+      <div class="kv"><span class="muted">เครดิตผู้ส่งหลังหัก</span><span :style="{ color: lowCredit ? 'var(--danger)' : '' }">{{ baht(creditAfter) }}</span></div>
+      <p v-if="lowCredit" class="lowp">เครดิตผู้ส่งไม่เพียงพอ — ให้ลูกค้าเติมเครดิตกับแฟรนไชส์ก่อน แล้วจึงสร้างออเดอร์ได้</p>
+      <div v-if="locked" class="kv"><span class="muted">ชิ้นก่อนหน้าในรอบนี้ {{ prev.length }} ชิ้น (หักแล้ว)</span><span class="muted">{{ baht(prevTotal) }}</span></div>
     </div>
 
     <div class="stickybar">
-      <div class="total"><small class="muted">ยอดชิ้นนี้</small><b>{{ baht(fee.total) }}</b></div>
-      <button class="btn accent" :disabled="busy" @click="submit">{{ busy ? 'กำลังสร้าง…' : 'ยืนยันสร้างออเดอร์' }}</button>
+      <div class="total"><small class="muted">หักเครดิต</small><b>{{ baht(fee.total) }}</b></div>
+      <button class="btn accent" :disabled="busy || lowCredit" @click="submit">{{ busy ? 'กำลังสร้าง…' : lowCredit ? 'เครดิตไม่พอ' : 'ยืนยันสร้างออเดอร์' }}</button>
     </div>
 
     <!-- popup: sender found by phone -->
@@ -223,6 +228,7 @@ const print = () => window.print()
         <div class="fn">{{ found.name }}</div><div>{{ found.phone }}</div>
         <div v-if="found.address" class="muted">{{ found.address }}</div>
         <div v-if="found.bank" class="muted">บัญชี COD: {{ found.bank.bank }} ••••{{ found.bank.number.slice(-4) }}</div>
+        <div class="fcr">เครดิตคงเหลือ {{ baht(found.credit || 0) }}</div>
       </div>
       <template #footer><button class="btn ghost" @click="notThisPerson">ไม่ใช่</button><button class="btn" style="flex:1" @click="confirmFound">ใช่ ยืนยัน</button></template>
     </BottomSheet>
@@ -285,6 +291,9 @@ const print = () => window.print()
 .nm { flex: 1; font-size: 15px; } .nm small { display: block; color: var(--muted); font-size: 12px; } .pr { font-size: 18px; color: var(--primary); }
 .sum .kv { padding: 5px 0; } .tot { border-top: 1px dashed var(--line); margin-top: 4px; padding-top: 8px !important; color: var(--primary); font-size: 17px; }
 .fcard { background: #f4f8ff; border-radius: 10px; padding: 12px 14px; line-height: 1.6; } .fn { font-size: 17px; font-weight: 500; }
+.crd { margin-left: auto; font-size: 17px; color: var(--primary); } .crd.zero { color: var(--danger); }
+.lowp { background: #fee2e2; color: #991b1b; border-radius: 8px; padding: 8px 10px; font-size: 13px; margin: 8px 0 4px; }
+.fcr { margin-top: 6px; font-size: 18px; color: var(--primary); }
 .errp { color: var(--danger); font-size: 13px; }
 .tsearch { width: 100%; padding: 11px 14px; border: 1.5px solid var(--line); border-radius: 10px; margin-bottom: 6px; outline: none; }
 .topt { width: 100%; display: flex; justify-content: space-between; border: 0; border-bottom: 1px solid var(--line); background: transparent; padding: 13px 2px; font: inherit; color: inherit; text-align: left; } .topt.on { color: var(--primary); } .topt i { font-style: normal; }

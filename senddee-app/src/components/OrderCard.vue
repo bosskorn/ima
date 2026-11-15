@@ -10,7 +10,6 @@ const emit = defineEmits(['toggle'])
 const route = useRoute()
 const to = computed(() => ({ path: `/orders/${props.order.id}`, query: route.query.label ? { label: 1 } : {} }))
 const svc = computed(() => CARRIERS.find((c) => c.id === props.order.carrier)?.short)
-const unpaid = computed(() => !props.order.payment.method && props.order.status !== 'cancelled')
 const late = computed(() => props.order.status === 'received' && hoursSince(props.order.createdAt) > 24)
 </script>
 
@@ -23,13 +22,13 @@ const late = computed(() => props.order.status === 'received' && hoursSince(prop
         <StatusBadge v-if="!selectable" :status="order.status" />
         <span v-else-if="late" class="badge red">ค้างเกิน 24 ชม.</span>
       </div>
-      <div class="bold name">{{ order.receiver.name }}<span v-if="order.pickup === 'home'" class="tag">รับที่บ้าน</span><span v-if="unpaid" class="tag warn">ยังไม่รับเงิน</span></div>
+      <div class="bold name">{{ order.receiver.name }}<span v-if="order.pickup === 'home'" class="tag">รับที่บ้าน</span></div>
       <div class="muted">{{ order.receiver.province }} · {{ order.parcel.weight }} กก. · {{ svc }}</div>
       <div class="row between foot">
         <span class="muted">{{ fmtDT(order.createdAt) }}</span>
         <span class="row small">
           <span v-if="order.cod" class="cod">COD {{ baht(order.cod) }}</span>
-          <b>{{ baht(order.payment.amount) }}</b>
+          <b>{{ baht(order.charge) }}</b>
         </span>
       </div>
     </component>

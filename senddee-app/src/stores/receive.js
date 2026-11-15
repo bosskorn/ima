@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 const KEY = 'senddee.receive.draft'
-const blank = () => ({ pickup: 'shop', sender: { phone: '', name: '', address: '', bank: null, confirmed: false }, txId: '', orderIds: [] })
+const blank = () => ({ pickup: 'shop', sender: { phone: '', name: '', address: '', bank: null, credit: 0, confirmed: false }, txId: '', orderIds: [] })
 function load() { try { return { ...blank(), ...JSON.parse(localStorage.getItem(KEY) || '{}') } } catch { return blank() } }
 
 // The customer visit currently being served: one sender, many parcels, one receipt.

@@ -8,11 +8,6 @@ export const STATUS = {
 }
 export const STATUS_FLOW = ['received', 'handed_over', 'in_transit', 'out_for_delivery', 'delivered']
 
-export const PAYMENTS = [
-  { id: 'cash', label: 'เงินสด' },
-  { id: 'promptpay', label: 'พร้อมเพย์' },
-  { id: 'transfer', label: 'โอนเงิน' },
-]
 export const MAX_WEIGHT_KG = 30
 
 export const APP_VERSION = __APP_VERSION__
@@ -45,3 +40,7 @@ export const PRODUCT_TYPES = [
 ]
 
 export const BANKS = ['กสิกรไทย', 'ไทยพาณิชย์', 'กรุงเทพ', 'กรุงไทย', 'กรุงศรีอยุธยา', 'ทหารไทยธนชาต (ttb)', 'ออมสิน', 'ธ.ก.ส.', 'ซีไอเอ็มบี ไทย', 'ยูโอบี', 'เกียรตินาคินภัทร', 'ทิสโก้', 'แลนด์ แอนด์ เฮ้าส์', 'อาคารสงเคราะห์ (ธอส.)']
+
+// PLACEHOLDER — share of each charge that the franchise keeps after paying the carrier. Used only for the
+// "estimated profit" figure in Settings. Replace with real carrier cost per tier when available.
+export const PROFIT_MARGIN = 0.15
