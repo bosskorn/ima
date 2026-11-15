@@ -117,7 +117,7 @@ async function reset() { await orders.reset(); resetOpen.value = false; toast('�
       <template #footer><button class="btn ghost" @click="logoutOpen = false">ยกเลิก</button><button class="btn danger" style="flex:1" @click="logout">ออกจากระบบ</button></template>
     </BottomSheet>
     <BottomSheet :open="resetOpen" title="ล้างข้อมูลทดลอง?" @close="resetOpen = false">
-      <p class="muted">พัสดุ ใบส่งมอบ การแจ้งปัญหา และประวัติปิดยอดที่บันทึกไว้จะถูกล้าง แล้วกลับไปใช้ข้อมูลตัวอย่าง</p>
+      <p class="muted">พัสดุ ใบเสร็จ ใบส่งมอบ การแจ้งปัญหา และข้อมูลผู้ส่ง/เครดิตที่บันทึกไว้ในเครื่องจะถูกล้าง แล้วกลับไปใช้ข้อมูลตัวอย่าง</p>
       <template #footer><button class="btn ghost" @click="resetOpen = false">ยกเลิก</button><button class="btn danger" style="flex:1" @click="reset">ล้างข้อมูล</button></template>
     </BottomSheet>
     <BottomSheet :open="testOpen" title="ทดสอบพิมพ์" @close="testOpen = false">

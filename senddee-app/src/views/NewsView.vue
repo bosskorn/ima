@@ -9,7 +9,7 @@ function toggle(id) { open.value = open.value === id ? '' : id; markRead(id) }
 
 <template>
   <div class="page">
-    <AppHeader back title="ข่าวสาร" sub="ประกาศจากสำนักงานใหญ่ Senddee" />
+    <AppHeader back title="ข่าวสาร" sub="ประกาศจากสำนักงานใหญ่ SendDee" />
     <button v-for="n in NEWS" :key="n.id" class="card nw" @click="toggle(n.id)">
       <div class="row between"><span class="t"><i v-if="!isRead(n.id)" class="dot" />{{ n.title }}</span><small class="muted">{{ fmt(n.date) }}</small></div>
       <p v-if="open === n.id" class="body">{{ n.body }}</p>

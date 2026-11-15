@@ -1,6 +1,7 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import AppHeader from '../components/AppHeader.vue'
 import OrderCard from '../components/OrderCard.vue'
 import { useOrders } from '../stores/orders'
 import { scanBarcode, canCameraScan } from '../utils/scanner'
@@ -12,8 +13,9 @@ onMounted(() => orders.load())
 const route = useRoute()
 const q = ref('')
 const filter = ref(STATUS[route.query.filter] ? route.query.filter : 'all')
-const labelMode = !!route.query.label
-const voidMode = !!route.query.void
+const labelMode = computed(() => !!route.query.label)
+const voidMode = computed(() => !!route.query.void)
+watch(() => route.fullPath, () => { if (route.path === '/search') { filter.value = STATUS[route.query.filter] ? route.query.filter : 'all'; q.value = '' } })
 const filters = [{ id: 'all', label: 'ทั้งหมด' }, ...['received', 'handed_over', 'in_transit', 'delivered', 'cancelled'].map((id) => ({ id, label: STATUS[id].short }))]
 const shown = computed(() => {
   const t = q.value.trim().toLowerCase()
@@ -27,7 +29,7 @@ async function cam() {
 
 <template>
   <div class="page">
-    <header class="hdr"><h1>ค้นหาพัสดุ</h1><p>เลขพัสดุ · ชื่อ · เบอร์ผู้รับ/ผู้ส่ง</p></header>
+    <AppHeader title="ค้นหาพัสดุ" sub="เลขพัสดุ · ชื่อ · เบอร์ผู้รับ/ผู้ส่ง" />
     <div class="row" style="margin-bottom:10px">
       <input v-model="q" class="in" type="search" placeholder="สแกนหรือพิมพ์เพื่อค้นหา" />
       <button class="icon-btn" style="height:46px" @click="cam" aria-label="สแกน">📷</button>
@@ -41,8 +43,6 @@ async function cam() {
 </template>
 
 <style scoped>
-.hdr { background: var(--primary); color: #fff; padding: calc(14px + var(--safe-top)) 16px 18px; margin: 0 -16px 14px; border-radius: 0 0 22px 22px; }
-h1 { font-size: 19px; } .hdr p { font-size: 13px; opacity: .85; margin-top: 2px; }
 .in { flex: 1; min-width: 0; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 8px; background: #fff; outline: none; }
 .chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; } .chip { white-space: nowrap; padding: 6px 14px; font-size: 13px; }
 </style>

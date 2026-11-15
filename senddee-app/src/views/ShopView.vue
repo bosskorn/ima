@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import AppHeader from '../components/AppHeader.vue'
 import OrderCard from '../components/OrderCard.vue'
 import BottomSheet from '../components/BottomSheet.vue'
 import ManifestSheet from '../components/ManifestSheet.vue'
@@ -59,7 +60,7 @@ async function confirm() {
 
 <template>
   <div class="page">
-    <header class="hdr"><h1>พัสดุในร้าน</h1><p>{{ waiting.length }} ชิ้นรอส่งมอบให้ขนส่ง</p></header>
+    <AppHeader title="พัสดุในร้าน" :sub="`${orders.waiting.length} ชิ้นรอส่งมอบให้ขนส่ง`" />
     <div class="chip-row" style="margin-bottom:6px">
       <button class="chip" :class="{ on: tab === 'waiting' }" @click="tab = 'waiting'">รอส่งมอบ ({{ waiting.length }})</button>
       <button class="chip" :class="{ on: tab === 'done' }" @click="tab = 'done'">ส่งมอบแล้ว ({{ done.length }})</button>
@@ -105,8 +106,6 @@ async function confirm() {
 </template>
 
 <style scoped>
-.hdr { background: var(--primary); color: #fff; padding: calc(14px + var(--safe-top)) 16px 18px; margin: 0 -16px 14px; border-radius: 0 0 22px 22px; }
-h1 { font-size: 19px; } .hdr p { font-size: 13px; opacity: .85; margin-top: 2px; }
 .empty { text-align: center; color: var(--muted); margin-top: 50px; } .grow { flex: 1; }
 .in { flex: 1; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 8px; min-width: 0; }
 .bar { height: 6px; background: var(--line); border-radius: 4px; overflow: hidden; } .bar i { display: block; height: 100%; background: var(--primary); transition: width .2s; }

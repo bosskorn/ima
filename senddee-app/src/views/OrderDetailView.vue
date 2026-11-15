@@ -77,7 +77,7 @@ async function copyAddr() {
 
 
     <div class="card">
-      <div class="row between"><StatusBadge :status="o.status" />
+      <div class="row between wrap"><StatusBadge :status="o.status" />
         <div class="row"><button class="btn soft sm" @click="copy">คัดลอกเลข</button><button class="btn soft sm" @click="labelOpen = true">ใบปะหน้า</button></div></div>
       <h3 class="section-title" style="margin-top:16px">ความคืบหน้า</h3>
       <Timeline :events="o.events" />
@@ -151,8 +151,9 @@ async function copyAddr() {
 </template>
 
 <style scoped>
-hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; } .tel { display: inline-block; color: var(--primary); font-weight: 500; text-decoration: none; margin: 4px 0; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 12px 0; } .tel { display: inline-flex; align-items: center; min-height: 44px; color: var(--primary); font-weight: 500; text-decoration: none; }
 .cr { display: inline-flex; align-items: center; gap: 8px; } .cr img { height: 20px; width: 44px; object-fit: contain; }
+.wrap { flex-wrap: wrap; row-gap: 8px; } .sm { white-space: nowrap; }
 .lnk { border: 0; background: transparent; color: var(--primary); padding: 4px 0; font-size: 14px; }
 .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .acts .btn:only-child { grid-column: 1 / -1; }
 </style>

@@ -63,7 +63,7 @@ async function go() {
 </template>
 
 <style scoped>
-.login { height: 100%; overflow-y: auto; overscroll-behavior: contain; background: var(--primary); padding: calc(56px + var(--safe-top)) 20px calc(20px + var(--safe-bottom)); display: flex; flex-direction: column; }
+.login { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; background: var(--primary); padding: calc(56px + var(--safe-top)) 20px calc(20px + var(--safe-bottom)); display: flex; flex-direction: column; }
 .brand { text-align: center; color: #fff; margin-bottom: 26px; }
 .lg { margin-bottom: 12px; }
 h1 { font-size: 30px; font-weight: 500; } h1 span { color: #7FEEFF; } .brand p { opacity: .85; margin-top: 2px; }
@@ -72,7 +72,8 @@ h1 { font-size: 30px; font-weight: 500; } h1 span { color: #7FEEFF; } .brand p {
 .eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: var(--primary); padding: 8px; font-size: 14px; }
 .rem { display: flex; align-items: center; gap: 8px; margin: 2px 0 14px; color: var(--muted); font-size: 14px; } .rem input { width: 18px; height: 18px; accent-color: var(--primary); }
 .err { background: #fee2e2; color: #991b1b; border-radius: 8px; padding: 10px 12px; font-size: 14px; margin-bottom: 12px; }
-.help { text-align: center; color: var(--muted); font-size: 13px; margin-top: 14px; line-height: 1.6; } .help a { color: var(--primary); text-decoration: none; display: inline-block; }
+.help { text-align: center; color: var(--muted); font-size: 13px; margin-top: 14px; line-height: 1.6; } .help a { color: var(--primary); text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; padding: 0 6px; }
 .demo { margin-top: 16px; text-align: center; color: rgba(255,255,255,.8); font-size: 13px; background: rgba(255,255,255,.12); border-radius: 8px; padding: 8px; }
 .ver { margin-top: auto; padding-top: 20px; text-align: center; color: rgba(255,255,255,.7); font-size: 12px; }
+@media (max-height: 720px) { .login { padding-top: calc(24px + var(--safe-top)); } .brand { margin-bottom: 14px; } .lg :deep(svg) { width: 56px; height: 56px; } h1 { font-size: 26px; } .demo { margin-top: 10px; } }
 </style>
