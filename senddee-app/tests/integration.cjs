@@ -1,4 +1,4 @@
-// End-to-end data-consistency test (create → edit → void → hand over → receipts → credit → settings overview → reload).
+// End-to-end data-consistency test (create → edit → void → hand over → receipts → credit → home dashboard → settings overview → reload).
 // Needs: a running preview (npx vite preview --port 4173) and playwright available globally:
 //   NODE_PATH=$(npm root -g) node tests/integration.cjs
 // Re-run it after connecting the real API (src/api/index.js) with demo data.
@@ -10,12 +10,14 @@ const near=(a,b)=>Math.abs(a-b)<0.011;
 (async()=>{const b=await chromium.launch();const p=await(await b.newContext({...devices['Pixel 5'],locale:'th-TH'})).newPage();
 const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));p.on('dialog',d=>d.accept());
 const go=async path=>{await p.goto(B+path);await p.waitForTimeout(450)};
-const login=async()=>{await p.goto('http://localhost:4173/');await p.fill('input[placeholder="เช่น LP001"]','LP001');await p.fill('input[placeholder="เช่น S001"]','S001');await p.fill('input[inputmode=numeric]','1234');await p.click('text=เข้าสู่ระบบ');await p.waitForSelector('.sec')};
+const login=async()=>{await p.goto('http://localhost:4173/');await p.fill('input[placeholder="เช่น LP001"]','LP001');await p.fill('input[placeholder="เช่น S001"]','S001');await p.fill('input[inputmode=numeric]','1234');await p.click('text=เข้าสู่ระบบ');await p.waitForSelector('.act')};
 const overview=async()=>{await go('/settings');await p.waitForSelector('.ov2');const t=await p.locator('.ov2 b').allInnerTexts();const kv=await p.locator('.blk.ov .kv').allInnerTexts();
   const cnt=num((kv.find(x=>x.includes('พัสดุวันนี้'))||'').match(/(\d+) ชิ้น/)?.[1]);const voided=num((kv.find(x=>x.includes('พัสดุวันนี้'))||'').match(/ยกเลิก (\d+)/)?.[1]);const vat=num((kv.find(x=>x.includes('ภาษีมูลค่าเพิ่ม'))||'0'));
   return {rev:num(t[0]),profit:num(t[1]),cnt,voided,vat}};
 const credit=async phone=>{await go('/credit');await p.fill('input[inputmode=tel]',phone);await p.waitForSelector('.res');return num(await p.locator('.res .cr').innerText())};
-const homeBadges=async()=>{await go('/');await p.waitForSelector('.grid');const items=await p.locator('.grid .item').all();const o={};for(const it of items){const l=(await it.locator('.lb').innerText()).trim();const bd=it.locator('.bd');o[l]=(await bd.count())?num(await bd.innerText()):0}o.tab=await p.locator('.tabbar .badge-n').count()?num(await p.locator('.tabbar .badge-n').innerText()):0;return o};
+const homeBadges=async()=>{await go('/');await p.waitForSelector('.act');const n=async k=>(await p.locator(`[data-k=${k}] [data-n]`).count())?num(await p.locator(`[data-k=${k}] [data-n]`).innerText()):0;
+  const o={'พัสดุในร้าน':await n('waiting'),'ค้างเกิน 24 ชม.':await n('overdue')};o.tab=await p.locator('.tabbar .badge-n').count()?num(await p.locator('.tabbar .badge-n').innerText()):0;o.pipe={};
+  for(const st of ['received','handed_over','in_transit','out_for_delivery','delivered'])o.pipe[st]=num(await p.locator(`[data-k=st-${st}] .num`).innerText());o.recent=await p.locator('[data-k=recent] .no').allInnerTexts();return o};
 const searchHas=async(q)=>{await go('/search');await p.fill('.in',q);await p.waitForTimeout(250);return p.locator('.oc .no').allInnerTexts().then(a=>a.map(s=>s.trim()))};
 const mkParcel=async(paste,w,carrier,cod)=>{await p.fill('.paste',paste);await p.click('text=แยกที่อยู่อัตโนมัติ');await p.fill('[data-f=weight] input',String(w));for(const i of [0,1,2])await p.fill(`.dims input >> nth=${i}`,'20');await p.click('[data-f=ptype]');await p.click('.topt:has-text("เสื้อผ้า")');await p.click(`.cr:has-text("${carrier}")`);
   if(cod){await p.locator('.tg').first().click();await p.click('text=ยืนยันบัญชีนี้');await p.fill('[data-f=cod] input',String(cod));}
@@ -23,7 +25,7 @@ const mkParcel=async(paste,w,carrier,cod)=>{await p.fill('.paste',paste);await p
 
 await login();
 // ---------- baseline
-const base=await overview();const c0=await credit('0812345678');const hb0=await homeBadges();
+const base=await overview();const c0=await credit('0812345678');const hb0=await homeBadges();ok(await p.locator('[data-k=overdue]').count()===1,'home shows the overdue alert row');
 ok(c0===1000,'baseline sender credit ฿1,000');console.log('baseline',JSON.stringify(base),'badges',JSON.stringify(hb0));
 const waiting0=hb0['พัสดุในร้าน'],over0=hb0['ค้างเกิน 24 ชม.'];
 
@@ -43,7 +45,7 @@ let rc=await p.locator('.rc').innerText();
 ok(rc.includes('2 ชิ้น')&&rc.includes('฿57.00')&&rc.includes('฿30.00')&&rc.includes('฿2.10')&&rc.includes('฿89.10'),'receipt totals: ship 57.00, COD fee 30.00, VAT 2.10, total 89.10');
 ok(!rc.includes('เครดิต'),'receipt has no credit wording');
 // shop + home badges
-const hb1=await homeBadges();ok(hb1['พัสดุในร้าน']===waiting0+2&&hb1.tab===waiting0+2,`home tile + tab badge show ${waiting0+2} waiting`,JSON.stringify(hb1));
+const hb1=await homeBadges();ok(hb1['พัสดุในร้าน']===waiting0+2&&hb1.tab===waiting0+2&&hb1.pipe.received===waiting0+2,`home to-do row, tab badge and pipeline all show ${waiting0+2} waiting`,JSON.stringify(hb1));ok(hb1.recent.map(x=>x.trim()).includes(A)&&hb1.recent.map(x=>x.trim()).includes(Bn),'home recent list shows the new parcels');ok(await p.locator('[data-k=receive]').count()===1&&await p.locator('[data-k=handover]').innerText().then(t=>t.includes('ชิ้นรออยู่')),'home primary actions present');
 await go('/shop');await p.waitForSelector('.oc');const shopNos=(await p.locator('.oc .no').allInnerTexts()).map(s=>s.trim());ok(shopNos.includes(A)&&shopNos.includes(Bn),'both parcels listed under พัสดุในร้าน');
 // search by tracking / receiver / sender phone
 ok((await searchHas(A)).includes(A),'search by tracking number');ok((await searchHas('0825556677')).includes(Bn),'search by receiver phone');ok((await searchHas('0812345678')).includes(A),'search by sender phone (finds seed + new)');
@@ -75,12 +77,12 @@ ov=await overview();ok(ov.cnt===base.cnt+1&&ov.voided>=1,'settings: count +1 and
 await go('/shop');await p.waitForSelector('.oc');await p.locator('.oc').filter({hasText:Bn}).locator('.chk').click();await p.click('.stickybar .btn');await p.fill('.in',Bn);await p.press('.in','Enter');await p.waitForTimeout(250);
 ok((await p.locator('.sheet').innerText()).includes('ตรวจแล้ว 1 / 1'),'handover: scanning B ticks it (1/1)');
 await p.click('text=/ยืนยันส่งมอบ/');await p.waitForSelector('.mf');const hid=1;ok((await p.locator('.mf').innerText()).includes(Bn),'manifest lists B');
-const hb3=await homeBadges();ok(hb3['พัสดุในร้าน']===waiting0,'waiting badge after handover = original');
+const hb3=await homeBadges();ok(hb3['พัสดุในร้าน']===waiting0&&hb3.pipe.handed_over===hb0.pipe.handed_over+1,'home waiting count back to original and pipeline handed-over +1');
 await go('/orders/'+Bn);await p.waitForSelector('.tl');d=await p.locator('.page').innerText();ok(d.includes('ส่งมอบขนส่งแล้ว')&&d.includes('HO-'),'B status handed over with HO id');
 ok(await p.locator('button:has-text("ยกเลิกพัสดุ (Void)")').count()===0&&await p.locator('button:has-text("แก้ไขข้อมูล")').count()===0,'B can no longer be edited or voided');
 // advance
 await p.click('text=จำลองสถานะถัดไป');await p.waitForTimeout(500);await go('/search?filter=in_transit');await p.waitForSelector('.oc');ok((await p.locator('.oc .no').allInnerTexts()).map(s=>s.trim()).includes(Bn),'after advance, B appears in "กำลังขนส่ง"');
-const credAfter=await credit('0812345678');ok(near(credAfter,950),'handover/advance do not change credit');
+const hb4=await homeBadges();ok(hb4.pipe.in_transit===hb0.pipe.in_transit+1&&hb4.pipe.handed_over===hb0.pipe.handed_over,'pipeline: B moved from handed-over to in-transit');const credAfter=await credit('0812345678');ok(near(credAfter,950),'handover/advance do not change credit');
 
 // ---------- issues
 await go('/issues');await p.click('.chip:has-text("พัสดุชำรุด")');await p.fill('input[list="nos"]',Bn);await p.fill('textarea','กล่องบุบ');await p.click('text=ส่งเรื่อง');await p.waitForTimeout(700);

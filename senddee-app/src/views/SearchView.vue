@@ -11,11 +11,11 @@ import { STATUS } from '../data/constants'
 const orders = useOrders()
 onMounted(() => orders.load())
 const route = useRoute()
-const q = ref('')
+const q = ref(String(route.query.q || ''))
 const filter = ref(STATUS[route.query.filter] ? route.query.filter : 'all')
 const labelMode = computed(() => !!route.query.label)
 const voidMode = computed(() => !!route.query.void)
-watch(() => route.fullPath, () => { if (route.path === '/search') { filter.value = STATUS[route.query.filter] ? route.query.filter : 'all'; q.value = '' } })
+watch(() => route.fullPath, () => { if (route.path === '/search') { filter.value = STATUS[route.query.filter] ? route.query.filter : 'all'; q.value = String(route.query.q || '') } })
 const filters = [{ id: 'all', label: 'ทั้งหมด' }, ...['received', 'handed_over', 'in_transit', 'delivered', 'cancelled'].map((id) => ({ id, label: STATUS[id].short }))]
 const shown = computed(() => {
   const t = q.value.trim().toLowerCase()
