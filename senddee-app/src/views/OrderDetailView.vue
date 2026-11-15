@@ -107,6 +107,7 @@ async function copyAddr() {
       <div v-if="o.cod" class="kv"><span class="muted">COD (เก็บปลายทาง)</span><span class="cod">{{ baht(o.cod) }}</span></div>
       <div class="kv"><span class="muted">ค่าขนส่ง</span><span>{{ baht(o.fee) }}</span></div>
       <div v-if="o.codFee" class="kv"><span class="muted">ค่าเก็บเงินปลายทาง 3%</span><span>{{ baht(o.codFee) }}</span></div>
+      <div v-if="o.vat" class="kv"><span class="muted">ภาษีมูลค่าเพิ่ม 7%</span><span>{{ baht(o.vat) }}</span></div>
       <div class="kv total-line"><span>หักจากเครดิตผู้ส่ง</span><span>{{ baht(o.charge) }}</span></div>
     </div>
 

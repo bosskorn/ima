@@ -6,17 +6,19 @@ import JsBarcode from 'jsbarcode'
 import QRCode from 'qrcode'
 import BrandLogo from './BrandLogo.vue'
 import { useSession } from '../stores/session'
-import { baht, maskPhone } from '../utils/format'
-import { CARRIERS, COD_RATE, SUPPORT_PHONE } from '../data/constants'
+import { baht2, maskPhone } from '../utils/format'
+import { CARRIERS, COD_RATE, VAT_RATE, SUPPORT_PHONE, COD_PCT, VAT_PCT } from '../data/constants'
 
-const props = defineProps({ tx: Object, items: Array, credit: Number })
+const props = defineProps({ tx: Object, items: Array })
+const r2 = (n) => Math.round(n * 100) / 100
 const session = useSession()
 const bc = ref(null); const qr = ref('')
 
 const live = computed(() => props.items.filter((o) => o.status !== 'cancelled'))
-const shipping = computed(() => live.value.reduce((a, o) => a + o.fee, 0))
-const codFees = computed(() => live.value.reduce((a, o) => a + o.codFee, 0))
-const total = computed(() => live.value.reduce((a, o) => a + o.charge, 0))
+const shipping = computed(() => r2(live.value.reduce((a, o) => a + o.fee, 0)))
+const codFees = computed(() => r2(live.value.reduce((a, o) => a + o.codFee, 0)))
+const vat = computed(() => r2(live.value.reduce((a, o) => a + (o.vat || 0), 0)))
+const total = computed(() => r2(live.value.reduce((a, o) => a + o.charge, 0)))
 const kg = computed(() => live.value.reduce((a, o) => a + o.parcel.weight, 0))
 const carrier = (o) => CARRIERS.find((c) => c.id === o.carrier)?.short
 const dt = computed(() => new Date(props.tx.at))
@@ -42,7 +44,7 @@ onMounted(draw); watch(() => props.tx.id, draw)
     </div>
 
     <div class="rule" />
-    <div class="ttl">ใบรับฝากพัสดุ<small>DROP-OFF RECEIPT</small></div>
+    <div class="ttl">ใบเสร็จรับฝากพัสดุ<small>RECEIPT</small></div>
     <div class="rule" />
 
     <div class="kv"><span>เลขที่</span><b>{{ tx.id }}</b></div>
@@ -55,21 +57,21 @@ onMounted(draw); watch(() => props.tx.id, draw)
     <div class="rule dash" />
     <div class="sec">รายการพัสดุ {{ live.length }} ชิ้น · {{ kg.toFixed(1) }} กก.</div>
     <div v-for="(o, i) in live" :key="o.id" class="it">
-      <div class="r1"><span>{{ i + 1 }}. {{ o.trackingNo }}</span><b>{{ baht(o.fee) }}</b></div>
+      <div class="r1"><span>{{ i + 1 }}. {{ o.trackingNo }}</span><b>{{ baht2(o.fee) }}</b></div>
       <div class="r2">{{ carrier(o) }} → {{ o.receiver.province }} · {{ o.parcel.weight }} กก.<template v-if="o.parcel.dims"> · {{ o.parcel.dims.w }}×{{ o.parcel.dims.l }}×{{ o.parcel.dims.h }} ซม.</template></div>
       <div class="r2">ผู้รับ: {{ o.receiver.name }} ({{ maskPhone(o.receiver.phone) }})</div>
       <template v-if="o.cod">
-        <div class="r2 cod"><span>COD {{ baht(o.cod) }}</span><span>ค่าธรรมเนียม {{ COD_RATE * 100 }}% {{ baht(o.codFee) }}</span></div>
+        <div class="r2 cod"><span>COD {{ baht2(o.cod) }}</span><span>ค่าธรรมเนียม {{ baht2(o.codFee) }} + VAT {{ baht2(o.vat || 0) }}</span></div>
         <div v-if="o.sender?.bank" class="r2">โอนเข้า {{ o.sender.bank.bank }} ••••{{ o.sender.bank.number.slice(-4) }}</div>
       </template>
     </div>
 
     <div class="rule dash" />
-    <div class="kv"><span>ค่าขนส่ง</span><span>{{ baht(shipping) }}</span></div>
-    <div v-if="codFees" class="kv"><span>ค่าเก็บเงินปลายทาง {{ COD_RATE * 100 }}%</span><span>{{ baht(codFees) }}</span></div>
-    <div class="tot"><span>ใช้เครดิตรวม</span><span>{{ baht(total) }}</span></div>
-    <div v-if="credit != null" class="kv"><span>เครดิตคงเหลือ</span><span>{{ baht(credit) }}</span></div>
-    <div class="sm c">ชำระด้วยเครดิตของผู้ส่ง · สาขาไม่รับเงินสด</div>
+    <div class="kv"><span>ค่าขนส่ง</span><span>{{ baht2(shipping) }}</span></div>
+    <div v-if="codFees" class="kv"><span>ค่าธรรมเนียมเก็บเงินปลายทาง {{ COD_PCT }}%</span><span>{{ baht2(codFees) }}</span></div>
+    <div v-if="codFees" class="kv"><span>ภาษีมูลค่าเพิ่ม {{ VAT_PCT }}%</span><span>{{ baht2(vat) }}</span></div>
+    <div class="tot"><span>รวมทั้งสิ้น</span><span>{{ baht2(total) }}</span></div>
+    <div v-if="codFees" class="sm">* ภาษีมูลค่าเพิ่มคิดจากค่าธรรมเนียมเก็บเงินปลายทาง</div>
 
     <div class="rule dash" />
     <svg ref="bc" class="bc" />
@@ -78,7 +80,7 @@ onMounted(draw); watch(() => props.tx.id, draw)
 
     <div class="rule dash" />
     <ul class="note">
-      <li>ใบนี้เป็นหลักฐานการรับฝากพัสดุ ไม่ใช่ใบกำกับภาษี</li>
+      <li>ใบนี้เป็นหลักฐานการรับฝากพัสดุและค่าบริการ ไม่ใช่ใบกำกับภาษี</li>
       <li>ใบกำกับภาษีอิเล็กทรอนิกส์ออกโดยระบบ SendDee ส่งทางอีเมล</li>
       <li>เก็บใบนี้ไว้เป็นหลักฐานประกอบการติดตามหรือเคลมพัสดุ</li>
     </ul>
@@ -99,7 +101,7 @@ onMounted(draw); watch(() => props.tx.id, draw)
 .sec { font-weight: 500; margin-bottom: 4px; }
 .it { padding: 3px 0; break-inside: avoid; border-bottom: 1px dotted #888; } .it:last-child { border-bottom: 0; }
 .r1 { display: flex; justify-content: space-between; font-weight: 500; } .r2 { font-size: 10px; color: #222; padding-left: 14px; } .r2.cod { display: flex; justify-content: space-between; color: #000; }
-.tot { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; font-weight: 500; border-top: 2px solid #000; border-bottom: 2px solid #000; padding: 3px 0; margin: 4px 0; }
+.tot { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; font-weight: 500; line-height: 1.7; border-top: 2px solid #000; border-bottom: 2px solid #000; padding: 2px 0; margin: 4px 0; }
 .bc { width: 100%; height: 30px; margin: 2px 0 1px; }
 .qrw { display: flex; align-items: center; gap: 8px; margin-top: 5px; } .qr { width: 56px; height: 56px; flex: none; } .qr :deep(svg) { width: 100%; height: 100%; } .qt { font-size: 10px; line-height: 1.4; }
 .note { margin: 0 0 4px; padding-left: 12px; font-size: 9.5px; line-height: 1.4; }

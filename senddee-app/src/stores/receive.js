@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-const KEY = 'senddee.receive.draft'
+const KEY = 'senddee.receive.draft.v2'
 const blank = () => ({ pickup: 'shop', sender: { phone: '', name: '', address: '', bank: null, credit: 0, confirmed: false }, txId: '', orderIds: [] })
 function load() { try { return { ...blank(), ...JSON.parse(localStorage.getItem(KEY) || '{}') } } catch { return blank() } }
 

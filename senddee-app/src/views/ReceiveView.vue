@@ -13,7 +13,7 @@ import { toast } from '../utils/toast'
 import { printVisible } from '../utils/print'
 import { baht } from '../utils/format'
 import { PROVINCES } from '../data/provinces'
-import { CARRIERS, PRODUCT_TYPES, BANKS, MAX_WEIGHT_KG, COD_RATE } from '../data/constants'
+import { CARRIERS, PRODUCT_TYPES, BANKS, MAX_WEIGHT_KG, COD_RATE, VAT_RATE, COD_PCT, VAT_PCT } from '../data/constants'
 
 const router = useRouter(); const orders = useOrders(); const session = useSession(); const rc = useReceive()
 orders.load()
@@ -194,7 +194,7 @@ const print = printVisible
       <template v-if="useCod">
         <div class="rw" data-f="cod" :class="{ invalid: show('cod') }"><label>ยอด COD (บาท)</label><input v-model="cod" inputmode="numeric" placeholder="0" /></div>
         <div class="rw pick" @click="onCodToggle({ target: { checked: true } })"><label>บัญชีรับเงิน</label><span class="acc">{{ maskedAcc }}</span><i>›</i></div>
-        <p class="hint">ระบบโอนเงิน COD เข้าบัญชีผู้ส่งโดยตรง เจ้าของแฟรนไชส์ไม่ต้องโอนเอง · ค่าธรรมเนียม COD {{ COD_RATE * 100 }}% ของยอด COD เก็บจากผู้ส่งพร้อมค่าขนส่ง</p>
+        <p class="hint">ระบบโอนเงิน COD เข้าบัญชีผู้ส่งโดยตรง เจ้าของแฟรนไชส์ไม่ต้องโอนเอง · ค่าธรรมเนียม COD {{ COD_PCT }}% + VAT {{ VAT_PCT }}% เก็บจากผู้ส่งพร้อมค่าขนส่ง</p>
       </template>
     </div>
 
@@ -210,7 +210,8 @@ const print = printVisible
     <div class="blk sum">
       <h4>สรุปยอด</h4>
       <div class="kv"><span>ค่าขนส่ง ({{ CARRIERS.find((c) => c.id === carrier).short }})</span><span>{{ baht(fee.shipping) }}</span></div>
-      <div v-if="codAmount" class="kv"><span>ค่าเก็บเงินปลายทาง {{ COD_RATE * 100 }}% (COD {{ baht(codAmount) }})</span><span>{{ baht(fee.codFee) }}</span></div>
+      <div v-if="codAmount" class="kv"><span>ค่าเก็บเงินปลายทาง {{ COD_PCT }}% (COD {{ baht(codAmount) }})</span><span>{{ baht(fee.codFee) }}</span></div>
+      <div v-if="codAmount" class="kv"><span>ภาษีมูลค่าเพิ่ม {{ VAT_PCT }}% (ของค่า COD)</span><span>{{ baht(fee.vat) }}</span></div>
       <div class="kv tot"><span>หักเครดิตชิ้นนี้</span><span>{{ baht(fee.total) }}</span></div>
       <div class="kv"><span class="muted">เครดิตผู้ส่งหลังหัก</span><span :style="{ color: lowCredit ? 'var(--danger)' : '' }">{{ baht(creditAfter) }}</span></div>
       <p v-if="lowCredit" class="lowp">เครดิตผู้ส่งไม่เพียงพอ — ให้ลูกค้าเติมเครดิตกับแฟรนไชส์ก่อน แล้วจึงสร้างออเดอร์ได้</p>

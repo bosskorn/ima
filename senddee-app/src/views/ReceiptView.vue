@@ -3,20 +3,18 @@ import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '../components/AppHeader.vue'
 import ReceiptDoc from '../components/ReceiptDoc.vue'
-import { getTx, findSender } from '../api'
+import { getTx } from '../api'
 import { useOrders } from '../stores/orders'
 import { useReceive } from '../stores/receive'
 import { printVisible } from '../utils/print'
 
 const props = defineProps({ id: String })
 const router = useRouter(); const orders = useOrders(); const rc = useReceive()
-const tx = ref(null); const credit = ref(null)
+const tx = ref(null)
 
 onMounted(async () => {
   await orders.load()
-  const t = await getTx(props.id)
-  if (t) credit.value = (await findSender(t.sender.phone))?.credit ?? 0
-  tx.value = t
+  tx.value = await getTx(props.id)
   if (rc.txId === props.id) rc.reset() // this customer visit is finished
 })
 const items = computed(() => (tx.value ? tx.value.orderIds.map((id) => orders.list.find((o) => o.id === id)).filter(Boolean) : []))
@@ -28,7 +26,7 @@ const count = computed(() => items.value.filter((o) => o.status !== 'cancelled')
     <AppHeader back title="ใบเสร็จ" :sub="tx.id" />
     <div class="done"><div class="tick">✓</div><div>สร้างออเดอร์ {{ count }} ชิ้นเรียบร้อย</div><small class="muted">หักค่าบริการจากเครดิตผู้ส่งแล้ว</small></div>
 
-    <ReceiptDoc :tx="tx" :items="items" :credit="credit" />
+    <ReceiptDoc :tx="tx" :items="items" />
 
     <div class="stack" style="margin-top:14px">
       <button class="btn block" @click="printVisible">🖨️ พิมพ์ใบเสร็จ</button>

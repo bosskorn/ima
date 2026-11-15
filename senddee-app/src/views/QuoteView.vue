@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import AppHeader from '../components/AppHeader.vue'
 import { calcFee } from '../api'
-import { CARRIERS, COD_RATE } from '../data/constants'
+import { CARRIERS, COD_RATE, VAT_RATE, COD_PCT, VAT_PCT } from '../data/constants'
 import { baht } from '../utils/format'
 
 const w = ref(''); const cod = ref('')
@@ -21,7 +21,7 @@ const rows = computed(() => CARRIERS.map((c) => ({ ...c, ...calcFee({ weight: w.
     <div v-if="valid" class="card">
       <div v-for="r in rows" :key="r.id" class="rw">
         <img :src="r.logo" :alt="r.name" />
-        <div class="grow"><div>{{ r.name }}</div><small class="muted">เริ่มต้น {{ baht(r.start) }}<span v-if="r.codFee"> · ค่า COD {{ COD_RATE * 100 }}% = {{ baht(r.codFee) }}</span></small></div>
+        <div class="grow"><div>{{ r.name }}</div><small class="muted">เริ่มต้น {{ baht(r.start) }}<span v-if="r.codFee"> · ค่า COD {{ COD_PCT }}% {{ baht(r.codFee) }} + VAT {{ VAT_PCT }}% {{ baht(r.vat) }}</span></small></div>
         <div class="pr">{{ baht(r.total) }}</div>
       </div>
       <RouterLink class="btn block" style="margin-top:12px;text-decoration:none" to="/receive">ไปรับพัสดุ</RouterLink>

@@ -58,8 +58,9 @@ async function reset() { await orders.reset(); resetOpen.value = false; toast('�
         <div><span class="muted">กำไร (ประมาณ)</span><b class="pf">{{ baht(today.profit) }}</b></div>
       </div>
       <div class="kv"><span class="muted">พัสดุวันนี้</span><span>{{ today.count }} ชิ้น · {{ today.weight.toFixed(1) }} กก.<template v-if="today.voided"> · ยกเลิก {{ today.voided }}</template></span></div>
+      <div v-if="today.vat" class="kv"><span class="muted">ภาษีมูลค่าเพิ่มที่เก็บวันนี้ (ไม่นับเป็นรายได้)</span><span>{{ baht(today.vat) }}</span></div>
       <div class="kv"><span class="muted">เดือนนี้</span><span>{{ baht(month.revenue) }} · กำไร {{ baht(month.profit) }}</span></div>
-      <p class="hint">รายได้ = ค่าขนส่งและค่า COD ที่หักจากเครดิตผู้ส่ง (ไม่รวมออเดอร์ที่ยกเลิก) · กำไรเป็นตัวเลขประมาณการ คิดจากอัตราสมมติ {{ PROFIT_MARGIN * 100 }}% ของรายได้</p>
+      <p class="hint">รายได้ = ค่าขนส่ง + ค่าธรรมเนียม COD ที่หักจากเครดิตผู้ส่ง (ไม่รวมภาษีมูลค่าเพิ่ม และออเดอร์ที่ยกเลิก) · กำไรเป็นตัวเลขประมาณการ คิดจากอัตราสมมติ {{ Math.round(PROFIT_MARGIN * 100) }}% ของรายได้</p>
     </div>
 
     <!-- branch -->

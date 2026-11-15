@@ -27,7 +27,10 @@ export const CARRIERS = [
   { id: 'flash', name: 'Flash Express', short: 'Flash', logo: flashLogo, start: 28, tiers: [[1, 28], [2, 33], [3, 38], [5, 50], [10, 75], [15, 100], [20, 130], [25, 155], [30, 180]] },
   { id: 'spx', name: 'SPX Express', short: 'SPX', logo: spxLogo, start: 25, tiers: [[1, 25], [2, 29], [3, 34], [5, 45], [10, 70], [15, 95], [20, 125], [25, 150], [30, 170]] },
 ]
-export const COD_RATE = 0.03 // 3% of the COD amount, charged to the sender together with shipping
+export const COD_PCT = 3
+export const COD_RATE = COD_PCT / 100 // 3% COD fee (before VAT), charged to the sender together with shipping
+export const VAT_PCT = 7
+export const VAT_RATE = VAT_PCT / 100 // 7% VAT, applied to the COD fee only (ASSUMPTION: the 3% is quoted before VAT)
 
 export const PRODUCT_TYPES = [
   'เสื้อผ้า / แฟชั่น', 'รองเท้า', 'กระเป๋า', 'เครื่องประดับ / นาฬิกา', 'เครื่องสำอาง / ความงาม', 'สกินแคร์ / ของใช้ส่วนตัว',

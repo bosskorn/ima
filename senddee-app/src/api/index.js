@@ -1,11 +1,11 @@
 // Mock API layer for the SendDee counter/staff app. Every function is async and returns plain objects,
 // so replacing this file with real fetch() calls to the SendDee backend won't touch the views.
-import { CARRIERS, STATUS_FLOW, MAX_WEIGHT_KG, COD_RATE, PROFIT_MARGIN } from '../data/constants'
+import { CARRIERS, STATUS_FLOW, MAX_WEIGHT_KG, COD_RATE, VAT_RATE, PROFIT_MARGIN } from '../data/constants'
 import { isToday } from '../utils/format'
 
-const KEY = 'senddee.staff.orders.v3'
-const TXKEY = 'senddee.staff.tx.v1'
-const SKEY = 'senddee.staff.senders.v1'
+const KEY = 'senddee.staff.orders.v4'
+const TXKEY = 'senddee.staff.tx.v2'
+const SKEY = 'senddee.staff.senders.v2'
 const IKEY = 'senddee.staff.issues.v1'
 const delay = (ms = 200) => new Promise((r) => setTimeout(r, ms))
 const now = () => new Date().toISOString()
@@ -32,8 +32,10 @@ export function calcFee({ weight, carrier = 'flash', cod = 0 }) {
     const tier = c.tiers.find(([max]) => w <= max)
     shipping = tier ? tier[1] : c.tiers[c.tiers.length - 1][1]
   }
-  const codFee = cod > 0 ? Math.round(cod * COD_RATE) : 0 // 3% of the COD amount
-  return { shipping, codFee, total: shipping + codFee }
+  const r2 = (n) => Math.round(n * 100) / 100
+  const codFee = cod > 0 ? r2(cod * COD_RATE) : 0 // 3% of the COD amount (before VAT)
+  const vat = r2(codFee * VAT_RATE) // 7% VAT on the COD fee
+  return { shipping, codFee, vat, total: r2(shipping + codFee + vat) }
 }
 
 // ---------- seed ----------
@@ -55,7 +57,7 @@ function seed() {
       sender: { name: 'ลูกค้าหน้าร้าน', phone: '0899990000', address: '' },
       receiver: { name: 'คุณสมชาย ใจดี', phone: '0898765432', address: '12 ม.3 ต.ในเมือง อ.เมือง', province: 'ขอนแก่น', postcode: '40000' },
       parcel: { weight, dims: { w: 20, l: 25, h: 10 }, type: 'เสื้อผ้า / แฟชั่น', note: '' },
-      carrier, cod, fee: f.shipping, codFee: f.codFee,
+      carrier, cod, fee: f.shipping, codFee: f.codFee, vat: f.vat,
       charge: f.total, receivedBy: STAFF, ...over.rest,
     }
   }
@@ -120,7 +122,7 @@ export async function createOrder(input, staff) {
     id: no, trackingNo: no, status: 'received', createdAt: now(), txId: tx.id,
     pickup: input.pickup === 'home' ? 'home' : 'shop',
     sender: input.sender, receiver: input.receiver, parcel: { ...input.parcel, weight: w },
-    carrier: input.carrier, cod: input.cod || 0, fee: f.shipping, codFee: f.codFee,
+    carrier: input.carrier, cod: input.cod || 0, fee: f.shipping, codFee: f.codFee, vat: f.vat,
     charge: f.total, // deducted from the sender's credit
     receivedBy: { id: staff.id, name: staff.name },
     events: [{ status: 'received', text: input.pickup === 'home' ? EVT.received_home : EVT.received, at: now() }],
@@ -150,10 +152,10 @@ export async function editOrder(id, patch) {
   const w = Number(patch.parcel.weight)
   if (!(w > 0) || w > MAX_WEIGHT_KG) throw new Error(`น้ำหนักต้องมากกว่า 0 และไม่เกิน ${MAX_WEIGHT_KG} กก.`)
   const f = calcFee({ weight: w, carrier: patch.carrier, cod: o.cod })
-  const diff = f.total - o.charge
+  const diff = Math.round((f.total - o.charge) * 100) / 100
   if (diff > 0) { const cur = loadSenders().find((x) => x.phone === o.sender.phone)?.credit || 0; if (cur < diff) throw new Error(`เครดิตผู้ส่งไม่พอสำหรับค่าบริการที่เพิ่ม ${diff} บาท (คงเหลือ ${cur} บาท)`) }
   o.receiver = { ...patch.receiver }; o.parcel = { ...o.parcel, ...patch.parcel, weight: w }
-  o.carrier = patch.carrier; o.fee = f.shipping; o.codFee = f.codFee; o.charge = f.total
+  o.carrier = patch.carrier; o.fee = f.shipping; o.codFee = f.codFee; o.vat = f.vat; o.charge = f.total
   o.events.push({ status: 'received', text: `แก้ไขข้อมูลพัสดุ${diff ? ` (${diff > 0 ? 'หักเครดิตเพิ่ม' : 'คืนเครดิต'} ฿${Math.abs(diff)})` : ''}`, at: now() })
   save(list); await adjustCredit(o.sender.phone, -diff); return { order: o, diff }
 }
@@ -190,9 +192,9 @@ export async function advanceOrder(id) {
 // Totals for the Settings overview. Revenue = what was charged to senders' credit; profit uses PROFIT_MARGIN (placeholder).
 export function summarize(list, day = isToday) {
   const live = list.filter((o) => day(o.createdAt) && o.status !== 'cancelled')
-  const revenue = live.reduce((a, o) => a + o.charge, 0)
+  const revenue = Math.round(live.reduce((a, o) => a + o.fee + o.codFee, 0) * 100) / 100 // VAT is collected for the state, not income
   return { count: live.length, voided: list.filter((o) => day(o.createdAt) && o.status === 'cancelled').length,
-    weight: live.reduce((a, o) => a + o.parcel.weight, 0), revenue, profit: Math.round(revenue * PROFIT_MARGIN) }
+    weight: live.reduce((a, o) => a + o.parcel.weight, 0), revenue, vat: Math.round(live.reduce((a, o) => a + (o.vat || 0), 0) * 100) / 100, profit: Math.round(revenue * PROFIT_MARGIN * 100) / 100 }
 }
 export const isThisMonth = (iso) => { const d = new Date(iso), n = new Date(); return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear() }
 
@@ -211,6 +213,6 @@ export async function resolveIssue(id) {
   return list
 }
 export async function resetDemo() {
-  ;[KEY, TXKEY, SKEY, IKEY, 'senddee.ho.seq', 'senddee.receive.draft'].forEach((k) => localStorage.removeItem(k))
+  ;[KEY, TXKEY, SKEY, IKEY, 'senddee.ho.seq', 'senddee.receive.draft.v2'].forEach((k) => localStorage.removeItem(k))
   return load()
 }
