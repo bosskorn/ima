@@ -8,6 +8,8 @@ import '@fontsource/sarabun/thai-500.css'
 import '@fontsource/sarabun/latin-300.css'
 import '@fontsource/sarabun/latin-400.css'
 import '@fontsource/sarabun/latin-500.css'
+import '@fontsource/prompt/thai-500.css'
+import '@fontsource/prompt/latin-500.css'
 import './style.css'
 
 createApp(App).use(createPinia()).use(router).mount('#app')

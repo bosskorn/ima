@@ -10,12 +10,12 @@ const near=(a,b)=>Math.abs(a-b)<0.011;
 (async()=>{const b=await chromium.launch();const p=await(await b.newContext({...devices['Pixel 5'],locale:'th-TH'})).newPage();
 const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));p.on('dialog',d=>d.accept());
 const go=async path=>{await p.goto(B+path);await p.waitForTimeout(450)};
-const login=async()=>{await p.goto('http://localhost:4173/');await p.fill('input[placeholder="เช่น LP001"]','LP001');await p.fill('input[placeholder="เช่น S001"]','S001');await p.fill('input[inputmode=numeric]','1234');await p.click('text=เข้าสู่ระบบ');await p.waitForSelector('.act')};
+const login=async()=>{await p.goto('http://localhost:4173/');await p.fill('input[placeholder="เช่น LP001"]','LP001');await p.fill('input[placeholder="เช่น S001"]','S001');await p.fill('input[inputmode=numeric]','1234');await p.click('text=เข้าสู่ระบบ');await p.waitForSelector('.main')};
 const overview=async()=>{await go('/settings');await p.waitForSelector('.ov2');const t=await p.locator('.ov2 b').allInnerTexts();const kv=await p.locator('.blk.ov .kv').allInnerTexts();
   const cnt=num((kv.find(x=>x.includes('พัสดุวันนี้'))||'').match(/(\d+) ชิ้น/)?.[1]);const voided=num((kv.find(x=>x.includes('พัสดุวันนี้'))||'').match(/ยกเลิก (\d+)/)?.[1]);const vat=num((kv.find(x=>x.includes('ภาษีมูลค่าเพิ่ม'))||'0'));
   return {rev:num(t[0]),profit:num(t[1]),cnt,voided,vat}};
 const credit=async phone=>{await go('/credit');await p.fill('input[inputmode=tel]',phone);await p.waitForSelector('.res');return num(await p.locator('.res .cr').innerText())};
-const homeBadges=async()=>{await go('/');await p.waitForSelector('.act');const n=async k=>(await p.locator(`[data-k=${k}] [data-n]`).count())?num(await p.locator(`[data-k=${k}] [data-n]`).innerText()):0;
+const homeBadges=async()=>{await go('/');await p.waitForSelector('.main');const n=async k=>(await p.locator(`[data-k=${k}] [data-n]`).count())?num(await p.locator(`[data-k=${k}] [data-n]`).innerText()):0;
   const o={'พัสดุในร้าน':await n('waiting'),'ค้างเกิน 24 ชม.':await n('overdue')};o.tab=await p.locator('.tabbar .badge-n').count()?num(await p.locator('.tabbar .badge-n').innerText()):0;o.pipe={};
   for(const st of ['received','handed_over','in_transit','out_for_delivery','delivered'])o.pipe[st]=num(await p.locator(`[data-k=st-${st}] .num`).innerText());o.recent=await p.locator('[data-k=recent] .no').allInnerTexts();return o};
 const searchHas=async(q)=>{await go('/search');await p.fill('.in',q);await p.waitForTimeout(250);return p.locator('.oc .no').allInnerTexts().then(a=>a.map(s=>s.trim()))};
@@ -45,7 +45,7 @@ let rc=await p.locator('.rc').innerText();
 ok(rc.includes('2 ชิ้น')&&rc.includes('฿57.00')&&rc.includes('฿30.00')&&rc.includes('฿2.10')&&rc.includes('฿89.10'),'receipt totals: ship 57.00, COD fee 30.00, VAT 2.10, total 89.10');
 ok(!rc.includes('เครดิต'),'receipt has no credit wording');
 // shop + home badges
-const hb1=await homeBadges();ok(hb1['พัสดุในร้าน']===waiting0+2&&hb1.tab===waiting0+2&&hb1.pipe.received===waiting0+2,`home to-do row, tab badge and pipeline all show ${waiting0+2} waiting`,JSON.stringify(hb1));ok(hb1.recent.map(x=>x.trim()).includes(A)&&hb1.recent.map(x=>x.trim()).includes(Bn),'home recent list shows the new parcels');ok(await p.locator('[data-k=receive]').count()===1&&await p.locator('[data-k=handover]').innerText().then(t=>t.includes('ชิ้นรออยู่')),'home primary actions present');
+const hb1=await homeBadges();ok(hb1['พัสดุในร้าน']===waiting0+2&&hb1.tab===waiting0+2&&hb1.pipe.received===waiting0+2,`home to-do row, tab badge and pipeline all show ${waiting0+2} waiting`,JSON.stringify(hb1));ok(hb1.recent.map(x=>x.trim()).includes(A)&&hb1.recent.map(x=>x.trim()).includes(Bn),'home recent list shows the new parcels');ok(await p.locator('[data-k=receive]').count()===1&&num(await p.locator('[data-k=shop] .bd').innerText())===waiting0+2,'home main-ops badge on พัสดุในร้าน matches');ok(await p.locator('.main [data-k], .svc [data-k]').count()===14,'home shows all 14 menus');
 await go('/shop');await p.waitForSelector('.oc');const shopNos=(await p.locator('.oc .no').allInnerTexts()).map(s=>s.trim());ok(shopNos.includes(A)&&shopNos.includes(Bn),'both parcels listed under พัสดุในร้าน');
 // search by tracking / receiver / sender phone
 ok((await searchHas(A)).includes(A),'search by tracking number');ok((await searchHas('0825556677')).includes(Bn),'search by receiver phone');ok((await searchHas('0812345678')).includes(A),'search by sender phone (finds seed + new)');

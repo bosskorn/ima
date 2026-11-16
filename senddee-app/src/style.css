@@ -11,6 +11,7 @@
   --line: #e2e8f0;
   --danger: #dc2626;
   --radius: 8px;
+  --font-head: 'Prompt', 'Sarabun', system-ui, sans-serif; /* headings, brand and big numbers */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
